@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Governance Brain Trust — Candidate Map</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0e14;
+    color: #c8cdd5;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  .header {
+    text-align: center;
+    padding: 40px 20px 10px;
+  }
+
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: #e8e0d4;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  .header .subtitle {
+    font-size: 0.85rem;
+    color: #6b7280;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .intro {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 0 24px 16px;
+    text-align: center;
+  }
+
+  .intro p {
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: #6b7280;
+    margin: 0.2em 0;
+  }
+
+  .intro em {
+    color: #9ca3af;
+    font-style: italic;
+  }
+
+  .intro strong {
+    color: #c8cdd5;
+    font-weight: 500;
+  }
+
+  .legend-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 20px 40px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: #6b7280;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    padding: 5px 16px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    transition: all 0.3s;
+    user-select: none;
+  }
+
+  .legend-item:hover, .legend-item.active {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.12);
+    color: #e8e0d4;
+  }
+
+  .legend-shape {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid;
+  }
+
+  .legend-shape.creator { border-color: #d4a574; background: rgba(212,165,116,0.2); }
+  .legend-shape.wisdom { border-color: #7ca8c4; background: rgba(124,168,196,0.2); }
+  .legend-shape.science { border-color: #8bc49a; background: rgba(139,196,154,0.2); }
+
+  .quadrant-container {
+    position: relative;
+    width: min(85vw, 780px);
+    height: min(85vw, 780px);
+    margin: 0 auto 60px;
+  }
+
+  .quadrant-grid {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Axes */
+  .axis-h, .axis-v {
+    position: absolute;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .axis-h {
+    left: 0; right: 0;
+    top: 50%;
+    height: 1px;
+  }
+
+  .axis-v {
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 1px;
+  }
+
+  /* Quadrant labels */
+  .q-label {
+    position: absolute;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(232,224,212,0.15);
+    letter-spacing: 0.06em;
+    pointer-events: none;
+  }
+
+  .q-label.ul { top: 12px; left: 16px; }
+  .q-label.ur { top: 12px; right: 16px; text-align: right; }
+  .q-label.ll { bottom: 12px; left: 16px; }
+  .q-label.lr { bottom: 12px; right: 16px; text-align: right; }
+
+  .q-sublabel {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 300;
+    color: rgba(200,205,213,0.12);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* Axis endpoint labels */
+  .axis-label {
+    position: absolute;
+    font-size: 0.6rem;
+    color: rgba(200,205,213,0.2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .axis-label.top { top: -22px; left: 50%; transform: translateX(-50%); }
+  .axis-label.bottom { bottom: -22px; left: 50%; transform: translateX(-50%); }
+  .axis-label.left { left: -10px; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: center; }
+  .axis-label.right { right: -10px; top: 50%; transform: translateY(-50%) rotate(90deg); transform-origin: center; }
+
+  /* Dots */
+  .dot {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 2;
+    transform: translate(-50%, -50%);
+  }
+
+  .dot:hover {
+    transform: translate(-50%, -50%) scale(1.6);
+    z-index: 10;
+    box-shadow: 0 0 20px rgba(255,255,255,0.15);
+  }
+
+  .dot.dimmed {
+    opacity: 0.12;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+
+  .dot.dimmed:hover {
+    opacity: 0.12;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: fixed;
+    background: #161b24;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 16px 20px;
+    max-width: 320px;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  }
+
+  .tooltip.visible { opacity: 1; }
+
+  .tooltip .tt-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #e8e0d4;
+    margin-bottom: 2px;
+  }
+
+  .tooltip .tt-type {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .tooltip .tt-desc {
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: #9ca3af;
+  }
+
+  .tooltip .tt-orientation {
+    margin-top: 8px;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Name labels on dots */
+  .dot-label {
+    position: absolute;
+    font-size: 0.55rem;
+    color: rgba(200,205,213,0.5);
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, 0);
+    left: 50%;
+    top: calc(100% + 3px);
+    letter-spacing: 0.02em;
+    transition: opacity 0.4s;
+  }
+
+  .dot.dimmed .dot-label { opacity: 0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>The Room We Need to Build</h1>
+  <div class="subtitle">Governance Brain Trust — Candidate Map</div>
+</div>
+
+<div class="intro">
+  <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:1.5em auto 1.5em;width:60%;">
+  <p>AI governance conversations are dominated by scientists, engineers, and ethicists — <em>the True</em>.</p>
+  <p>But governing intelligence at civilizational scale requires two dimensions the current table lacks:</p>
+  <div style="margin: 1em 0; padding-left: 2.5em;">
+    <p><em>the Beautiful</em> — artists and world-builders who imagine what futures feel like from inside</p>
+    <p><em>the Good</em> — wisdom traditions that have spent millennia on what creation means</p>
+  </div>
+  <p>This map plots a room that holds all three.</p>
+  <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:1.2em auto 0;width:60%;">
+</div>
+
+<div class="legend-bar">
+  <div class="legend-item active" data-filter="all"><div class="legend-shape" style="border-color:#888;background:rgba(255,255,255,0.15)"></div>All</div>
+  <div class="legend-item" data-filter="creator"><div class="legend-shape creator"></div>The Beautiful — Arts & Imagination</div>
+  <div class="legend-item" data-filter="science"><div class="legend-shape science"></div>The True — Sciences & Systems</div>
+  <div class="legend-item" data-filter="wisdom"><div class="legend-shape wisdom"></div>The Good — Wisdom & Traditions</div>
+</div>
+
+<div class="quadrant-container">
+  <div class="quadrant-grid">
+    <div class="axis-h"></div>
+    <div class="axis-v"></div>
+
+    <div class="q-label ul">Interior–Individual<span class="q-sublabel">Development & Meaning-Making</span></div>
+    <div class="q-label ur">Exterior–Individual<span class="q-sublabel">Behavior & Cognition</span></div>
+    <div class="q-label ll">Interior–Collective<span class="q-sublabel">Culture & Legitimacy</span></div>
+    <div class="q-label lr">Exterior–Collective<span class="q-sublabel">Systems & Structures</span></div>
+
+    <div class="axis-label top">Individual</div>
+    <div class="axis-label bottom">Collective</div>
+    <div class="axis-label left">Interior</div>
+    <div class="axis-label right">Exterior</div>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip">
+  <div class="tt-name" id="tt-name"></div>
+  <div class="tt-type" id="tt-type"></div>
+  <div class="tt-desc" id="tt-desc"></div>
+  <div class="tt-orientation" id="tt-orientation"></div>
+</div>
+
+<script>
+const people = [
+  // CREATORS — The Beautiful
+  { name: "Ted Chiang", type: "creator", x: 22, y: 22, orientation: 0.4, desc: "The most philosophically precise speculative fiction writer alive. Every story is a thought experiment about consciousness, language, and what intelligence feels like from inside.", label: "Writer" },
+  { name: "Liu Cixin", type: "creator", x: 75, y: 72, orientation: 0.5, desc: "Civilizational game theory at cosmic scale. The Dark Forest is the defection problem as literature. Chinese philosophical framework.", label: "Writer" },
+  { name: "Ronald D. Moore", type: "creator", x: 55, y: 58, orientation: 0.45, desc: "BSG: governance under existential pressure, AI personhood, democracy vs. survival. For All Mankind: alternate history as governance imagination.", label: "Showrunner" },
+  { name: "N.K. Jemisin", type: "creator", x: 28, y: 68, orientation: 0.7, desc: "Power, legitimacy, what happens when governance betrays the governed. Three consecutive Hugos. The Broken Earth is about civilizational fracture from the inside.", label: "Writer" },
+  { name: "Kazuo Ishiguro", type: "creator", x: 62, y: 28, orientation: 0.45, desc: "Nobel laureate. Klara and the Sun: the most emotionally precise depiction of artificial consciousness. Observation, service, disposability.", label: "Writer / Nobel" },
+  { name: "Kim Stanley Robinson", type: "creator", x: 58, y: 78, orientation: 0.35, desc: "Ministry for the Future: a novel-length governance proposal for existential risk. Institutional design, democratic process, civilizational time horizons.", label: "Writer" },
+  { name: "Charlie Brooker", type: "creator", x: 65, y: 35, orientation: 0.8, desc: "Black Mirror: the dark imagination. Human-technology failure modes made visceral for mass audiences. The negative space of governance — what happens when it fails.", label: "Showrunner" },
+  { name: "Jonathan Nolan", type: "creator", x: 58, y: 30, orientation: 0.5, desc: "Westworld: AI consciousness, identity, what happens when the cage breaks. The alignment-as-constraint vs. alignment-as-cultivation question dramatized.", label: "Showrunner" },
+  { name: "Nnedi Okofor", type: "creator", x: 32, y: 60, orientation: 0.4, desc: "Africanfuturism. Binti: navigating between incompatible civilizations without losing yourself. Mediation, translation, the body as interface.", label: "Writer" },
+  { name: "Denis Villeneuve", type: "creator", x: 40, y: 30, orientation: 0.4, desc: "Arrival, Blade Runner 2049, Dune. Alien communication, artificial personhood, governance across civilizational time scales. Thinks in images and feeling.", label: "Director" },
+  { name: "Malka Older", type: "creator", x: 42, y: 75, orientation: 0.35, desc: "Infomocracy trilogy: micro-democratic governance in a post-nation-state world. Political scientist turned novelist. The most directly governance-relevant fiction.", label: "Writer / Political Scientist" },
+  { name: "Hayao Miyazaki", type: "creator", x: 25, y: 45, orientation: 0.3, desc: "Human-nature-technology symbiosis. Every Ghibli film is a governance parable about what happens when humans try to dominate systems they should partner with.", label: "Director / Animator" },
+  { name: "William Gibson", type: "creator", x: 70, y: 25, orientation: 0.5, desc: "Invented the vocabulary for human behavior inside technological systems. Neuromancer through Blue Ant. Remarkably prescient about cognitive adaptation to technology.", label: "Writer" },
+  { name: "Chen Qiufan", type: "creator", x: 68, y: 38, orientation: 0.3, desc: "AI 2041 with Kai-Fu Lee. Speculative fiction about near-term AI futures from inside both Chinese and Western tech ecosystems.", label: "Writer" },
+  { name: "Becky Chambers", type: "creator", x: 30, y: 52, orientation: 0.25, desc: "Wayfarers, A Psalm for the Wild-Built. What functional coexistence between radically different intelligences actually feels like day to day. Symbiosis as lived experience.", label: "Writer" },
+  { name: "Ann Leckie", type: "creator", x: 38, y: 38, orientation: 0.55, desc: "Ancillary Justice: distributed AI consciousness, imperial governance, identity fragmented across multiple bodies. What personhood means when boundaries aren't clear.", label: "Writer" },
+
+  // WISDOM — The Deep Good
+  { name: "Rowan Williams", type: "wisdom", x: 25, y: 62, orientation: 0.5, desc: "Former Archbishop of Canterbury. Power, language, limits of understanding, creator-creation relationship. The most intellectually serious Western theologian alive.", label: "Theologian" },
+  { name: "Matthieu Ricard", type: "wisdom", x: 20, y: 30, orientation: 0.35, desc: "Buddhist monk, former molecular biologist. Bridges contemplative practice and neuroscience. 2,500 years of Buddhist epistemology about the nature of mind.", label: "Buddhist Monk / Scientist" },
+  { name: "Robin Wall Kimmerer", type: "wisdom", x: 32, y: 72, orientation: 0.55, desc: "Botanist and Citizen Potawatomi Nation. Braiding Sweetgrass. Reciprocity as governance, the land as teacher, intelligence as relational. Indigenous governance practiced for millennia.", label: "Botanist / Indigenous Scholar" },
+  { name: "John Vervaeke", type: "wisdom", x: 38, y: 22, orientation: 0.4, desc: "Awakening from the Meaning Crisis. Bridges cognitive science, Neoplatonism, Buddhism, phenomenology. The meaning crisis as a crisis of participatory knowing.", label: "Cognitive Scientist" },
+  { name: "Bayo Akomolafe", type: "wisdom", x: 18, y: 55, orientation: 0.7, desc: "Nigerian post-humanist philosopher. Yoruba cosmology. The intelligence of not-knowing, fugitive practices, what it means to be human when boundaries dissolve.", label: "Philosopher" },
+  { name: "Abdal Hakim Murad", type: "wisdom", x: 28, y: 78, orientation: 0.5, desc: "Cambridge Islamic scholar. Divine sovereignty and human agency, ethics of creation, Islamic jurisprudence — shura and ijma. 1,400 years of governance philosophy.", label: "Islamic Scholar" },
+  { name: "Richard Rohr", type: "wisdom", x: 15, y: 42, orientation: 0.35, desc: "Franciscan friar. Non-dual thinking, integration of opposites, order-disorder-reorder. Makes the spiritual dimension accessible without alienating.", label: "Franciscan Friar" },
+  { name: "Shai Held", type: "wisdom", x: 22, y: 65, orientation: 0.45, desc: "Rabbi, co-founder of Mechon Hadar. Jonathan Sacks lineage. Covenant, mutual obligation, dignity of difference. Argument-as-sacred-practice.", label: "Rabbi / Theologian" },
+  { name: "Iain McGilchrist", type: "wisdom", x: 30, y: 28, orientation: 0.55, desc: "The Master and His Emissary. Western civilization's over-indexing on left-hemisphere thinking at the expense of the contextual, relational, meaning-making.", label: "Psychiatrist / Scholar" },
+  { name: "Vanessa Andreotti", type: "wisdom", x: 22, y: 82, orientation: 0.75, desc: "Hospicing Modernity. The current system isn't being reformed, it's dying. How to hospice it while midwifing what comes next. Indigenous and decolonial perspectives.", label: "Indigenous Education Scholar" },
+
+  // SCIENCE — The True
+  { name: "Dave Snowden", type: "science", x: 68, y: 62, orientation: 0.45, desc: "Cynefin framework. Sense-making in complex vs. complicated systems. Different problems require fundamentally different responses. The most dangerous move is category error.", label: "Complexity Scientist" },
+  { name: "David Krakauer", type: "science", x: 72, y: 68, orientation: 0.4, desc: "President of the Santa Fe Institute. Complexity science, information theory, the evolution of intelligence. What complexity actually means at civilizational scale.", label: "SFI President" },
+  { name: "David Rock", type: "science", x: 72, y: 22, orientation: 0.3, desc: "NeuroLeadership Institute. SCARF model. Applied neuroscience for how individual brains work within organizations. The most corporate-applied UR voice.", label: "Neuroscience / Leadership" },
+  { name: "Tristan Harris", type: "science", x: 62, y: 42, orientation: 0.75, desc: "Center for Humane Technology. Attention capture, cognitive manipulation, persuasive design. How technology exploits human psychology at the interface level.", label: "Tech Ethicist" },
+  { name: "Robert Kegan", type: "science", x: 28, y: 18, orientation: 0.4, desc: "Harvard developmental psychologist. Adult development theory — how humans grow in capacity to hold complexity. The foundation of the absorption function.", label: "Developmental Psychologist" },
+  { name: "Ruha Benjamin", type: "science", x: 55, y: 70, orientation: 0.8, desc: "Race After Technology. How governance structures encode bias. Design choices embed values. The 'who decides' question pushed hardest.", label: "Sociologist" },
+  { name: "Renée DiResta", type: "science", x: 65, y: 45, orientation: 0.65, desc: "Stanford Internet Observatory. Leading expert on computational propaganda, narrative manipulation, and information ecosystems. Understands how meaning is manufactured and weaponized at scale — the adversarial dimension of any governance architecture.", label: "Information Ecosystems" },
+  { name: "Jaron Lanier", type: "science", x: 52, y: 24, orientation: 0.65, desc: "VR pioneer, tech critic, musician. Human-technology interface for 40+ years. Fundamentally humanistic lens. Skepticism grounded in deep technical knowledge.", label: "Tech Philosopher" },
+  { name: "Yuval Noah Harari", type: "science", x: 45, y: 65, orientation: 0.6, desc: "Homo Deus, Nexus. What happens when intelligence decouples from consciousness. Historical/civilizational perspective on AI. Massive global audience.", label: "Historian" },
+
+  // KEY PLAYERS
+  { name: "Brenden", type: "science", x: 78, y: 75, orientation: 0.3, desc: "Symbiocracy framework. Systems biology as governance model. Feedback loops, membrane integrity, absorption time. The LR architect.", label: "Symbiocracy" },
+  { name: "Ari Allen", type: "wisdom", x: 35, y: 50, orientation: 0.4, desc: "Holds the meta-view across all four quadrants. Interior development as infrastructure, democratic legitimacy, diaphaneity, reverse alignment. The constitutionalist.", label: "CDI / Reconstitution" },
+  { name: "Josh Achiam", type: "science", x: 75, y: 20, orientation: 0.35, desc: "OpenAI. Behavioral measurement, model evaluations, safety benchmarks. What models do, how they behave. Building his mandate.", label: "OpenAI" },
+
+  // ORGANIZATIONS
+  { name: "Santa Fe Institute", type: "science", x: 80, y: 70, orientation: 0.4, desc: "Complexity science, emergence, network dynamics. The premier institution for understanding systems that can't be reduced to their parts.", label: "Complexity Science" },
+  { name: "Berggruen Institute", type: "wisdom", x: 38, y: 82, orientation: 0.45, desc: "Cultural legitimacy, governance transformation, philosophy for a planetary civilization. The LL institutional anchor.", label: "Governance / Philosophy" },
+  { name: "Center for Humane Technology", type: "science", x: 68, y: 32, orientation: 0.7, desc: "Behavioral and cognitive dimension of human-AI interaction at the interface level. Attention, manipulation, persuasive design.", label: "Tech Ethics" },
+  { name: "CDI", type: "wisdom", x: 28, y: 55, orientation: 0.35, desc: "Constructive Dialogue Institute. Dialogue infrastructure, meta-perspectival capacity, trust repair. Interior infrastructure for governance.", label: "Dialogue / Development" },
+  { name: "NeuroLeadership Inst.", type: "science", x: 78, y: 18, orientation: 0.25, desc: "Applied neuroscience for leadership and organizational behavior. SCARF model. How brains work inside existing systems.", label: "Applied Neuroscience" },
+  { name: "Cynefin Company", type: "science", x: 72, y: 58, orientation: 0.45, desc: "Sense-making in complexity. Different domains require different responses. SenseMaker distributed ethnography tool.", label: "Complexity / Sense-Making" },
+  { name: "IFTF Gov Futures Lab", type: "science", x: 62, y: 72, orientation: 0.4, desc: "Institute for the Future. Foresight methodology, scenario mapping, governance prototyping. Strong operational infrastructure but operating entirely in the systems/design quadrant. No arts, no faiths, no interior dimension.", label: "Foresight / Governance Design" },
+  { name: "Berggruen Institute", type: "wisdom", x: 35, y: 85, orientation: 0.45, desc: "Planetary governance, Future Humans, Noema Magazine. Already using speculative fiction for futures imagination (Vaster than Empires). Fellowship infrastructure, global network. The most natural institutional partner — or home — for the full initiative.", label: "Governance / Philosophy / Culture" },
+];
+
+const colorMap = {
+  creator: { border: "#d4a574", bg: "rgba(212,165,116,0.15)", typeColor: "#d4a574" },
+  wisdom: { border: "#7ca8c4", bg: "rgba(124,168,196,0.15)", typeColor: "#7ca8c4" },
+  science: { border: "#8bc49a", bg: "rgba(139,196,154,0.15)", typeColor: "#8bc49a" },
+};
+
+function orientationColor(o) {
+  if (o < 0.4) return "#4a9e6e";
+  if (o > 0.6) return "#c45a5a";
+  return "#7a8290";
+}
+
+function orientationLabel(o) {
+  if (o < 0.3) return "Strong Builder";
+  if (o < 0.45) return "Builder-leaning";
+  if (o > 0.7) return "Strong Critic";
+  if (o > 0.55) return "Critic-leaning";
+  return "Balanced";
+}
+
+const typeLabels = {
+  creator: "Arts: Creatives & World-Builders (The Beautiful)",
+  science: "Sciences: Systems & Engineering (The True)",
+  wisdom: "Wisdom: Ethics & Traditions (The Good)",
+};
+
+const container = document.querySelector('.quadrant-grid');
+const tooltip = document.getElementById('tooltip');
+let activeFilter = 'all';
+
+people.forEach((p, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot';
+  dot.dataset.type = p.type;
+  dot.dataset.index = i;
+
+  const colors = colorMap[p.type];
+  const oColor = orientationColor(p.orientation);
+
+  dot.style.left = p.x + '%';
+  dot.style.top = p.y + '%';
+  dot.style.borderColor = colors.border;
+  dot.style.background = `radial-gradient(circle at 30% 30%, ${oColor}44, ${colors.bg})`;
+
+  if (p.name === 'Ari Allen') {
+    dot.style.width = '24px';
+    dot.style.height = '24px';
+    dot.style.borderWidth = '3px';
+    dot.style.boxShadow = `0 0 12px ${colors.border}44`;
+  }
+
+  const label = document.createElement('div');
+  label.className = 'dot-label';
+  label.textContent = p.name;
+  dot.appendChild(label);
+
+  dot.addEventListener('mouseenter', (e) => {
+    if (dot.classList.contains('dimmed')) return;
+
+    const ttName = document.getElementById('tt-name');
+    const ttType = document.getElementById('tt-type');
+    const ttDesc = document.getElementById('tt-desc');
+    const ttOrientation = document.getElementById('tt-orientation');
+
+    ttName.textContent = p.name;
+    ttType.textContent = typeLabels[p.type];
+    ttType.style.color = colors.typeColor;
+    ttDesc.textContent = p.desc;
+    ttOrientation.textContent = orientationLabel(p.orientation);
+    ttOrientation.style.color = oColor;
+
+    tooltip.classList.add('visible');
+    positionTooltip(e);
+  });
+
+  dot.addEventListener('mousemove', positionTooltip);
+
+  dot.addEventListener('mouseleave', () => {
+    tooltip.classList.remove('visible');
+  });
+
+  container.appendChild(dot);
+});
+
+function positionTooltip(e) {
+  const tt = tooltip;
+  const pad = 16;
+  let x = e.clientX + pad;
+  let y = e.clientY + pad;
+
+  if (x + 340 > window.innerWidth) x = e.clientX - 340;
+  if (y + 200 > window.innerHeight) y = e.clientY - 200;
+
+  tt.style.left = x + 'px';
+  tt.style.top = y + 'px';
+}
+
+document.querySelectorAll('.legend-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.legend-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    activeFilter = item.dataset.filter;
+
+    document.querySelectorAll('.dot').forEach(dot => {
+      if (activeFilter === 'all' || dot.dataset.type === activeFilter) {
+        dot.classList.remove('dimmed');
+      } else {
+        dot.classList.add('dimmed');
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
