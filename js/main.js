@@ -243,30 +243,18 @@ if (heroQuotes && desktop) {
   ];
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const maxActive = 6;
-  const fadeMs = 4000;       // long, slow fade in / fade out
+  const fadeInMs = 3000;
+  const fadeOutMs = 3000;
+  const holdMs   = 8000;
+  const totalMs  = fadeInMs + holdMs + fadeOutMs;  // 14s
 
   let queue = [];
-  let activeCount = 0;
-  const recentY = [];        // recent altitudes to space bubbles vertically
-
   const reshuffle = () => {
     queue = quotes.slice().sort(() => Math.random() - 0.5);
   };
   const rand = (a, b) => a + Math.random() * (b - a);
 
-  function pickAltitude() {
-    // Avoid the central horizontal band where the tagline sits; spread vertically.
-    for (let attempt = 0; attempt < 10; attempt++) {
-      const inTopBand = Math.random() < 0.5;
-      const y = inTopBand ? rand(5, 36) : rand(64, 90);
-      if (recentY.every(prev => Math.abs(prev - y) > 9)) return y;
-    }
-    return Math.random() < 0.5 ? rand(5, 36) : rand(64, 90);
-  }
-
-  function spawnQuote() {
-    if (activeCount >= maxActive) return;
+  function showNext() {
     if (queue.length === 0) reshuffle();
     const q = queue.shift();
 
@@ -288,66 +276,42 @@ if (heroQuotes && desktop) {
       el.appendChild(ctxEl);
     }
 
-    // Bubble lifetime varies so they don't synchronize.
-    const lifeMs = rand(13000, 22000);
-    el.style.setProperty('--life', `${lifeMs}ms`);
-
-    // Random altitude (avoids tagline strip), random horizontal start anywhere.
-    const yPct = pickAltitude();
-    const xPct = rand(2, 78);
-    el.style.top = yPct + '%';
-    el.style.left = xPct + '%';
-    recentY.push(yPct);
-    if (recentY.length > 5) recentY.shift();
-
-    // Random drift vector — any direction, 180–420px magnitude.
-    let dx = 0, dy = 0;
+    // Subtle drift over the full lifetime — random direction, ~50-90px.
+    let endX = 0, endY = 0;
     if (!reduceMotion) {
       const angle = Math.random() * Math.PI * 2;
-      const mag = rand(180, 420);
-      dx = Math.cos(angle) * mag;
-      dy = Math.sin(angle) * mag;
+      const mag = rand(50, 90);
+      const startX = -Math.cos(angle) * mag * 0.35;
+      const startY = -Math.sin(angle) * mag * 0.35;
+      endX = Math.cos(angle) * mag * 0.65;
+      endY = Math.sin(angle) * mag * 0.65;
+      el.style.transform = `translate(${startX}px, ${startY}px)`;
     }
 
     heroQuotes.appendChild(el);
-    activeCount++;
 
     requestAnimationFrame(() => {
       el.classList.add('visible');
       if (!reduceMotion) {
-        el.style.transform = `translate(${dx}px, ${dy}px)`;
+        el.style.transform = `translate(${endX}px, ${endY}px)`;
       }
     });
 
-    const cleanup = () => {
-      el.remove();
-      activeCount--;
-    };
-    let replacementSpawned = false;
-    const startFadeOut = () => {
+    const fadeOut = () => {
       el.classList.remove('visible');
-      // As soon as this bubble starts dispersing, a fresh one fades in in motion alongside it.
-      if (!replacementSpawned) {
-        replacementSpawned = true;
-        setTimeout(spawnQuote, 600);
-      }
-      setTimeout(cleanup, fadeMs + 200);
+      setTimeout(() => {
+        el.remove();
+        showNext();
+      }, fadeOutMs + 100);
     };
-    // Hold near full opacity for most of life, then fade out over `fadeMs`.
-    let fadeTimer = setTimeout(startFadeOut, lifeMs - fadeMs);
+    let fadeTimer = setTimeout(fadeOut, fadeInMs + holdMs);
 
     el.addEventListener('mouseenter', () => clearTimeout(fadeTimer));
     el.addEventListener('mouseleave', () => {
-      fadeTimer = setTimeout(startFadeOut, 3500);
+      fadeTimer = setTimeout(fadeOut, 3500);
     });
   }
 
   reshuffle();
-  // Stagger the initial fill so all 6 don't sync up.
-  spawnQuote();
-  setTimeout(spawnQuote, 1200);
-  setTimeout(spawnQuote, 2600);
-  setTimeout(spawnQuote, 4200);
-  setTimeout(spawnQuote, 5900);
-  setTimeout(spawnQuote, 7800);
+  showNext();
 }
