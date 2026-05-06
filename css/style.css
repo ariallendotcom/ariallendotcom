@@ -172,25 +172,23 @@ section {
 
 .hero-quote {
   position: absolute;
-  max-width: 260px;
-  padding: 0.9rem 1.1rem;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  bottom: 16%;
+  left: 8%;
+  max-width: 360px;
   font-family: 'Playfair Display', Georgia, serif;
   font-style: italic;
-  font-size: 0.95rem;
-  line-height: 1.45;
-  color: #555;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: #888;
   text-decoration: none;
   pointer-events: auto;
-  cursor: pointer;
   opacity: 0;
-  transition: opacity 4s ease, transform var(--life, 16s) linear, color 0.3s, background 0.3s;
+  transition: opacity 3s ease, transform 14s linear, color 0.4s;
   will-change: transform, opacity;
+}
+
+.hero-quote.visible {
+  opacity: 1;
 }
 
 .hero-quote-text {
@@ -199,18 +197,17 @@ section {
 
 .hero-quote-context {
   display: block;
-  margin-top: 0.55rem;
+  margin-top: 0.5rem;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-style: normal;
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: #999;
+  font-weight: 400;
+  font-size: 0.78rem;
+  letter-spacing: 0;
+  color: #b0b0b0;
 }
 
 .hero-quote:hover {
   color: #1a1a1a;
-  background: rgba(255, 255, 255, 0.92);
 }
 
 .hero-quote:hover .hero-quote-context {
