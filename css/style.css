@@ -172,8 +172,6 @@ section {
 
 .hero-quote {
   position: absolute;
-  bottom: 16%;
-  left: 8%;
   max-width: 360px;
   font-family: 'Playfair Display', Georgia, serif;
   font-style: italic;
