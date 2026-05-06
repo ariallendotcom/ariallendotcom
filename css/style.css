@@ -158,7 +158,7 @@ section {
   line-height: 1.2;
   color: #1a1a1a;
   position: relative;
-  z-index: 2;
+  z-index: 1;
   will-change: transform, opacity;
 }
 
@@ -167,7 +167,7 @@ section {
   inset: 0;
   pointer-events: none;
   overflow: hidden;
-  z-index: 1;
+  z-index: 3;
 }
 
 .hero-quote {
@@ -189,7 +189,7 @@ section {
   pointer-events: auto;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 1.5s ease, transform 11.5s linear, color 0.2s, background 0.2s;
+  transition: opacity 5s ease, transform 42s linear, color 0.3s, background 0.3s;
   will-change: transform, opacity;
 }
 

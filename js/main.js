@@ -242,46 +242,35 @@ if (heroQuotes && desktop) {
     { text: "The threat to free expression isn't the inability to speak, but the manipulation of who gets heard.",                context: 'Ari on Free Speech',           url: URL_SPEECH },
   ];
 
-  // Spawn zones — corners and side-midpoints, all clear of the centered tagline.
-  // Each zone has a position range so successive spawns in the same zone vary.
-  const zones = [
-    { top:    [6, 22],  left:  [2, 20]  },
-    { top:    [6, 22],  right: [2, 20]  },
-    { top:    [30, 42], left:  [1, 12]  },
-    { top:    [30, 42], right: [1, 12]  },
-    { bottom: [8, 25],  left:  [2, 22]  },
-    { bottom: [8, 25],  right: [2, 22]  },
-    { bottom: [30, 42], left:  [1, 12]  },
-    { bottom: [30, 42], right: [1, 12]  },
-  ];
-
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const maxActive = 4;
-  const lifeMs = 8500;
-  const fadeOutMs = 1500;
-  const driftMin = 70;
-  const driftMax = 130;
+  const maxActive = 9;
+  const driftMs = 42000;     // total cross-screen travel
+  const fadeMs  = 5000;      // long, cloud-like fade in/out
 
   let queue = [];
   let activeCount = 0;
-  const activeZones = new Set();
+  const recentY = [];        // track recent altitudes to space clouds vertically
 
   const reshuffle = () => {
     queue = quotes.slice().sort(() => Math.random() - 0.5);
   };
   const rand = (a, b) => a + Math.random() * (b - a);
 
+  function pickAltitude() {
+    // Avoid the centered tagline strip; vary distance from recent clouds.
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const inTopBand = Math.random() < 0.5;
+      const y = inTopBand ? rand(6, 36) : rand(64, 90);
+      if (recentY.every(prev => Math.abs(prev - y) > 7)) return y;
+    }
+    return Math.random() < 0.5 ? rand(6, 36) : rand(64, 90);
+  }
+
   function spawnQuote() {
     if (activeCount >= maxActive) return;
     if (queue.length === 0) reshuffle();
-
-    const freeIdxs = zones.map((_, i) => i).filter(i => !activeZones.has(i));
-    if (freeIdxs.length === 0) return;
-    const zoneIdx = freeIdxs[Math.floor(Math.random() * freeIdxs.length)];
-    const zone = zones[zoneIdx];
-    activeZones.add(zoneIdx);
-
     const q = queue.shift();
+
     const el = document.createElement('a');
     el.className = 'hero-quote';
     el.href = q.url;
@@ -300,17 +289,19 @@ if (heroQuotes && desktop) {
       el.appendChild(ctxEl);
     }
 
-    for (const side of ['top', 'right', 'bottom', 'left']) {
-      if (zone[side]) el.style[side] = rand(zone[side][0], zone[side][1]) + '%';
-    }
+    const yPercent = pickAltitude();
+    el.style.top = yPercent + '%';
+    recentY.push(yPercent);
+    if (recentY.length > 4) recentY.shift();
 
-    let dx = 0, dy = 0;
-    if (!reduceMotion) {
-      const angle = Math.random() * Math.PI * 2;
-      const mag = rand(driftMin, driftMax);
-      dx = Math.cos(angle) * mag;
-      dy = Math.sin(angle) * mag;
-      el.style.transform = `translate(${-dx / 2}px, ${-dy / 2}px)`;
+    const goRight = Math.random() < 0.5;
+
+    if (reduceMotion) {
+      // Static fallback — no drift, just fade in/out at a fixed off-center spot.
+      if (goRight) el.style.left = '8%'; else el.style.right = '8%';
+    } else {
+      // Start off-screen on the entry side; transform carries it across.
+      if (goRight) el.style.left = '-340px'; else el.style.right = '-340px';
     }
 
     heroQuotes.appendChild(el);
@@ -319,32 +310,34 @@ if (heroQuotes && desktop) {
     requestAnimationFrame(() => {
       el.classList.add('visible');
       if (!reduceMotion) {
-        el.style.transform = `translate(${dx / 2}px, ${dy / 2}px)`;
+        const dx = goRight ? 'calc(100vw + 680px)' : 'calc(-100vw - 680px)';
+        el.style.transform = `translateX(${dx})`;
       }
     });
 
     const cleanup = () => {
       el.remove();
       activeCount--;
-      activeZones.delete(zoneIdx);
     };
     const startFadeOut = () => {
       el.classList.remove('visible');
-      setTimeout(cleanup, fadeOutMs + 100);
+      setTimeout(cleanup, fadeMs + 200);
     };
-    let fadeTimer = setTimeout(startFadeOut, lifeMs);
+    // Begin fade-out late enough that the cloud is near full opacity for most of the journey.
+    let fadeTimer = setTimeout(startFadeOut, driftMs - fadeMs - 500);
 
     el.addEventListener('mouseenter', () => clearTimeout(fadeTimer));
     el.addEventListener('mouseleave', () => {
-      fadeTimer = setTimeout(startFadeOut, 2500);
+      fadeTimer = setTimeout(startFadeOut, 4000);
     });
   }
 
   reshuffle();
-  // Stagger initial spawns so we fill up gracefully, then maintain ~4 on screen.
+  // Stagger initial spawns so the sky fills gradually, then maintain a steady stream.
   spawnQuote();
-  setTimeout(spawnQuote, 800);
-  setTimeout(spawnQuote, 1800);
-  setTimeout(spawnQuote, 3000);
-  setInterval(spawnQuote, 2500);
+  setTimeout(spawnQuote, 1500);
+  setTimeout(spawnQuote, 3500);
+  setTimeout(spawnQuote, 6000);
+  setTimeout(spawnQuote, 9000);
+  setInterval(spawnQuote, 3500);
 }
