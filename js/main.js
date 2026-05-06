@@ -110,7 +110,6 @@ if (heroQuotes && desktop) {
     // And The Days Go By
     { text: 'The human experiment is a journey — not a destination.',                                                        src: 'DAYS' },
     { text: 'There is no path forward in looking backward.',                                                                 src: 'DAYS' },
-    { text: 'Truth is contextual to a time and a place.',                                                                    src: 'DAYS' },
     // Creating Alignment
     { text: "Rules can't contain what only understanding can hold.",                                                         src: 'ALIGN' },
     { text: 'External constraints without internal comprehension is borrowed time.',                                         src: 'ALIGN' },
