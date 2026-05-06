@@ -243,13 +243,12 @@ if (heroQuotes && desktop) {
   ];
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const maxActive = 9;
-  const driftMs = 42000;     // total cross-screen travel
-  const fadeMs  = 5000;      // long, cloud-like fade in/out
+  const maxActive = 6;
+  const fadeMs = 4000;       // long, slow fade in / fade out
 
   let queue = [];
   let activeCount = 0;
-  const recentY = [];        // track recent altitudes to space clouds vertically
+  const recentY = [];        // recent altitudes to space bubbles vertically
 
   const reshuffle = () => {
     queue = quotes.slice().sort(() => Math.random() - 0.5);
@@ -257,13 +256,13 @@ if (heroQuotes && desktop) {
   const rand = (a, b) => a + Math.random() * (b - a);
 
   function pickAltitude() {
-    // Avoid the centered tagline strip; vary distance from recent clouds.
-    for (let attempt = 0; attempt < 8; attempt++) {
+    // Avoid the central horizontal band where the tagline sits; spread vertically.
+    for (let attempt = 0; attempt < 10; attempt++) {
       const inTopBand = Math.random() < 0.5;
-      const y = inTopBand ? rand(6, 36) : rand(64, 90);
-      if (recentY.every(prev => Math.abs(prev - y) > 7)) return y;
+      const y = inTopBand ? rand(5, 36) : rand(64, 90);
+      if (recentY.every(prev => Math.abs(prev - y) > 9)) return y;
     }
-    return Math.random() < 0.5 ? rand(6, 36) : rand(64, 90);
+    return Math.random() < 0.5 ? rand(5, 36) : rand(64, 90);
   }
 
   function spawnQuote() {
@@ -289,19 +288,25 @@ if (heroQuotes && desktop) {
       el.appendChild(ctxEl);
     }
 
-    const yPercent = pickAltitude();
-    el.style.top = yPercent + '%';
-    recentY.push(yPercent);
-    if (recentY.length > 4) recentY.shift();
+    // Bubble lifetime varies so they don't synchronize.
+    const lifeMs = rand(13000, 22000);
+    el.style.setProperty('--life', `${lifeMs}ms`);
 
-    const goRight = Math.random() < 0.5;
+    // Random altitude (avoids tagline strip), random horizontal start anywhere.
+    const yPct = pickAltitude();
+    const xPct = rand(2, 78);
+    el.style.top = yPct + '%';
+    el.style.left = xPct + '%';
+    recentY.push(yPct);
+    if (recentY.length > 5) recentY.shift();
 
-    if (reduceMotion) {
-      // Static fallback — no drift, just fade in/out at a fixed off-center spot.
-      if (goRight) el.style.left = '8%'; else el.style.right = '8%';
-    } else {
-      // Start off-screen on the entry side; transform carries it across.
-      if (goRight) el.style.left = '-340px'; else el.style.right = '-340px';
+    // Random drift vector — any direction, 180–420px magnitude.
+    let dx = 0, dy = 0;
+    if (!reduceMotion) {
+      const angle = Math.random() * Math.PI * 2;
+      const mag = rand(180, 420);
+      dx = Math.cos(angle) * mag;
+      dy = Math.sin(angle) * mag;
     }
 
     heroQuotes.appendChild(el);
@@ -310,8 +315,7 @@ if (heroQuotes && desktop) {
     requestAnimationFrame(() => {
       el.classList.add('visible');
       if (!reduceMotion) {
-        const dx = goRight ? 'calc(100vw + 680px)' : 'calc(-100vw - 680px)';
-        el.style.transform = `translateX(${dx})`;
+        el.style.transform = `translate(${dx}px, ${dy}px)`;
       }
     });
 
@@ -319,25 +323,31 @@ if (heroQuotes && desktop) {
       el.remove();
       activeCount--;
     };
+    let replacementSpawned = false;
     const startFadeOut = () => {
       el.classList.remove('visible');
+      // As soon as this bubble starts dispersing, a fresh one fades in in motion alongside it.
+      if (!replacementSpawned) {
+        replacementSpawned = true;
+        setTimeout(spawnQuote, 600);
+      }
       setTimeout(cleanup, fadeMs + 200);
     };
-    // Begin fade-out late enough that the cloud is near full opacity for most of the journey.
-    let fadeTimer = setTimeout(startFadeOut, driftMs - fadeMs - 500);
+    // Hold near full opacity for most of life, then fade out over `fadeMs`.
+    let fadeTimer = setTimeout(startFadeOut, lifeMs - fadeMs);
 
     el.addEventListener('mouseenter', () => clearTimeout(fadeTimer));
     el.addEventListener('mouseleave', () => {
-      fadeTimer = setTimeout(startFadeOut, 4000);
+      fadeTimer = setTimeout(startFadeOut, 3500);
     });
   }
 
   reshuffle();
-  // Stagger initial spawns so the sky fills gradually, then maintain a steady stream.
+  // Stagger the initial fill so all 6 don't sync up.
   spawnQuote();
-  setTimeout(spawnQuote, 1500);
-  setTimeout(spawnQuote, 3500);
-  setTimeout(spawnQuote, 6000);
-  setTimeout(spawnQuote, 9000);
-  setInterval(spawnQuote, 3500);
+  setTimeout(spawnQuote, 1200);
+  setTimeout(spawnQuote, 2600);
+  setTimeout(spawnQuote, 4200);
+  setTimeout(spawnQuote, 5900);
+  setTimeout(spawnQuote, 7800);
 }
