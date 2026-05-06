@@ -68,24 +68,24 @@ const heroQuotes = document.querySelector('.hero-quotes');
 const desktop = window.matchMedia('(min-width: 769px)').matches;
 
 if (heroQuotes && desktop) {
-  // Source pieces — title + url. Each quote points at a key here.
+  // Source pieces — citation topic (what the essay is on) + url.
   const SOURCES = {
-    GODS:     { title: "We're Building Gods",                     url: 'https://ariallen.substack.com/p/were-building-gods-whether-we-believe' },
-    POSTREAL: { title: 'Post-Truth to Post-Reality',              url: 'https://ariallen.substack.com/p/from-posttruth-to-postreality-trump' },
-    LABOR:    { title: 'The Future of Labor',                     url: 'https://ariallen.substack.com/p/the-future-of-labor-what-if-work' },
-    PROVE:    { title: 'Prove Me Wrong',                          url: 'https://ariallen.substack.com/p/prove-me-wrong-americas-addiction' },
-    IMAGINE:  { title: 'What If We Let Ourselves Imagine Again',  url: 'https://ariallen.substack.com/p/what-if-we-let-ourselves-imagine' },
-    SAMI:     { title: 'Sami: A Eulogy',                          url: 'https://ariallen.medium.com/sami-a-eulogy-a-parable-b62396c1031e' },
-    DAYS:     { title: 'And The Days Go By',                      url: 'https://ariallen.substack.com/p/as-the-days-go-by-3bf124d54df1' },
-    ALIGN:    { title: 'Creating Alignment',                      url: 'https://ariallen.substack.com/p/creating-alignment-the-search-for' },
-    EDU:      { title: 'The Future of Education',                 url: 'https://ariallen.substack.com/p/the-future-of-education' },
-    BOND:     { title: "Beyond Our Nation's Divides",             url: 'https://ariallen.substack.com/p/beyond-our-nations-divides-an-invitation' },
-    EXERGY:   { title: 'Revaluing the Economy',                   url: 'https://ariallen.medium.com/revaluing-the-economy-the-case-for-an-exergy-backed-currency-dcc6648a6eaa' },
-    TURN:     { title: "There's No Turning Back",                 url: 'https://ariallen.medium.com/theres-no-turning-back-efficiency-isn-t-the-highest-good-368a06e750b6' },
-    GIVE:     { title: 'Giving It All Away',                      url: 'https://ariallen.medium.com/giving-it-all-away-the-end-of-fiat-currency-debt-based-economics-a8a1488e80c1' },
-    CHAOS:    { title: 'The Chaos Catalyst',                      url: 'https://ariallen.medium.com/hurricane-trump-what-the-establishment-failed-to-see-in-2024-599e3bd7c978' },
-    LET:      { title: 'Let It Be',                               url: 'https://ariallen.medium.com/let-it-be-from-patience-to-presence-c374486bbc39' },
-    SPEECH:   { title: 'The Free Speech Distraction',             url: 'https://ariallen.medium.com/the-free-speech-distraction-the-battle-for-algorithmic-reach-5ea4c6b76a34' },
+    GODS:     { title: 'On AI',           url: 'https://ariallen.substack.com/p/were-building-gods-whether-we-believe' },
+    POSTREAL: { title: 'On AI',           url: 'https://ariallen.substack.com/p/from-posttruth-to-postreality-trump' },
+    LABOR:    { title: 'On Work',         url: 'https://ariallen.substack.com/p/the-future-of-labor-what-if-work' },
+    PROVE:    { title: 'On Disagreement', url: 'https://ariallen.substack.com/p/prove-me-wrong-americas-addiction' },
+    IMAGINE:  { title: 'On Imagination',  url: 'https://ariallen.substack.com/p/what-if-we-let-ourselves-imagine' },
+    SAMI:     { title: 'On Sami',         url: 'https://ariallen.medium.com/sami-a-eulogy-a-parable-b62396c1031e' },
+    DAYS:     { title: 'On 2020',         url: 'https://ariallen.substack.com/p/as-the-days-go-by-3bf124d54df1' },
+    ALIGN:    { title: 'On AI',           url: 'https://ariallen.substack.com/p/creating-alignment-the-search-for' },
+    EDU:      { title: 'On Education',    url: 'https://ariallen.substack.com/p/the-future-of-education' },
+    BOND:     { title: 'On America',      url: 'https://ariallen.substack.com/p/beyond-our-nations-divides-an-invitation' },
+    EXERGY:   { title: 'On Money',        url: 'https://ariallen.medium.com/revaluing-the-economy-the-case-for-an-exergy-backed-currency-dcc6648a6eaa' },
+    TURN:     { title: 'On Democracy',    url: 'https://ariallen.medium.com/theres-no-turning-back-efficiency-isn-t-the-highest-good-368a06e750b6' },
+    GIVE:     { title: 'On Money',        url: 'https://ariallen.medium.com/giving-it-all-away-the-end-of-fiat-currency-debt-based-economics-a8a1488e80c1' },
+    CHAOS:    { title: 'On Disruption',   url: 'https://ariallen.medium.com/hurricane-trump-what-the-establishment-failed-to-see-in-2024-599e3bd7c978' },
+    LET:      { title: 'On Presence',     url: 'https://ariallen.medium.com/let-it-be-from-patience-to-presence-c374486bbc39' },
+    SPEECH:   { title: 'On Speech',       url: 'https://ariallen.medium.com/the-free-speech-distraction-the-battle-for-algorithmic-reach-5ea4c6b76a34' },
   };
 
   const quotes = [
@@ -113,8 +113,6 @@ if (heroQuotes && desktop) {
     // Creating Alignment
     { text: "Rules can't contain what only understanding can hold.",                                                         src: 'ALIGN' },
     { text: 'External constraints without internal comprehension is borrowed time.',                                         src: 'ALIGN' },
-    { text: 'You cannot meet a genuinely different intelligence and remain who you were.',                                   src: 'ALIGN' },
-    { text: "Every attempt to determine what's 'really' conscious reveals more about the questioner than the questioned.",   src: 'ALIGN' },
     { text: "The most consequential capability in the age we're entering isn't engineering. It's imagination.",              src: 'ALIGN' },
     { text: "We're world-building now.",                                                                                     src: 'ALIGN' },
     // The Future of Education
@@ -149,7 +147,6 @@ if (heroQuotes && desktop) {
     // The Chaos Catalyst
     { text: 'Disruption can no longer be feared or dismissed.',                                                              src: 'CHAOS' },
     { text: 'A wildfire devastates a forest but clears the way for new growth.',                                             src: 'CHAOS' },
-    { text: 'Chaos, Nietzsche argued, is a precondition for the birth of a dancing star.',                                   src: 'CHAOS' },
     // Let It Be
     { text: "There's a quiet transformation that happens when we shift from patience to presence.",                          src: 'LET' },
     { text: 'Patience, for all its virtue, often leans toward the future.',                                                  src: 'LET' },
