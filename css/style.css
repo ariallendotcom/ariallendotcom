@@ -189,13 +189,32 @@ section {
   pointer-events: auto;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 1.5s ease, transform 12s ease-out, color 0.2s, background 0.2s;
+  transition: opacity 1.5s ease, transform 11.5s linear, color 0.2s, background 0.2s;
   will-change: transform, opacity;
+}
+
+.hero-quote-text {
+  display: block;
+}
+
+.hero-quote-context {
+  display: block;
+  margin-top: 0.55rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-style: normal;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #999;
 }
 
 .hero-quote:hover {
   color: #1a1a1a;
   background: rgba(255, 255, 255, 0.92);
+}
+
+.hero-quote:hover .hero-quote-context {
+  color: #666;
 }
 
 .hero-quote.visible {
