@@ -1,24 +1,21 @@
-// Zen cursor — a soft copper-glow aura that gently trails the pointer and breathes,
-// leaving a warm ripple in its wake. Activates on the first real mouse movement
-// (never touch), and respects prefers-reduced-motion. Self-contained: injects styles.
+// Zen cursor — a soft aura that gently trails the pointer and breathes, leaving a
+// slow ripple in its wake. Activates on the first real mouse movement (never touch),
+// and respects prefers-reduced-motion. Self-contained: injects its own styles.
 (function () {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   var CSS =
     '.zen-cursor{position:fixed;top:0;left:0;z-index:9998;pointer-events:none;will-change:transform;transition:opacity .5s ease}' +
-    '.zen-cursor__dot{width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;' +
-      'background:radial-gradient(circle,rgba(236,186,142,.36) 0%,rgba(217,154,106,.15) 45%,rgba(217,154,106,0) 72%);' +
+    '.zen-cursor__dot{width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;' +
+      'background:radial-gradient(circle,rgba(26,26,26,.16) 0%,rgba(26,26,26,.07) 45%,rgba(26,26,26,0) 72%);' +
       'animation:zenBreathe 5s ease-in-out infinite}' +
     '.zen-ripple{position:fixed;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;' +
-      'border:1px solid rgba(236,186,142,.45);pointer-events:none;z-index:9997;will-change:transform,opacity;' +
+      'border:1px solid rgba(26,26,26,.35);pointer-events:none;z-index:9997;will-change:transform,opacity;' +
       'animation:zenRipple 1.5s cubic-bezier(.22,1,.36,1) forwards}' +
-    '.zen-ripple--click{border-color:rgba(236,186,142,.64);animation:zenRippleClick 1.8s cubic-bezier(.22,1,.36,1) forwards}' +
+    '.zen-ripple--click{border-color:rgba(26,26,26,.5);animation:zenRippleClick 1.8s cubic-bezier(.22,1,.36,1) forwards}' +
     '@keyframes zenBreathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.18);opacity:1}}' +
     '@keyframes zenRipple{0%{transform:scale(.5);opacity:.55}100%{transform:scale(6.5);opacity:0}}' +
     '@keyframes zenRippleClick{0%{transform:scale(.5);opacity:.6}100%{transform:scale(11);opacity:0}}';
-  var style = document.createElement('style');
-  style.textContent = CSS;
-  document.head.appendChild(style);
 
   var inited = false, aura, tx, ty, ax, ay, lastX, lastY;
   var THRESH = 42 * 42;  // px^2 between ripples in the wake
@@ -27,12 +24,17 @@
 
   function init(x, y) {
     inited = true;
+    var style = document.createElement('style');
+    style.textContent = CSS;
+    document.head.appendChild(style);
+
     aura = document.createElement('div');
     aura.className = 'zen-cursor';
     var dot = document.createElement('div');
     dot.className = 'zen-cursor__dot';
     aura.appendChild(dot);
     document.body.appendChild(aura);
+
     tx = ax = lastX = x;
     ty = ay = lastY = y;
     requestAnimationFrame(loop);
