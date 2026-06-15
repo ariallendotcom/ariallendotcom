@@ -1,4 +1,4 @@
-// Zen cursor — a soft lantern-glow aura that gently trails the pointer and breathes,
+// Zen cursor — a soft copper-glow aura that gently trails the pointer and breathes,
 // leaving a warm ripple in its wake. Activates on the first real mouse movement
 // (never touch), and respects prefers-reduced-motion. Self-contained: injects styles.
 (function () {
@@ -7,12 +7,12 @@
   var CSS =
     '.zen-cursor{position:fixed;top:0;left:0;z-index:9998;pointer-events:none;will-change:transform;transition:opacity .5s ease}' +
     '.zen-cursor__dot{width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;' +
-      'background:radial-gradient(circle,rgba(245,196,118,.34) 0%,rgba(231,173,90,.14) 45%,rgba(231,173,90,0) 72%);' +
+      'background:radial-gradient(circle,rgba(236,186,142,.36) 0%,rgba(217,154,106,.15) 45%,rgba(217,154,106,0) 72%);' +
       'animation:zenBreathe 5s ease-in-out infinite}' +
     '.zen-ripple{position:fixed;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;' +
-      'border:1px solid rgba(245,196,118,.42);pointer-events:none;z-index:9997;will-change:transform,opacity;' +
+      'border:1px solid rgba(236,186,142,.45);pointer-events:none;z-index:9997;will-change:transform,opacity;' +
       'animation:zenRipple 1.5s cubic-bezier(.22,1,.36,1) forwards}' +
-    '.zen-ripple--click{border-color:rgba(245,196,118,.62);animation:zenRippleClick 1.8s cubic-bezier(.22,1,.36,1) forwards}' +
+    '.zen-ripple--click{border-color:rgba(236,186,142,.64);animation:zenRippleClick 1.8s cubic-bezier(.22,1,.36,1) forwards}' +
     '@keyframes zenBreathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.18);opacity:1}}' +
     '@keyframes zenRipple{0%{transform:scale(.5);opacity:.55}100%{transform:scale(6.5);opacity:0}}' +
     '@keyframes zenRippleClick{0%{transform:scale(.5);opacity:.6}100%{transform:scale(11);opacity:0}}';

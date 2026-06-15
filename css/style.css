@@ -739,3 +739,55 @@ footer a:hover { color: var(--amber-bright); }
 @media (max-width: 768px) {
   .nav-links { background: rgba(23, 18, 13, 0.97); }
 }
+
+/* ============================================================
+   RÜFÜS "BLOOM" PALETTE OVERRIDE — marbled indigo night, copper +
+   dusty-rose light, slate-blue depth, blush-cream paper.
+   ============================================================ */
+:root {
+  --bg: #15151f;             /* inky blue-black (Bloom base) */
+  --paper: #e9d8c2;          /* warm blush-cream paper */
+  --paper-ink: #322a24;
+  --paper-ink-soft: #6f6056;
+  --cream: #ece1d3;
+  --cream-soft: #cabaa9;
+  --muted-warm: #978c82;
+  --amber: #d99a6a;          /* now copper */
+  --amber-bright: #e9b486;
+  --line: rgba(217, 154, 106, 0.20);
+}
+
+/* Marbled Bloom light: copper + dusty-rose + slate pools on an inky base */
+body {
+  background:
+    radial-gradient(55vw 40vh at 50% -6%, rgba(224, 168, 120, 0.15), transparent 70%),
+    radial-gradient(46vw 38vh at 85% 16%, rgba(190, 142, 160, 0.12), transparent 72%),
+    radial-gradient(52vw 44vh at 6% 74%, rgba(108, 124, 158, 0.12), transparent 72%),
+    radial-gradient(42vw 34vh at 80% 106%, rgba(224, 168, 120, 0.08), transparent 70%),
+    radial-gradient(150vw 132vh at 50% 42%, transparent 58%, rgba(0, 0, 0, 0.5)),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+#words  { background: rgba(190, 142, 160, 0.045); }  /* faint dusty-rose wash */
+#impact { background: rgba(108, 124, 158, 0.06); }   /* faint slate-blue wash */
+
+nav.scrolled { background: rgba(21, 21, 31, 0.84); }
+@media (max-width: 768px) { .nav-links { background: rgba(21, 21, 31, 0.97); } }
+
+/* signature: drop the blend trick, seat it on a small light name-card */
+.nav-logo {
+  filter: none;
+  mix-blend-mode: normal;
+  background: #f6efe3;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.42), 0 0 26px rgba(224, 168, 120, 0.16);
+}
+
+/* recolor the warm glows amber -> copper / Bloom */
+.hero-tagline { text-shadow: 0 0 40px rgba(224, 168, 120, 0.26), 0 0 70px rgba(190, 142, 160, 0.14); }
+.section-title { text-shadow: 0 0 26px rgba(224, 168, 120, 0.16); }
+.theme-block, .impact-card { box-shadow: 0 12px 34px rgba(0, 0, 0, 0.42), 0 0 46px rgba(224, 168, 120, 0.06); }
+.impact-card:hover { box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 54px rgba(224, 168, 120, 0.18); }
+.sounds-logo { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.44), 0 0 46px rgba(224, 168, 120, 0.07); }
+footer { background: #100f17; }
