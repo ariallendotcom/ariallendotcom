@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daily Check-in Texts — Ari Allen</title>
-  <meta name="description" content="Opt in to Ari Allen's personal daily check-in text reminders.">
+  <title>Stay in Touch — Ari Allen</title>
+  <meta name="description" content="Get occasional updates from Ari Allen — and, optionally, daily check-in text reminders.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -18,16 +18,18 @@
     h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; margin-bottom: 0.6rem; }
     .lede { color: #444; margin-bottom: 2rem; }
     .lede strong { color: #1a1a1a; }
-    form { display: flex; flex-direction: column; gap: 1.1rem; }
+    form { display: flex; flex-direction: column; gap: 1.25rem; }
     label.field { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #666; display: block; margin-bottom: 0.4rem; }
-    input[type=tel] { font: inherit; padding: 0.8rem 0.9rem; border: 1px solid #ccc; border-radius: 8px; width: 100%; }
-    input[type=tel]:focus { outline: none; border-color: #1a1a1a; }
-    .consent { display: flex; gap: 0.65rem; align-items: flex-start; font-size: 0.82rem; line-height: 1.5; color: #444; }
-    .consent input { margin-top: 0.25rem; flex: 0 0 auto; }
-    .consent a { text-decoration: underline; text-underline-offset: 2px; }
+    input[type=email], input[type=tel] { font: inherit; padding: 0.8rem 0.9rem; border: 1px solid #ccc; border-radius: 8px; width: 100%; }
+    input:focus { outline: none; border-color: #1a1a1a; }
+    .addon { border: 1px solid #e6e6e6; border-radius: 10px; padding: 1.1rem 1.2rem; background: #fafafa; display: flex; flex-direction: column; gap: 0.9rem; }
+    .addon legend { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #999; padding: 0 0.4rem; }
+    .consent { display: flex; gap: 0.65rem; align-items: flex-start; font-size: 0.85rem; line-height: 1.5; color: #333; }
+    .consent input { margin-top: 0.3rem; flex: 0 0 auto; }
+    .disc { font-size: 0.76rem; line-height: 1.5; color: #777; }
+    .disc a { text-decoration: underline; text-underline-offset: 2px; }
     button { font: inherit; font-weight: 600; letter-spacing: 0.03em; padding: 0.85rem 1rem; border: none; border-radius: 8px; background: #1a1a1a; color: #fff; cursor: pointer; transition: opacity 0.2s; }
     button:hover { opacity: 0.85; }
-    .fine { font-size: 0.72rem; color: #999; line-height: 1.5; }
     .ok { display: none; padding: 1rem 1.1rem; border: 1px solid #cdeccd; background: #f4fbf4; border-radius: 8px; color: #256d25; font-size: 0.9rem; }
     .back { display: inline-block; margin-top: 2.5rem; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: #999; text-decoration: none; }
     .back:hover { color: #1a1a1a; }
@@ -36,34 +38,46 @@
 <body>
   <div class="topbar"><a href="/"><img src="/images/ari-signature.jpeg" alt="Ari Allen"></a></div>
   <main class="wrap">
-    <h1>Daily Check-in Texts</h1>
-    <p class="lede">A personal reminder service from Ari Allen: a brief <strong>morning and evening text</strong> prompting a quick check-in on fitness, nutrition, and skincare routines. You reply with your update — it helps you stay on track.</p>
+    <h1>Stay in Touch</h1>
+    <p class="lede">Occasional updates from Ari — new writing, music, and projects. <strong>Email is all you need.</strong> Daily check-in texts are a completely optional extra.</p>
 
-    <form id="optin" novalidate>
+    <form id="signup" novalidate>
       <div>
-        <label class="field" for="phone">Mobile number</label>
-        <input type="tel" id="phone" name="phone" placeholder="(555) 555-5555" autocomplete="tel" required>
+        <label class="field" for="email">Email address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
       </div>
-      <label class="consent">
-        <input type="checkbox" id="consent">
-        <span>By checking this box, I agree to receive recurring automated check-in and reminder text messages from Ari Allen's Life Tracker at the number provided. Message frequency varies based on your activity. Message &amp; data rates may apply. Reply <strong>STOP</strong> to opt out, <strong>HELP</strong> for help. <strong>This box is optional — agreeing to texts is not required to use this site or any other service, and consent is not a condition of any purchase.</strong> See the <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms</a>.</span>
-      </label>
-      <button type="submit">Subscribe to texts</button>
-      <p class="fine">Checking the consent box is optional and is not required to use this site or any service.</p>
+
+      <fieldset class="addon">
+        <legend>Optional — daily check-in texts</legend>
+        <label class="consent">
+          <input type="checkbox" id="smsopt">
+          <span>Also text me recurring daily wellness check-in reminders (fitness, nutrition, skincare). This is optional — you can subscribe with email alone.</span>
+        </label>
+        <div>
+          <label class="field" for="phone">Mobile number <span style="text-transform:none;font-weight:400;color:#999;">(only if you checked the box)</span></label>
+          <input type="tel" id="phone" name="phone" placeholder="(555) 555-5555" autocomplete="tel">
+        </div>
+        <p class="disc">If you opt in to texts: message frequency varies based on your activity; Msg &amp; data rates may apply; reply <strong>STOP</strong> to opt out, <strong>HELP</strong> for help. SMS consent is optional and is <strong>not</strong> a condition of subscribing, of any purchase, or of using any service. See the <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms</a>.</p>
+      </fieldset>
+
+      <button type="submit">Subscribe</button>
     </form>
 
-    <div class="ok" id="ok">✓ Thanks — you're signed up. You'll receive a confirmation text shortly. Reply <strong>STOP</strong> anytime to unsubscribe, or <strong>HELP</strong> for help.</div>
+    <div class="ok" id="ok">✓ You're subscribed to email updates.<span id="oksms"> You'll also get a text shortly to confirm your check-in reminders — reply STOP anytime to opt out.</span></div>
 
     <a class="back" href="/">&larr; ariallen.com</a>
   </main>
   <script>
-    var f = document.getElementById('optin');
+    var f = document.getElementById('signup');
     f.addEventListener('submit', function (e) {
       e.preventDefault();
-      var p = document.getElementById('phone').value.trim();
-      var c = document.getElementById('consent').checked;
-      if (!p || !c) { alert('Please enter your mobile number and check the consent box.'); return; }
+      var email = document.getElementById('email').value.trim();
+      var sms = document.getElementById('smsopt').checked;
+      var phone = document.getElementById('phone').value.trim();
+      if (!email) { alert('Please enter your email address.'); return; }
+      if (sms && !phone) { alert('You checked the text-reminders box — add your mobile number, or uncheck it to subscribe with email only.'); return; }
       f.style.display = 'none';
+      document.getElementById('oksms').style.display = sms ? 'inline' : 'none';
       document.getElementById('ok').style.display = 'block';
     });
   </script>
