@@ -1,0 +1,159 @@
+{
+  "albums": [
+    {
+      "artist": "RÜFÜS DU SOL",
+      "title": "Bloom",
+      "url": "https://open.spotify.com/search/R%C3%9CF%C3%9CS%20DU%20SOL%20Bloom"
+    },
+    {
+      "artist": "ZHU",
+      "title": "Generationwhy",
+      "url": "https://open.spotify.com/search/ZHU%20Generationwhy"
+    },
+    {
+      "artist": "Taylor Swift",
+      "title": "folklore",
+      "url": "https://open.spotify.com/search/Taylor%20Swift%20folklore"
+    },
+    {
+      "artist": "The 1975",
+      "title": "Notes On A Conditional Form",
+      "url": "https://open.spotify.com/search/The%201975%20Notes%20On%20A%20Conditional%20Form"
+    },
+    {
+      "artist": "Parcels",
+      "title": "LOVED",
+      "url": "https://open.spotify.com/search/Parcels%20LOVED"
+    },
+    {
+      "artist": "Bon Iver",
+      "title": "i,i",
+      "url": "https://open.spotify.com/search/Bon%20Iver%20i%2Ci"
+    },
+    {
+      "artist": "RÜFÜS DU SOL",
+      "title": "Inhale / Exhale",
+      "url": "https://open.spotify.com/search/R%C3%9CF%C3%9CS%20DU%20SOL%20Inhale%20%2F%20Exhale"
+    },
+    {
+      "artist": "Vance Joy",
+      "title": "Dream Your Life Away (Special Edition)",
+      "url": "https://open.spotify.com/search/Vance%20Joy%20Dream%20Your%20Life%20Away%20%28Special%20Edition%29"
+    },
+    {
+      "artist": "The 1975",
+      "title": "A Brief Inquiry Into Online Relationships",
+      "url": "https://open.spotify.com/search/The%201975%20A%20Brief%20Inquiry%20Into%20Online%20Relationships"
+    },
+    {
+      "artist": "Taylor Swift",
+      "title": "evermore",
+      "url": "https://open.spotify.com/search/Taylor%20Swift%20evermore"
+    },
+    {
+      "artist": "Adele",
+      "title": "30",
+      "url": "https://open.spotify.com/search/Adele%2030"
+    },
+    {
+      "artist": "The Weeknd",
+      "title": "Starboy",
+      "url": "https://open.spotify.com/search/The%20Weeknd%20Starboy"
+    }
+  ],
+  "tracks": [
+    {
+      "artist": "Xavier Rudd",
+      "title": "Follow the Sun",
+      "url": "https://open.spotify.com/search/Xavier%20Rudd%20Follow%20the%20Sun"
+    },
+    {
+      "artist": "Radiohead",
+      "title": "Reckoner",
+      "url": "https://open.spotify.com/search/Radiohead%20Reckoner"
+    },
+    {
+      "artist": "Parcels",
+      "title": "Tobeloved",
+      "url": "https://open.spotify.com/track/7cSLD89y304ZvX4mVhYVfw",
+      "spotifyUri": "spotify:track:7cSLD89y304ZvX4mVhYVfw"
+    },
+    {
+      "artist": "Parcels",
+      "title": "Finallyover",
+      "url": "https://open.spotify.com/track/1Ded9EOaAthYQVOs9MwtCp",
+      "spotifyUri": "spotify:track:1Ded9EOaAthYQVOs9MwtCp"
+    },
+    {
+      "artist": "The 1975",
+      "title": "Sincerity Is Scary",
+      "url": "https://open.spotify.com/search/The%201975%20Sincerity%20Is%20Scary"
+    },
+    {
+      "artist": "RÜFÜS DU SOL",
+      "title": "Be with You",
+      "url": "https://open.spotify.com/search/R%C3%9CF%C3%9CS%20DU%20SOL%20Be%20with%20You"
+    },
+    {
+      "artist": "RÜFÜS DU SOL",
+      "title": "Brighter",
+      "url": "https://open.spotify.com/search/R%C3%9CF%C3%9CS%20DU%20SOL%20Brighter"
+    },
+    {
+      "artist": "Michael Kiwanuka",
+      "title": "Love & Hate",
+      "url": "https://open.spotify.com/search/Michael%20Kiwanuka%20Love%20%26%20Hate"
+    },
+    {
+      "artist": "Leon Bridges",
+      "title": "Beyond",
+      "url": "https://open.spotify.com/search/Leon%20Bridges%20Beyond"
+    },
+    {
+      "artist": "Radiohead",
+      "title": "Weird Fishes/Arpeggi",
+      "url": "https://open.spotify.com/search/Radiohead%20Weird%20Fishes%2FArpeggi"
+    },
+    {
+      "artist": "Robert Francis",
+      "title": "The Magic",
+      "url": "https://open.spotify.com/search/Robert%20Francis%20The%20Magic"
+    },
+    {
+      "artist": "Bon Iver",
+      "title": "Hey, Ma",
+      "url": "https://open.spotify.com/search/Bon%20Iver%20Hey%2C%20Ma"
+    },
+    {
+      "artist": "The 1975",
+      "title": "TOOTIMETOOTIMETOOTIME",
+      "url": "https://open.spotify.com/search/The%201975%20TOOTIMETOOTIMETOOTIME"
+    },
+    {
+      "artist": "Mt. Joy",
+      "title": "Is Joy Easy",
+      "url": "https://open.spotify.com/track/7M2ctqqmAlCUWE8SJHQ8Vo",
+      "spotifyUri": "spotify:track:7M2ctqqmAlCUWE8SJHQ8Vo"
+    },
+    {
+      "artist": "Bon Iver",
+      "title": "Skinny Love",
+      "url": "https://open.spotify.com/search/Bon%20Iver%20Skinny%20Love"
+    },
+    {
+      "artist": "Labi Siffre",
+      "title": "Watch Me",
+      "url": "https://open.spotify.com/search/Labi%20Siffre%20Watch%20Me"
+    },
+    {
+      "artist": "Alexi Murdoch",
+      "title": "Orange Sky",
+      "url": "https://open.spotify.com/search/Alexi%20Murdoch%20Orange%20Sky"
+    },
+    {
+      "artist": "José González",
+      "title": "Down The Line",
+      "url": "https://open.spotify.com/search/Jos%C3%A9%20Gonz%C3%A1lez%20Down%20The%20Line"
+    }
+  ]
+}

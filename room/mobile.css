@@ -1,0 +1,139 @@
+:root {
+  --room-left: max(16px, env(safe-area-inset-left, 0px));
+  --room-right: max(16px, env(safe-area-inset-right, 0px));
+  --room-top: max(12px, env(safe-area-inset-top, 0px));
+  --room-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+}
+
+@media (pointer: coarse) {
+  .header-actions button, .header-actions a, .places button,
+  .room-dock button, .look-controls button, .hotspot,
+  .panel-top button, .help-close, .help-done, .music-sources button,
+  .soundtrack-bar button, #stop-music, .back-reading {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .look-controls button { width: 44px; height: 44px; }
+  .hotspot { font-size: 14px; }
+  .soundtrack-bar #soundtrack-toggle,
+  .soundtrack-bar #soundtrack-next,
+  .soundtrack-bar #soundtrack-details { min-width: 44px; }
+}
+
+@media (max-width: 650px) {
+  .room-header {
+    top: var(--room-top);
+    left: var(--room-left);
+    right: var(--room-right);
+    gap: 12px;
+    min-height: 44px;
+  }
+  .signature { padding-block: 6px; }
+  .signature::before { inset-block: 6px; }
+  .header-note { display: none; }
+  .header-actions { gap: 4px; }
+  .header-actions #quiet { display: block; font-size: 12px; }
+  .header-actions button, .header-actions a {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 10px 6px;
+  }
+  .header-actions a { display: flex; align-items: center; font-size: 14px; }
+
+  #room-soundtrack {
+    top: calc(var(--room-top) + 58px);
+    right: var(--room-right);
+    width: min(340px, calc(100% - var(--room-left) - var(--room-right)));
+    max-height: calc(100dvh - var(--room-top) - var(--room-bottom) - 218px);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  .soundtrack-bar { gap: 4px; padding: 9px 8px; }
+  .soundtrack-label { font-size: 12px; letter-spacing: 0; }
+  .soundtrack-artist { font-size: 12px; }
+  .soundtrack-bar #soundtrack-toggle,
+  .soundtrack-bar #soundtrack-next,
+  .soundtrack-bar #soundtrack-details { min-width: 44px; min-height: 44px; }
+  .soundtrack-bar #soundtrack-next { display: block; }
+  #soundtrack-link { font-size: 14px; padding-block: 8px; }
+
+  .room-dock {
+    left: var(--room-left);
+    right: var(--room-right);
+    bottom: var(--room-bottom);
+    width: auto;
+    transform: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 44px;
+  }
+  .room-dock button { min-height: 44px; min-width: 0; padding: 8px 4px; font-size: 14px; }
+  .room-dock button > span { display: none; }
+  .room-dock #help-toggle { padding: 8px; }
+  .places {
+    left: var(--room-left);
+    right: var(--room-right);
+    bottom: calc(var(--room-bottom) + 70px);
+    transform: none;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    white-space: normal;
+  }
+  .places button { min-width: 0; min-height: 44px; padding: 7px 4px; font-size: 14px; line-height: 1.2; }
+  .place-dot { display: none; }
+  .help { bottom: calc(var(--room-bottom) + 132px); font-size: 12px; }
+  .look-controls { left: var(--room-left); bottom: calc(var(--room-bottom) + 171px); }
+  .look-controls button { width: 44px; height: 44px; }
+  .welcome { left: var(--room-left); bottom: calc(var(--room-bottom) + 231px); }
+  .welcome h1 { font-size: clamp(44px, 12vw, 59px); margin: 12px 0 0; }
+  .welcome .eyebrow { font-size: 12px; }
+  .welcome p { display: none; }
+  .hotspot { max-width: calc(100% - 32px); white-space: normal; text-align: left; font-size: 14px; min-height: 44px; }
+
+  dialog, #music-panel {
+    width: calc(100% - var(--room-left) - var(--room-right));
+    max-height: calc(100dvh - var(--room-top) - var(--room-bottom));
+    overscroll-behavior: contain;
+    overflow-wrap: anywhere;
+  }
+  .panel-top button, .help-close, .help-done { min-width: 44px; min-height: 44px; }
+  #panel-body, .music-body { padding-inline: 22px; }
+  .music-sources { flex-wrap: wrap; }
+  .music-sources button { min-height: 44px; font-size: 14px; }
+  .now-playing-header { flex-wrap: wrap; gap: 8px; }
+  #stop-music { min-height: 44px; font-size: 14px; }
+  .track-row > span:nth-child(2) { min-width: 0; }
+}
+
+/* Keep a clear central view when the phone is turned sideways. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .room-header { top: var(--room-top); left: var(--room-left); right: var(--room-right); }
+  .header-note, .welcome { display: none; }
+  .room-dock {
+    left: var(--room-left);
+    right: auto;
+    bottom: var(--room-bottom);
+    width: min(430px, calc(100% - var(--room-left) - var(--room-right) - 152px));
+    transform: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 44px;
+  }
+  .room-dock button { min-height: 44px; min-width: 0; padding: 8px 4px; font-size: 14px; }
+  .room-dock button > span { display: none; }
+  .places { bottom: calc(var(--room-bottom) + 68px); }
+  .help { bottom: calc(var(--room-bottom) + 122px); }
+  .look-controls { right: var(--room-right); left: auto; bottom: var(--room-bottom); }
+  #room-soundtrack {
+    top: calc(var(--room-top) + 52px);
+    right: var(--room-right);
+    max-height: calc(100dvh - var(--room-top) - var(--room-bottom) - 172px);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  dialog, #music-panel { max-height: calc(100dvh - var(--room-top) - var(--room-bottom)); }
+}
+
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 650px) {
+  .room-dock { right: var(--room-right); width: auto; }
+  .look-controls { display: none; }
+}
