@@ -7,7 +7,8 @@
   const note = root.querySelector('#soundtrack-note'), progress = root.querySelector('.soundtrack-progress');
   const spotifyHolder = root.querySelector('#spotify-room-holder'), tapeHolder = root.querySelector('#soundcloud-room-embed');
   let queue = [], index = 0, controller, initialized = false, playing = false;
-  let userPaused = false, attemptTimer, started = false, advancing = false, previewOnly = false;
+  // Arrival is quiet; play() records the visitor's request, even before the embed is ready.
+  let userPaused = true, attemptTimer, started = false, advancing = false, previewOnly = false;
   let selectedAlbum = null, provider = 'spotify', activeURI = '', pendingURI = '';
   let tapeWidget, tapePromise, tapes = [], tapeIndex = 0;
   function state(isPlaying) {
@@ -134,7 +135,7 @@
             const uri = event?.data?.playingURI;
             if(provider!=='spotify'){embed.pause();return;}
             if(!selectedAlbum && uri!==queue[index].uri)return;
-            activeURI=uri;started=true;advancing=false;clearTimeout(attemptTimer);state(true);
+            activeURI=uri;started=true;advancing=false;userPaused=false;clearTimeout(attemptTimer);state(true);
             if(!previewOnly && !selectedAlbum)showPlayer(false);
           });
           embed.addListener('playback_update',event=>{
@@ -157,8 +158,8 @@
         });
       };
       const script=document.createElement('script');script.src='https://open.spotify.com/embed/iframe-api/v1';script.async=true;
-      script.onerror=()=>{if(provider==='spotify'){label.textContent='Open Spotify to start the record';showPlayer(true);}};document.head.append(script);
-      setTimeout(()=>{if(!initialized && provider==='spotify'){label.textContent='Spotify is still loading';showPlayer(true);}},8000);
+      script.onerror=()=>{if(provider==='spotify'){label.textContent='Open Spotify to start the record';if(!userPaused)showPlayer(true);}};document.head.append(script);
+      setTimeout(()=>{if(!initialized && !userPaused && provider==='spotify'){label.textContent='Spotify is still loading';showPlayer(true);}},8000);
     } catch {label.textContent='Room music is unavailable';title.textContent='Try refreshing the room';artist.textContent='';}
   }
   start();
