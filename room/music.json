@@ -64,96 +64,129 @@
   "tracks": [
     {
       "artist": "Xavier Rudd",
-      "title": "Follow the Sun",
-      "url": "https://open.spotify.com/search/Xavier%20Rudd%20Follow%20the%20Sun"
+      "title": "Follow The Sun",
+      "url": "https://open.spotify.com/track/47Hv8xflvAKs7y5vwY6Pox?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:47Hv8xflvAKs7y5vwY6Pox",
+      "durationMs": 256266
     },
     {
       "artist": "Radiohead",
       "title": "Reckoner",
-      "url": "https://open.spotify.com/search/Radiohead%20Reckoner"
+      "url": "https://open.spotify.com/track/02ppMPbg1OtEdHgoPqoqju?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:02ppMPbg1OtEdHgoPqoqju",
+      "durationMs": 290213
     },
     {
       "artist": "Parcels",
       "title": "Tobeloved",
-      "url": "https://open.spotify.com/track/7cSLD89y304ZvX4mVhYVfw",
-      "spotifyUri": "spotify:track:7cSLD89y304ZvX4mVhYVfw"
+      "url": "https://open.spotify.com/track/7cSLD89y304ZvX4mVhYVfw?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:7cSLD89y304ZvX4mVhYVfw",
+      "durationMs": 245904
     },
     {
       "artist": "Parcels",
       "title": "Finallyover",
-      "url": "https://open.spotify.com/track/1Ded9EOaAthYQVOs9MwtCp",
-      "spotifyUri": "spotify:track:1Ded9EOaAthYQVOs9MwtCp"
+      "url": "https://open.spotify.com/track/1Ded9EOaAthYQVOs9MwtCp?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:1Ded9EOaAthYQVOs9MwtCp",
+      "durationMs": 191925
     },
     {
       "artist": "The 1975",
       "title": "Sincerity Is Scary",
-      "url": "https://open.spotify.com/search/The%201975%20Sincerity%20Is%20Scary"
+      "url": "https://open.spotify.com/track/6HguG9HRb1Ke1bhihfE4m8?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:6HguG9HRb1Ke1bhihfE4m8",
+      "durationMs": 225955
     },
     {
       "artist": "RÜFÜS DU SOL",
       "title": "Be with You",
-      "url": "https://open.spotify.com/search/R%C3%9CF%C3%9CS%20DU%20SOL%20Be%20with%20You"
+      "url": "https://open.spotify.com/track/11Pz9gYhgbzSXHQFydfVe4?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:11Pz9gYhgbzSXHQFydfVe4",
+      "durationMs": 243117
     },
     {
       "artist": "RÜFÜS DU SOL",
       "title": "Brighter",
-      "url": "https://open.spotify.com/search/R%C3%9CF%C3%9CS%20DU%20SOL%20Brighter"
+      "url": "https://open.spotify.com/track/7D5gkUVhkLbe5e8qG1NqcZ?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:7D5gkUVhkLbe5e8qG1NqcZ",
+      "durationMs": 281084
     },
     {
       "artist": "Michael Kiwanuka",
       "title": "Love & Hate",
-      "url": "https://open.spotify.com/search/Michael%20Kiwanuka%20Love%20%26%20Hate"
+      "url": "https://open.spotify.com/track/7oOEFDLSQscl0uGulnIEmG?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:7oOEFDLSQscl0uGulnIEmG",
+      "durationMs": 427093
     },
     {
       "artist": "Leon Bridges",
       "title": "Beyond",
-      "url": "https://open.spotify.com/search/Leon%20Bridges%20Beyond"
+      "url": "https://open.spotify.com/track/1Omt5bfz1tZUCqd26HxbS0?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:1Omt5bfz1tZUCqd26HxbS0",
+      "durationMs": 240598
     },
     {
       "artist": "Radiohead",
-      "title": "Weird Fishes/Arpeggi",
-      "url": "https://open.spotify.com/search/Radiohead%20Weird%20Fishes%2FArpeggi"
+      "title": "Weird Fishes / Arpeggi",
+      "url": "https://open.spotify.com/track/4wajJ1o7jWIg62YqpkHC7S?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:4wajJ1o7jWIg62YqpkHC7S",
+      "durationMs": 318186
     },
     {
       "artist": "Robert Francis",
       "title": "The Magic",
-      "url": "https://open.spotify.com/search/Robert%20Francis%20The%20Magic"
+      "url": "https://open.spotify.com/track/0lyh7zicb5FHKeeWoAoqcx?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:0lyh7zicb5FHKeeWoAoqcx",
+      "durationMs": 195958
     },
     {
       "artist": "Bon Iver",
       "title": "Hey, Ma",
-      "url": "https://open.spotify.com/search/Bon%20Iver%20Hey%2C%20Ma"
+      "url": "https://open.spotify.com/track/0RstfX9nRY1Lfuy1808MoT?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:0RstfX9nRY1Lfuy1808MoT",
+      "durationMs": 216706
     },
     {
       "artist": "The 1975",
       "title": "TOOTIMETOOTIMETOOTIME",
-      "url": "https://open.spotify.com/search/The%201975%20TOOTIMETOOTIMETOOTIME"
+      "url": "https://open.spotify.com/track/33DzKnwuBE6lfOiADwzd5E?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:33DzKnwuBE6lfOiADwzd5E",
+      "durationMs": 207851
     },
     {
       "artist": "Mt. Joy",
       "title": "Is Joy Easy",
-      "url": "https://open.spotify.com/track/7M2ctqqmAlCUWE8SJHQ8Vo",
-      "spotifyUri": "spotify:track:7M2ctqqmAlCUWE8SJHQ8Vo"
+      "url": "https://open.spotify.com/track/7M2ctqqmAlCUWE8SJHQ8Vo?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:7M2ctqqmAlCUWE8SJHQ8Vo",
+      "durationMs": 210373
     },
     {
       "artist": "Bon Iver",
       "title": "Skinny Love",
-      "url": "https://open.spotify.com/search/Bon%20Iver%20Skinny%20Love"
+      "url": "https://open.spotify.com/track/3B3eOgLJSqPEA0RfboIQVM?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:3B3eOgLJSqPEA0RfboIQVM",
+      "durationMs": 238520
     },
     {
       "artist": "Labi Siffre",
       "title": "Watch Me",
-      "url": "https://open.spotify.com/search/Labi%20Siffre%20Watch%20Me"
+      "url": "https://open.spotify.com/track/2xjv06k7zfnHV9zanSLRdI?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:2xjv06k7zfnHV9zanSLRdI",
+      "durationMs": 213200
     },
     {
       "artist": "Alexi Murdoch",
       "title": "Orange Sky",
-      "url": "https://open.spotify.com/search/Alexi%20Murdoch%20Orange%20Sky"
+      "url": "https://open.spotify.com/track/0Y1fueUFu8jQtUxdUmOojf?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:0Y1fueUFu8jQtUxdUmOojf",
+      "durationMs": 379520
     },
     {
       "artist": "José González",
       "title": "Down The Line",
-      "url": "https://open.spotify.com/search/Jos%C3%A9%20Gonz%C3%A1lez%20Down%20The%20Line"
+      "url": "https://open.spotify.com/track/0GixW2r7DQK76xOxMmKn8S?utm_source=openai&utm_medium=chatgpt",
+      "spotifyUri": "spotify:track:0GixW2r7DQK76xOxMmKn8S",
+      "durationMs": 192906
     }
   ]
 }

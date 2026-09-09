@@ -8,15 +8,17 @@
   const reveal = root.querySelector('#soundtrack-details');
   const player = root.querySelector('#soundtrack-player');
   const link = root.querySelector('#soundtrack-link');
+  const note = root.querySelector('#soundtrack-note');
   let queue = [], index = 0, controller, playing = false, initialized = false;
   let userPaused = false, attemptTimer, started = false, advancing = false;
+  let previewOnly = false;
 
   function state(isPlaying) {
     playing = isPlaying;
     document.body.dataset.soundtrackState = playing ? 'playing' : 'paused';
     toggle.textContent = playing ? 'Ⅱ' : '▶';
     toggle.setAttribute('aria-label', playing ? 'Pause room music' : 'Play room music');
-    label.textContent = playing ? 'On the record player' : 'Ready on the record player';
+    label.textContent = previewOnly ? 'Spotify preview' : playing ? 'On the record player' : 'Ready on the record player';
     document.querySelectorAll('[data-soundtrack-toggle]').forEach(button => {
       button.textContent = playing ? 'Pause the record' : 'Play the record';
     });
@@ -27,8 +29,19 @@
   }
   function trackLabel() {
     const track = queue[index];
+    previewOnly = false;note.hidden = true;
     title.textContent = track.title;artist.textContent = track.artist;
-    link.href = 'https://open.spotify.com/track/' + track.uri.split(':')[2];
+    link.href = track.url || 'https://open.spotify.com/track/' + track.uri.split(':')[2];
+    link.textContent = 'Open in Spotify ↗';
+    nextButton.setAttribute('aria-label', `Next song (currently ${index + 1} of ${queue.length})`);
+    root.setAttribute('aria-label', `Music on the record player: song ${index + 1} of ${queue.length}`);
+  }
+  function previewMode(preview) {
+    if (previewOnly === preview) return;
+    previewOnly = preview;note.hidden = !preview;
+    note.textContent = preview ? 'Spotify is playing a short preview here. Open Spotify to hear the full song.' : '';
+    link.textContent = preview ? 'Hear the full song on Spotify ↗' : 'Open in Spotify ↗';
+    if (preview) showPlayer(true);
   }
   function fallback() {
     if (!playing && !userPaused) {
@@ -88,16 +101,29 @@
           const iframe = player.querySelector('iframe');
           if (iframe) {iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';iframe.title = 'Room soundtrack on Spotify';}
           embed.addListener('ready', () => {initialized = true;if(!userPaused)play();});
-          embed.addListener('playback_started', () => {
-            started = true;advancing = false;clearTimeout(attemptTimer);state(true);showPlayer(false);
+          embed.addListener('playback_started', (event) => {
+            if (event?.data?.playingURI !== queue[index].uri) return;
+            started = true;advancing = false;clearTimeout(attemptTimer);state(true);
+            if (!previewOnly) showPlayer(false);
           });
           embed.addListener('playback_update', (event) => {
             const data = event.data;
             if (data.playingURI && data.playingURI !== queue[index].uri) return;
+            if (!data.playingURI && !started) return;
+            const duration = Number(data.duration), position = Number(data.position);
+            const fullDuration = Number(queue[index].durationMs);
+            // Compare the embed's playable duration with the verified catalog
+            // duration; short previews must never become a looping soundtrack.
+            if (duration > 0 && fullDuration > 0) previewMode(duration <= 35000 && fullDuration > duration + 5000);
             state(!data.isPaused && !data.isBuffering);
             if (playing) {started=true;advancing=false;clearTimeout(attemptTimer);}
-            // Advance only after a track that actually started reaches its end.
-            if (started && !advancing && !userPaused && data.duration > 0 && data.position >= data.duration - 250) next();
+            // Wait for a completed, paused track rather than cutting off its
+            // last quarter-second or treating a buffering pause as completion.
+            if (started && !advancing && !userPaused && data.isPaused && !data.isBuffering && duration > 0 && position >= duration) {
+              if (previewOnly) {
+                started = false;clearTimeout(attemptTimer);showPlayer(true);
+              } else next();
+            }
           });
         });
       };
