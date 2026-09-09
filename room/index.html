@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="room.css?v=objects-1"><link rel="stylesheet" href="music.css?v=objects-1"><link rel="stylesheet" href="soundtrack.css?v=objects-1"><link rel="stylesheet" href="mobile.css?v=objects-1">
-  <link rel="stylesheet" href="experience.css?v=desk-fit-2">
+  <link rel="stylesheet" href="experience.css?v=about-table-1">
 </head>
 <body>
   <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;pointer-events:none">
@@ -69,10 +69,29 @@
       </div>
       <div id="music-browser" aria-live="polite"></div>
     </section>
+    <section id="about-experience" class="experience-view" hidden aria-labelledby="about-book-title">
+      <div class="about-book-stage" data-page="0">
+        <img class="about-table-photo" src="about-coffee-table.png" alt="An open book and a ceramic mug on the walnut coffee table" width="1536" height="1024" loading="lazy">
+        <article class="about-book-page about-first-page" id="about-book-intro">
+          <span class="eyebrow">A little about me</span><h2 id="about-book-title" tabindex="-1">A few threads,<br>one life.</h2>
+          <p>I’m Ari. I build tools for understanding, write about how we might live together, and play music that moves me.</p>
+          <p>I keep coming back to the ways we make sense of the world—and of each other.</p>
+          <p class="about-book-signoff"><a href="mailto:ari@ariallen.com">Say hi ↗</a></p>
+        </article>
+        <article class="about-book-page about-second-page" id="about-book-background">
+          <h3 tabindex="-1">The same curiosity.</h3>
+          <p>That thread runs through my work at the <a href="https://constructivedialogue.org/" target="_blank" rel="noopener">Constructive Dialogue Institute</a>, nearly a decade building learning experiences at <a href="https://amplify.com/" target="_blank" rel="noopener">Amplify</a>, and <a href="https://thereconstitution.com/" target="_blank" rel="noopener">The Reconstitution Project</a>, a thought experiment in constitutional imagination.</p>
+          <p>It runs through the writing and the music, too. Different forms. The same curiosity.</p>
+          <details><summary>A little more background</summary><p>My studies span political philosophy at Tufts, public policy at Georgetown Law, and Integral Psychology at the California Institute for Integral Studies. Today, I’m VP of Product at the Constructive Dialogue Institute.</p></details>
+          <button class="about-resume" data-panel="resume">The résumé version ↗</button>
+        </article>
+      </div>
+      <nav class="about-page-navigation" aria-label="Pages of the about book" hidden><button data-about-page="0" aria-pressed="true">A little about me</button><button data-about-page="1" aria-pressed="false">More background →</button></nav>
+    </section>
     <section id="books-experience" class="experience-view" hidden aria-label="Ari’s reading shelf"><div class="reading-shelf"><span class="eyebrow">From the bookshelf</span><h2>What I’m reading.</h2><div id="book-browser"></div></div></section>
   </section>
   </main>
   <dialog id="instructions" aria-labelledby="help-title"><button class="help-close" aria-label="Close room controls">×</button><span class="eyebrow">Settle in</span><h2 id="help-title">Find your way around.</h2><p>Drag to look around. Scroll or pinch to look closer. The arrows on your keyboard work, too.</p><p>Choose a place at the bottom to move around the room. Touch a label—or use Read, Listen, and About Ari—to explore.</p><p>Hide the labels for a little more quiet. Press Escape to return to the room. Music controls stay at the bottom.</p><button class="help-done">Make yourself comfortable</button></dialog>
-  <script src="ui.js?v=objects-1" defer></script><script src="music.js?v=objects-1" defer></script><script src="soundtrack.js?v=quiet-arrival-1" defer></script><script type="module" src="room.js?v=objects-1"></script>
+  <script src="ui.js?v=about-table-1" defer></script><script src="music.js?v=objects-1" defer></script><script src="soundtrack.js?v=quiet-arrival-1" defer></script><script type="module" src="room.js?v=about-table-1"></script>
 </body>
 </html>

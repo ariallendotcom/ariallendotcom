@@ -8,11 +8,11 @@ const error = document.querySelector('#error');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const places = {
   room: {file:'room-panorama.png', label:'The room', yaw:0, pitch:-3, fov:78,
-    spots:[{u:.36,v:.49,label:'Sit at the desk',panel:'words'},{u:.625,v:.47,label:'The reading shelf',panel:'books'},{u:.48,v:.51,label:'The record player',panel:'sounds',source:'albums'}]},
+    spots:[{u:.36,v:.49,label:'Sit at the desk',panel:'words'},{u:.625,v:.47,label:'The reading shelf',panel:'books'},{u:.48,v:.51,label:'The record player',panel:'sounds',source:'albums'},{u:.755,v:.765,label:'A little about me',panel:'about'}]},
   desk: {file:'desk-panorama.png',label:'At the desk',yaw:0,pitch:-5,fov:76,
     spots:[{u:.40,v:.56,label:'A few open questions',panel:'words'},{u:.52,v:.32,label:'The person behind the page',panel:'about'},{u:.63,v:.56,label:'The record player',panel:'sounds',source:'albums'}]},
   chair: {file:'chair-panorama.png',label:'Take a seat',yaw:0,pitch:-3,fov:78,
-    spots:[{u:.64,v:.46,label:'Choose an essay',panel:'words'},{u:.52,v:.57,label:'The record player',panel:'sounds',source:'albums'},{u:.33,v:.49,label:'Get to know Ari',panel:'about'}]},
+    spots:[{u:.64,v:.46,label:'Choose an essay',panel:'words'},{u:.52,v:.57,label:'The record player',panel:'sounds',source:'albums'},{u:.78,v:.81,label:'A little about me',panel:'about'}]},
   stereo: {file:'stereo-panorama.png',label:'The stereo',yaw:0,pitch:-8,fov:72,
     spots:[{u:.48,v:.58,label:'The record player',panel:'sounds',source:'albums'},{u:.546,v:.60,label:'The CD binder',panel:'sounds',source:'tracks'},{u:.705,v:.39,label:'The reading shelf',panel:'books'}]}
 };

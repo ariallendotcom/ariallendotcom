@@ -21,7 +21,7 @@
     experience.hidden = false;
     experience.querySelectorAll('.experience-view').forEach(view => { view.hidden = view.id !== name + '-experience'; });
     background.forEach(el => { el.inert = true; });
-    document.querySelector('#experience-name').textContent = {desk:'At the desk',music:'At the stereo',books:'The reading shelf'}[name];
+    document.querySelector('#experience-name').textContent = {desk:'At the desk',music:'At the stereo',books:'The reading shelf',about:'At the coffee table'}[name];
     document.querySelector('#back-to-room').focus({preventScroll:true});
   }
   function leave() {
@@ -66,10 +66,33 @@
       host.innerHTML = books.length ? '<div class="book-stack">' + books.map((b,i) => `<details class="reading-book"><summary>${b.cover ? `<img src="${escape(b.cover)}" alt="" loading="lazy">` : ''}<span><strong>${escape(b.title)}</strong><span>${escape(b.author)}</span></span></summary><p>${escape(b.note || '')}</p>${b.url ? `<a href="${escape(b.url)}" target="_blank" rel="noopener">About this book ↗</a>` : ''}</details>`).join('') + '</div>' : '<p class="shelf-empty">Book list coming soon.</p><button data-panel="words" class="shelf-writing">Read something by Ari at the desk ↗</button>';
     } catch { host.innerHTML = '<p>The reading shelf couldn’t open. Try visiting again in a moment.</p>'; }
   }
+  const aboutView = document.querySelector('#about-experience');
+  const aboutPages = [...aboutView.querySelectorAll('.about-book-page')];
+  const aboutMobile = matchMedia('(max-width: 760px)');
+  let aboutPage = 0;
+  function showAboutPage(index, focus = false) {
+    aboutPage = index === 1 ? 1 : 0;
+    aboutView.querySelector('.about-book-stage').dataset.page = String(aboutPage);
+    aboutPages.forEach((page,i) => {page.hidden = aboutMobile.matches && i !== aboutPage;});
+    aboutView.querySelector('.about-page-navigation').hidden = !aboutMobile.matches;
+    aboutView.querySelectorAll('[data-about-page]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.aboutPage) === aboutPage)));
+    if (focus) aboutPages[aboutMobile.matches ? aboutPage : 0].querySelector('h2,h3').focus({preventScroll:true});
+  }
+  aboutMobile.addEventListener?.('change', () => showAboutPage(aboutPage));
+  aboutView.addEventListener('click', event => {
+    const page = event.target.closest('[data-about-page]');
+    if (page) showAboutPage(Number(page.dataset.aboutPage), true);
+  });
+  aboutView.addEventListener('keydown', event => {
+    if (aboutMobile.matches && ['ArrowLeft','ArrowRight'].includes(event.key)) {
+      event.preventDefault();showAboutPage(event.key === 'ArrowRight' ? 1 : 0, true);
+    }
+  });
   function open(name, source) {
     if (name === 'sounds') { enter('music');window.ariMusic?.open(source || 'overview'); }
     else if (name === 'books') { enter('books');bookshelf(); }
-    else { enter('desk');folder(name === 'about' ? 'about' : 'writing'); }
+    else if (name === 'about') { ++request;enter('about');aboutPages.forEach(page => {page.scrollTop = 0;});showAboutPage(0, true); }
+    else { enter('desk');folder(name === 'resume' ? 'resume' : 'writing'); }
   }
   window.ariExperience = {open, leave};
   document.addEventListener('click', event => {
