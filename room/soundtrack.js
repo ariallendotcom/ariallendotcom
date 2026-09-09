@@ -4,6 +4,8 @@
   const label = root.querySelector('.soundtrack-label'), toggle = root.querySelector('#soundtrack-toggle');
   const nextButton = root.querySelector('#soundtrack-next'), reveal = root.querySelector('#soundtrack-details');
   const player = root.querySelector('#soundtrack-player'), link = root.querySelector('#soundtrack-link');
+  const hidePlayer = root.querySelector('#soundtrack-hide'), revealLabel = root.querySelector('#soundtrack-details-label');
+  const providerLabel = root.querySelector('#soundtrack-provider');
   const note = root.querySelector('#soundtrack-note'), progress = root.querySelector('.soundtrack-progress');
   const spotifyHolder = root.querySelector('#spotify-room-holder'), tapeHolder = root.querySelector('#soundcloud-room-embed');
   let queue = [], index = 0, controller, initialized = false, playing = false;
@@ -11,6 +13,7 @@
   let userPaused = true, attemptTimer, started = false, advancing = false, previewOnly = false;
   let selectedAlbum = null, provider = 'spotify', activeURI = '', pendingURI = '';
   let tapeWidget, tapePromise, tapes = [], tapeIndex = 0;
+  let playerPreference = null, spotifyFrame, trackPicker = false;
   function state(isPlaying) {
     playing = isPlaying;
     document.body.dataset.soundtrackState = playing ? 'playing' : 'paused';
@@ -21,7 +24,23 @@
     toggle.setAttribute('aria-label', playing ? 'Pause room music' : 'Play room music');
     label.textContent = provider === 'soundcloud' ? (playing ? 'Playing · DJ archive' : 'Paused · DJ archive') : previewOnly ? (playing ? 'Playing · Spotify preview' : 'Paused · Spotify preview') : selectedAlbum ? (playing ? 'Playing album · Spotify' : 'Album · Spotify') : (playing ? 'Playing · Spotify' : 'Ready on the record player');
   }
-  function showPlayer(show) {player.hidden = !show;reveal.setAttribute('aria-expanded', String(show));reveal.setAttribute('aria-label', `${show ? 'Hide' : 'Show'} ${provider === 'soundcloud' ? 'SoundCloud' : 'Spotify'} player`);}
+  function playerLabels() {
+    const name = provider === 'soundcloud' ? 'SoundCloud' : 'Spotify';
+    providerLabel.textContent = name;
+    revealLabel.textContent = `${player.hidden ? 'Show' : 'Hide'} player`;
+    reveal.setAttribute('aria-expanded', String(!player.hidden));
+    reveal.setAttribute('aria-label', `${player.hidden ? 'Show' : 'Hide'} ${name} player`);
+  }
+  function sizePlayer() {
+    if (spotifyFrame) {spotifyFrame.height = trackPicker ? '152' : '80';spotifyFrame.style.height = spotifyFrame.height + 'px';}
+  }
+  function showPlayer(show, manual = false, tracks = false) {
+    // A visitor's choice takes precedence over delayed playback and loading events.
+    if (manual) playerPreference = show;
+    else if (playerPreference !== null && playerPreference !== show) return;
+    if (!show && player.contains(document.activeElement)) reveal.focus();
+    player.hidden = !show;trackPicker = show && tracks;sizePlayer();playerLabels();
+  }
   function position(now, duration) {
     if (!progress) return;
     const value = duration > 0 ? Math.min(100,Math.max(0,now / duration * 100)) : 0;
@@ -32,7 +51,8 @@
     title.textContent = item.title;artist.textContent = item.artist;
     link.href = item.url || 'https://open.spotify.com/track/' + item.uri.split(':')[2];
     link.textContent = provider === 'soundcloud' ? 'Open mix on SoundCloud ↗' : 'Open in Spotify ↗';
-    nextButton.textContent = selectedAlbum ? '≡' : '›';
+    nextButton.textContent = selectedAlbum ? 'Tracks' : '›';
+    nextButton.dataset.album = String(!!selectedAlbum);playerLabels();
     nextButton.setAttribute('aria-label', selectedAlbum ? 'Choose a track from this album' : provider === 'soundcloud' ? 'Next DJ mix' : `Next song (currently ${index + 1} of ${queue.length})`);
     root.setAttribute('aria-label', `Music: ${item.title} by ${item.artist}`);
   }
@@ -44,7 +64,7 @@
     link.textContent = preview ? 'Hear the full song on Spotify ↗' : 'Open in Spotify ↗';
   }
   function fallback() {
-    if (!playing && !userPaused) {label.textContent = 'Press play below to start';showPlayer(true);}
+    if (!playing && !userPaused) {showPlayer(true);label.textContent = player.hidden ? 'Open player to start' : 'Press play in the player';}
   }
   function play() {
     userPaused = false;
@@ -69,18 +89,18 @@
   function selectTrack(i) {if (!Number.isInteger(i) || !queue[i]) return;index = i;selectedAlbum = null;selectSpotify(queue[index]);}
   function selectAlbum(album) {
     if (!/^spotify:album:[A-Za-z0-9]{22}$/.test(album?.spotifyUri)) return;
-    selectedAlbum = album;selectSpotify(album);showPlayer(true);
+    selectedAlbum = album;selectSpotify(album);
   }
   function next() {
     if (provider === 'soundcloud') {if(tapes.length)playTapes((tapeIndex + 1) % tapes.length);else showPlayer(true);return;}
-    if (selectedAlbum) {showPlayer(true);return;}
+    if (selectedAlbum) {showPlayer(true,true,true);return;}
     if (queue.length) selectTrack((index + 1) % queue.length);
   }
   function prepareTapes() {
     if (tapePromise) return tapePromise;
     tapePromise = new Promise((resolve,reject) => {
       if (!tapeHolder) {reject(new Error('Tape player unavailable'));return;}
-      const frame = document.createElement('iframe');frame.title = 'Sounds by Ari — DJ archive';frame.allow = 'autoplay';frame.height = '290';
+      const frame = document.createElement('iframe');frame.title = 'Sounds by Ari — DJ archive';frame.allow = 'autoplay';frame.height = '166';
       frame.src = 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/soundsbyari&color=%23856c43&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false';
       tapeHolder.replaceChildren(frame);
       let settled = false;
@@ -92,7 +112,7 @@
         });
         tapeWidget.bind(events.PLAY, () => {
           if (provider !== 'soundcloud') {tapeWidget.pause();return;}
-          controller?.pause();clearTimeout(attemptTimer);state(true);
+          controller?.pause();clearTimeout(attemptTimer);state(true);showPlayer(false);
           tapeWidget.getCurrentSound(sound => {if(provider==='soundcloud' && sound) {title.textContent=sound.title;artist.textContent='Sounds by Ari';link.href=sound.permalink_url || 'https://soundcloud.com/soundsbyari';}});
           tapeWidget.getCurrentSoundIndex(i => {tapeIndex = i;});
         });
@@ -109,7 +129,7 @@
   async function playTapes(i = 0) {
     pause();provider = 'soundcloud';selectedAlbum = null;started = false;userPaused = false;
     if (spotifyHolder) spotifyHolder.hidden = true;if(tapeHolder)tapeHolder.hidden = false;
-    metadata({title:'Sounds by Ari',artist:'The DJ archive',url:'https://soundcloud.com/soundsbyari'});state(false);showPlayer(true);
+    metadata({title:'Sounds by Ari',artist:'The DJ archive',url:'https://soundcloud.com/soundsbyari'});state(false);
     try {
       await prepareTapes();if(provider !== 'soundcloud' || userPaused)return;
       tapeIndex = tapes[i] ? i : 0;
@@ -118,7 +138,11 @@
     } catch {if(provider==='soundcloud'){label.textContent='Open SoundCloud to listen';showPlayer(true);}}
   }
   function toggleMusic() {if (playing) pause();else play();}
-  toggle.addEventListener('click',toggleMusic);nextButton.addEventListener('click',next);reveal.addEventListener('click',()=>showPlayer(player.hidden));
+  toggle.addEventListener('click',toggleMusic);nextButton.addEventListener('click',next);reveal.addEventListener('click',()=>showPlayer(player.hidden,true));
+  hidePlayer.addEventListener('click',()=>showPlayer(false,true));
+  document.addEventListener('keydown',event=>{
+    if (event.key === 'Escape' && !player.hidden) {event.preventDefault();event.stopImmediatePropagation();showPlayer(false,true);}
+  },true);
   window.ariSoundtrack = {selectTrack,selectAlbum,pause,toggle:toggleMusic,prepareTapes,playTapes};
   async function start() {
     try {
@@ -127,16 +151,16 @@
       if (!queue.length) throw new Error('No playable Spotify links');
       trackLabel();state(false);
       window.onSpotifyIframeApiReady = api => {
-        api.createController(document.querySelector('#spotify-room-embed'),{uri:pendingURI || queue[index].uri,width:'100%',height:152},embed=>{
+        api.createController(document.querySelector('#spotify-room-embed'),{uri:pendingURI || queue[index].uri,width:'100%',height:80},embed=>{
           controller=embed;pendingURI='';
-          const iframe = player.querySelector('iframe');if(iframe){iframe.allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';iframe.title='Room soundtrack on Spotify';}
+          spotifyFrame = spotifyHolder.querySelector('iframe');if(spotifyFrame){spotifyFrame.allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';spotifyFrame.title='Room soundtrack on Spotify';sizePlayer();}
           embed.addListener('ready',()=>{initialized=true;if(pendingURI){embed.loadEntity(pendingURI);pendingURI='';}if(!userPaused && provider==='spotify')play();});
           embed.addListener('playback_started',event=>{
             const uri = event?.data?.playingURI;
             if(provider!=='spotify'){embed.pause();return;}
             if(!selectedAlbum && uri!==queue[index].uri)return;
             activeURI=uri;started=true;advancing=false;userPaused=false;clearTimeout(attemptTimer);state(true);
-            if(!previewOnly && !selectedAlbum)showPlayer(false);
+            showPlayer(false);
           });
           embed.addListener('playback_update',event=>{
             if(provider!=='spotify')return;
@@ -151,7 +175,7 @@
             position(now,duration);state(!data.isPaused && !data.isBuffering);
             if(playing){started=true;advancing=false;clearTimeout(attemptTimer);}
             if(started && !advancing && !userPaused && data.isPaused && !data.isBuffering && duration>0 && now>=duration){
-              if(previewOnly){started=false;clearTimeout(attemptTimer);showPlayer(true);}
+              if(previewOnly){started=false;clearTimeout(attemptTimer);}
               else if(!selectedAlbum)next();
             }
           });

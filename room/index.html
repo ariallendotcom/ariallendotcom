@@ -8,7 +8,7 @@
   <meta name="description" content="Make yourself at home. A room for reading, listening, and getting to know Ari.">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="room.css?v=objects-1"><link rel="stylesheet" href="music.css?v=objects-1"><link rel="stylesheet" href="soundtrack.css?v=objects-1"><link rel="stylesheet" href="mobile.css?v=objects-1">
+  <link rel="stylesheet" href="room.css?v=objects-1"><link rel="stylesheet" href="music.css?v=objects-1"><link rel="stylesheet" href="soundtrack.css?v=compact-player-1"><link rel="stylesheet" href="mobile.css?v=objects-1">
   <link rel="stylesheet" href="experience.css?v=about-table-1">
 </head>
 <body>
@@ -38,10 +38,13 @@
           <button id="soundtrack-toggle" type="button" aria-label="Play room music"><span id="soundtrack-symbol" aria-hidden="true">▶</span><span id="soundtrack-action">Play</span></button>
           <div class="soundtrack-copy"><span class="soundtrack-label">Ready on the record player</span><span class="soundtrack-title">Opening your top songs…</span><span class="soundtrack-artist"></span></div>
           <span class="soundtrack-meter" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-          <button id="soundtrack-next" aria-label="Next song">›</button><button id="soundtrack-details" aria-label="Show Spotify player" aria-expanded="false" aria-controls="soundtrack-player">⌃</button>
+          <button id="soundtrack-next" aria-label="Next song">›</button><button id="soundtrack-details" aria-label="Show Spotify player" aria-expanded="false" aria-controls="soundtrack-player"><span class="soundtrack-caret" aria-hidden="true">⌃</span><span id="soundtrack-details-label">Show player</span></button>
         </div>
         <div class="soundtrack-progress" role="progressbar" aria-label="Song progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
-        <div id="soundtrack-player" hidden><p id="soundtrack-note" class="soundtrack-note" role="status" hidden></p><div id="spotify-room-holder"><div id="spotify-room-embed"></div></div><div id="soundcloud-room-embed" hidden></div><a id="soundtrack-link" href="https://open.spotify.com/user/121056542" target="_blank" rel="noopener">Open in Spotify ↗</a></div>
+        <div id="soundtrack-player" hidden>
+          <div class="soundtrack-player-heading"><span id="soundtrack-provider">Spotify</span><button id="soundtrack-hide" type="button" aria-controls="soundtrack-player">Hide player <span aria-hidden="true">⌄</span></button></div>
+          <p id="soundtrack-note" class="soundtrack-note" role="status" hidden></p><div id="spotify-room-holder"><div id="spotify-room-embed"></div></div><div id="soundcloud-room-embed" hidden></div><a id="soundtrack-link" href="https://open.spotify.com/user/121056542" target="_blank" rel="noopener">Open in Spotify ↗</a>
+        </div>
       </aside>
       <nav class="room-dock" aria-label="Things to explore"><button data-panel="words"><span aria-hidden="true">≋</span>Read</button><button data-panel="sounds"><span aria-hidden="true">♫</span>Listen</button><button data-panel="about"><span aria-hidden="true">✳</span>About Ari</button><button id="help-toggle" aria-label="Room controls">?</button></nav>
     </div>
@@ -92,6 +95,6 @@
   </section>
   </main>
   <dialog id="instructions" aria-labelledby="help-title"><button class="help-close" aria-label="Close room controls">×</button><span class="eyebrow">Settle in</span><h2 id="help-title">Find your way around.</h2><p>Drag to look around. Scroll or pinch to look closer. The arrows on your keyboard work, too.</p><p>Choose a place at the bottom to move around the room. Touch a label—or use Read, Listen, and About Ari—to explore.</p><p>Hide the labels for a little more quiet. Press Escape to return to the room. Music controls stay at the bottom.</p><button class="help-done">Make yourself comfortable</button></dialog>
-  <script src="ui.js?v=about-table-1" defer></script><script src="music.js?v=objects-1" defer></script><script src="soundtrack.js?v=quiet-arrival-1" defer></script><script type="module" src="room.js?v=about-table-1"></script>
+  <script src="ui.js?v=about-table-1" defer></script><script src="music.js?v=objects-1" defer></script><script src="soundtrack.js?v=compact-player-1" defer></script><script type="module" src="room.js?v=about-table-1"></script>
 </body>
 </html>
