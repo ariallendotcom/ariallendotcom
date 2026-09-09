@@ -30,10 +30,13 @@ body[data-experience] #hotspots, body[data-experience] .welcome, body[data-exper
 .experience-view { position: absolute; inset: 0 0 calc(var(--console-height) + var(--room-bottom) + 10px); overflow: hidden; }
 #desk-experience { bottom: 0; }
 .desk-stage {
-  position: absolute; left: 50%; top: 45%; width: max(100%, min(1680px, calc((100dvh - 70px) * 1.5)));
-  aspect-ratio: 3 / 2; transform: translate(-50%,-50%);
+  /* Anchor the photographed monitor below the header, then size the whole
+     desk so its screen also clears the bottom console on wide viewports. */
+  position: absolute; left: 50%; top: calc(var(--room-top) + 68px);
+  width: min(100%, calc((100dvh - var(--room-top) - var(--room-bottom) - var(--console-height) - 96px) * 2.9));
+  aspect-ratio: 3 / 2; transform: translate(-50%,-9.668%);
 }
-.desk-photo { display: block; width: 100%; height: 100%; }
+.desk-photo { display: block; width: 100%; height: 100%; mask-image: linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent); }
 #computer-screen {
   position: absolute; left: 20.0521%; top: 10.8398%; width: 60.2865%; height: 47.7539%;
   display: flex; flex-direction: column; background: #f1eadb; color: #302d27; overflow: hidden;
@@ -96,7 +99,7 @@ body[data-experience] #hotspots, body[data-experience] .welcome, body[data-exper
   .experience-header button { font-size: 13px; padding-inline: 12px; }
   #desk-experience { bottom: calc(var(--console-height) + var(--room-bottom) + 12px); }
   .desk-stage { inset: 0; width: 100%; height: 100%; transform: none; aspect-ratio: auto; }
-  .desk-photo { position: absolute; width: 175%; height: 100%; object-fit: cover; left: -37.5%; filter: brightness(.7); }
+  .desk-photo { position: absolute; width: 175%; height: 100%; object-fit: cover; left: -37.5%; filter: brightness(.7); mask-image: none; }
   /* Lean into the monitor on a small screen so the writing stays readable. */
   #computer-screen { left: 12px; right: 12px; top: calc(var(--room-top) + 62px); bottom: 8px; width: auto; height: auto; border: 8px solid #1b1a16; border-radius: 8px; box-shadow: 0 12px 45px #0009; }
   .computer-bar { padding: 4px 5px; gap: 4px; justify-content: center; }
@@ -116,6 +119,6 @@ body[data-experience] #hotspots, body[data-experience] .welcome, body[data-exper
   .bottom-console .room-dock button > span { display: none; }
   .places { bottom: calc(var(--console-height) + var(--room-bottom) + 6px); }
   .help,.look-controls { display: none; }
-  .desk-stage { width: 110%; top: 55%; }
-  #computer-screen { top: 10.8398%; height: 47.7539%; }
+  .computer-bar > span { display: none; }
+  .computer-bar nav { width: 100%; justify-content: space-between; }
 }
