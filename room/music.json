@@ -1,64 +1,88 @@
 {
   "albums": [
     {
-      "artist": "RÜFÜS DU SOL",
       "title": "Bloom",
-      "url": "https://open.spotify.com/search/R%C3%9CF%C3%9CS%20DU%20SOL%20Bloom"
-    },
-    {
-      "artist": "ZHU",
-      "title": "Generationwhy",
-      "url": "https://open.spotify.com/search/ZHU%20Generationwhy"
-    },
-    {
-      "artist": "Taylor Swift",
-      "title": "folklore",
-      "url": "https://open.spotify.com/search/Taylor%20Swift%20folklore"
-    },
-    {
-      "artist": "The 1975",
-      "title": "Notes On A Conditional Form",
-      "url": "https://open.spotify.com/search/The%201975%20Notes%20On%20A%20Conditional%20Form"
-    },
-    {
-      "artist": "Parcels",
-      "title": "LOVED",
-      "url": "https://open.spotify.com/search/Parcels%20LOVED"
-    },
-    {
-      "artist": "Bon Iver",
-      "title": "i,i",
-      "url": "https://open.spotify.com/search/Bon%20Iver%20i%2Ci"
-    },
-    {
       "artist": "RÜFÜS DU SOL",
-      "title": "Inhale / Exhale",
-      "url": "https://open.spotify.com/search/R%C3%9CF%C3%9CS%20DU%20SOL%20Inhale%20%2F%20Exhale"
+      "spotifyUri": "spotify:album:4EAehCii5lZgeewct1LA5p",
+      "url": "https://open.spotify.com/album/4EAehCii5lZgeewct1LA5p?utm_source=openai&utm_medium=chatgpt",
+      "artwork": "https://i.scdn.co/image/ab67616d0000b27360e5059dcab339142d7642bb"
     },
     {
-      "artist": "Vance Joy",
-      "title": "Dream Your Life Away (Special Edition)",
-      "url": "https://open.spotify.com/search/Vance%20Joy%20Dream%20Your%20Life%20Away%20%28Special%20Edition%29"
+      "title": "GENERATIONWHY",
+      "artist": "ZHU",
+      "spotifyUri": "spotify:album:6Xhb46t8f3z8FkuXQAj4UV",
+      "url": "https://open.spotify.com/album/6Xhb46t8f3z8FkuXQAj4UV?utm_source=openai&utm_medium=chatgpt",
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273bfaac9fe82f18eeba0f028e3"
     },
     {
-      "artist": "The 1975",
-      "title": "A Brief Inquiry Into Online Relationships",
-      "url": "https://open.spotify.com/search/The%201975%20A%20Brief%20Inquiry%20Into%20Online%20Relationships"
-    },
-    {
+      "title": "folklore",
       "artist": "Taylor Swift",
+      "spotifyUri": "spotify:album:2fenSS68JI1h4Fo296JfGr",
+      "url": "https://open.spotify.com/album/2fenSS68JI1h4Fo296JfGr?utm_source=openai&utm_medium=chatgpt",
+      "artwork": "https://i.scdn.co/image/ab67616d0000b27395f754318336a07e85ec59bc"
+    },
+    {
+      "title": "Notes On A Conditional Form",
+      "artist": "The 1975",
+      "spotifyUri": "spotify:album:0o5xjCboti8vXhdoUG9LYi",
+      "url": "https://open.spotify.com/album/0o5xjCboti8vXhdoUG9LYi?utm_source=openai&utm_medium=chatgpt",
+      "artwork": "https://i.scdn.co/image/ab67616d0000b2734400af0debecb047939c9254"
+    },
+    {
+      "title": "LOVED",
+      "artist": "Parcels",
+      "spotifyUri": "spotify:album:1rSbjr5U9J9rQ9sE7RxHFl",
+      "url": "https://open.spotify.com/album/1rSbjr5U9J9rQ9sE7RxHFl?utm_source=openai&utm_medium=chatgpt",
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273d076abbd008ad3c6d65112eb"
+    },
+    {
+      "title": "i,i",
+      "artist": "Bon Iver",
+      "spotifyUri": "spotify:album:0aldG5AoqOUDkEbsGtI9TW",
+      "url": "https://open.spotify.com/album/0aldG5AoqOUDkEbsGtI9TW?utm_source=openai&utm_medium=chatgpt",
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273a890863cc3537392e050e8db"
+    },
+    {
+      "title": "Inhale / Exhale",
+      "artist": "RÜFÜS DU SOL",
+      "spotifyUri": "spotify:album:3Fda4vhPP0Clk3EQNVipUP",
+      "url": "https://open.spotify.com/album/3Fda4vhPP0Clk3EQNVipUP?utm_source=openai&utm_medium=chatgpt",
+      "artwork": "https://i.scdn.co/image/ab67616d0000b2738fd7b2c06ad06c4213664920"
+    },
+    {
+      "title": "Dream Your Life Away",
+      "artist": "Vance Joy",
+      "spotifyUri": "spotify:album:6rIbiUMmZJfqJRnXhVxFvg",
+      "url": "https://open.spotify.com/album/6rIbiUMmZJfqJRnXhVxFvg?utm_source=openai&utm_medium=chatgpt",
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273d3ce97395ff522b0d70c1094"
+    },
+    {
+      "title": "A Brief Inquiry Into Online Relationships",
+      "artist": "The 1975",
+      "spotifyUri": "spotify:album:6PWXKiakqhI17mTYM4y6oY",
+      "url": "https://open.spotify.com/album/6PWXKiakqhI17mTYM4y6oY?utm_source=openai&utm_medium=chatgpt",
+      "artwork": "https://i.scdn.co/image/ab67616d0000b2736c582022e90b11f0da287a9a"
+    },
+    {
       "title": "evermore",
-      "url": "https://open.spotify.com/search/Taylor%20Swift%20evermore"
+      "artist": "Taylor Swift",
+      "spotifyUri": "spotify:album:2Xoteh7uEpea4TohMxjtaq",
+      "url": "https://open.spotify.com/album/2Xoteh7uEpea4TohMxjtaq?utm_source=openai&utm_medium=chatgpt",
+      "artwork": "https://i.scdn.co/image/ab67616d0000b27333b8541201f1ef38941024be"
     },
     {
-      "artist": "Adele",
       "title": "30",
-      "url": "https://open.spotify.com/search/Adele%2030"
+      "artist": "Adele",
+      "spotifyUri": "spotify:album:21jF5jlMtzo94wbxmJ18aa",
+      "url": "https://open.spotify.com/album/21jF5jlMtzo94wbxmJ18aa?utm_source=openai&utm_medium=chatgpt",
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273c6b577e4c4a6d326354a89f7"
     },
     {
-      "artist": "The Weeknd",
       "title": "Starboy",
-      "url": "https://open.spotify.com/search/The%20Weeknd%20Starboy"
+      "artist": "The Weeknd",
+      "spotifyUri": "spotify:album:2ODvWsOgouMbaA5xf0RkJe",
+      "url": "https://open.spotify.com/album/2ODvWsOgouMbaA5xf0RkJe?utm_source=openai&utm_medium=chatgpt",
+      "artwork": "https://i.scdn.co/image/ab67616d0000b2734718e2b124f79258be7bc452"
     }
   ],
   "tracks": [
@@ -67,126 +91,144 @@
       "title": "Follow The Sun",
       "url": "https://open.spotify.com/track/47Hv8xflvAKs7y5vwY6Pox?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:47Hv8xflvAKs7y5vwY6Pox",
-      "durationMs": 256266
+      "durationMs": 256266,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b27396db2284f94c68dc43771522"
     },
     {
       "artist": "Radiohead",
       "title": "Reckoner",
       "url": "https://open.spotify.com/track/02ppMPbg1OtEdHgoPqoqju?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:02ppMPbg1OtEdHgoPqoqju",
-      "durationMs": 290213
+      "durationMs": 290213,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273de3c04b5fc750b68899b20a9"
     },
     {
       "artist": "Parcels",
       "title": "Tobeloved",
       "url": "https://open.spotify.com/track/7cSLD89y304ZvX4mVhYVfw?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:7cSLD89y304ZvX4mVhYVfw",
-      "durationMs": 245904
+      "durationMs": 245904,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273d076abbd008ad3c6d65112eb"
     },
     {
       "artist": "Parcels",
       "title": "Finallyover",
       "url": "https://open.spotify.com/track/1Ded9EOaAthYQVOs9MwtCp?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:1Ded9EOaAthYQVOs9MwtCp",
-      "durationMs": 191925
+      "durationMs": 191925,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273d076abbd008ad3c6d65112eb"
     },
     {
       "artist": "The 1975",
       "title": "Sincerity Is Scary",
       "url": "https://open.spotify.com/track/6HguG9HRb1Ke1bhihfE4m8?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:6HguG9HRb1Ke1bhihfE4m8",
-      "durationMs": 225955
+      "durationMs": 225955,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b2736c582022e90b11f0da287a9a"
     },
     {
       "artist": "RÜFÜS DU SOL",
       "title": "Be with You",
       "url": "https://open.spotify.com/track/11Pz9gYhgbzSXHQFydfVe4?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:11Pz9gYhgbzSXHQFydfVe4",
-      "durationMs": 243117
+      "durationMs": 243117,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b27360e5059dcab339142d7642bb"
     },
     {
       "artist": "RÜFÜS DU SOL",
       "title": "Brighter",
       "url": "https://open.spotify.com/track/7D5gkUVhkLbe5e8qG1NqcZ?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:7D5gkUVhkLbe5e8qG1NqcZ",
-      "durationMs": 281084
+      "durationMs": 281084,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b27360e5059dcab339142d7642bb"
     },
     {
       "artist": "Michael Kiwanuka",
       "title": "Love & Hate",
       "url": "https://open.spotify.com/track/7oOEFDLSQscl0uGulnIEmG?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:7oOEFDLSQscl0uGulnIEmG",
-      "durationMs": 427093
+      "durationMs": 427093,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b2731070095e88dce90a090171b5"
     },
     {
       "artist": "Leon Bridges",
       "title": "Beyond",
       "url": "https://open.spotify.com/track/1Omt5bfz1tZUCqd26HxbS0?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:1Omt5bfz1tZUCqd26HxbS0",
-      "durationMs": 240598
+      "durationMs": 240598,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273d8ba7edac14684336ba0f507"
     },
     {
       "artist": "Radiohead",
       "title": "Weird Fishes / Arpeggi",
       "url": "https://open.spotify.com/track/4wajJ1o7jWIg62YqpkHC7S?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:4wajJ1o7jWIg62YqpkHC7S",
-      "durationMs": 318186
+      "durationMs": 318186,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273de3c04b5fc750b68899b20a9"
     },
     {
       "artist": "Robert Francis",
       "title": "The Magic",
       "url": "https://open.spotify.com/track/0lyh7zicb5FHKeeWoAoqcx?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:0lyh7zicb5FHKeeWoAoqcx",
-      "durationMs": 195958
+      "durationMs": 195958,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b27316eff6660face854545c8851"
     },
     {
       "artist": "Bon Iver",
       "title": "Hey, Ma",
       "url": "https://open.spotify.com/track/0RstfX9nRY1Lfuy1808MoT?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:0RstfX9nRY1Lfuy1808MoT",
-      "durationMs": 216706
+      "durationMs": 216706,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273a890863cc3537392e050e8db"
     },
     {
       "artist": "The 1975",
       "title": "TOOTIMETOOTIMETOOTIME",
       "url": "https://open.spotify.com/track/33DzKnwuBE6lfOiADwzd5E?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:33DzKnwuBE6lfOiADwzd5E",
-      "durationMs": 207851
+      "durationMs": 207851,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b2736c582022e90b11f0da287a9a"
     },
     {
       "artist": "Mt. Joy",
       "title": "Is Joy Easy",
       "url": "https://open.spotify.com/track/7M2ctqqmAlCUWE8SJHQ8Vo?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:7M2ctqqmAlCUWE8SJHQ8Vo",
-      "durationMs": 210373
+      "durationMs": 210373,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273f418867072ff38f25fa071e2"
     },
     {
       "artist": "Bon Iver",
       "title": "Skinny Love",
       "url": "https://open.spotify.com/track/3B3eOgLJSqPEA0RfboIQVM?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:3B3eOgLJSqPEA0RfboIQVM",
-      "durationMs": 238520
+      "durationMs": 238520,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b273bf7c317a63c4f128b8823406"
     },
     {
       "artist": "Labi Siffre",
       "title": "Watch Me",
       "url": "https://open.spotify.com/track/2xjv06k7zfnHV9zanSLRdI?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:2xjv06k7zfnHV9zanSLRdI",
-      "durationMs": 213200
+      "durationMs": 213200,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b2734f6f29e2eb6055e6451e042e"
     },
     {
       "artist": "Alexi Murdoch",
       "title": "Orange Sky",
       "url": "https://open.spotify.com/track/0Y1fueUFu8jQtUxdUmOojf?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:0Y1fueUFu8jQtUxdUmOojf",
-      "durationMs": 379520
+      "durationMs": 379520,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b2735d34e20a5f7262af4f0756b4"
     },
     {
       "artist": "José González",
       "title": "Down The Line",
       "url": "https://open.spotify.com/track/0GixW2r7DQK76xOxMmKn8S?utm_source=openai&utm_medium=chatgpt",
       "spotifyUri": "spotify:track:0GixW2r7DQK76xOxMmKn8S",
-      "durationMs": 192906
+      "durationMs": 192906,
+      "artwork": "https://i.scdn.co/image/ab67616d0000b2732c489b52f37e678f33ed8035"
     }
   ]
 }

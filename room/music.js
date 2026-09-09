@@ -1,56 +1,92 @@
 (() => {
-  let collection;
-  let selected = 'tracks';
-  let host;
-  let loaded = false;
-  const escape = (v) => String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const heading = {albums:['At the record player','Albums to settle into.'],tracks:['On the iPod','Top songs.'],dj:['The DJ archive','Sounds by Ari.']};
-  async function initMusic(){
-    const dialog = document.querySelector('#music-panel');
-    if (!dialog || dialog.dataset.collectionReady) return;
-    dialog.dataset.collectionReady='true';
-    host = dialog.querySelector('.music-body');
-    if (!host) return;
-    // Each player stays in its original DOM position so opening an essay doesn't reload it.
-    host.innerHTML = '<nav class="music-sources" aria-label="Music collection"><button data-source="tracks" aria-pressed="true">iPod</button><button data-source="albums" aria-pressed="false">Record player</button><button data-source="dj" aria-pressed="false">DJ archive</button></nav><section id="album-collection" hidden><h2 id="music-title">Albums to settle into.</h2><p class="collection-note">Some records have a way of staying with you.</p><div id="record-grid"><p>Opening the record shelf…</p></div></section><section id="track-collection"><h2 id="tracks-title">Top songs.</h2><p class="collection-note">Songs I keep finding my way back to.</p><div id="track-list"><p>Opening your top songs…</p></div></section><section id="dj-collection" hidden><h2 id="dj-title">Sounds by Ari.</h2><p>For years, I DJed as Sounds by Ari. That part of my life is in a little hibernation at the moment. These mixes are from earlier years—still here for anyone who wants to listen.</p><div id="music-slot"><button class="music-toggle" id="load-music">Open the DJ mixes</button></div><div class="music-links"><a href="https://soundcloud.com/soundsbyari" target="_blank" rel="noopener">SoundCloud ↗</a><a href="mailto:ari@ariallen.com?subject=Music">Talk music ↗</a></div></section><div id="selected-music" hidden><div class="now-playing-header"><span class="eyebrow" id="selected-label"></span><button id="stop-music">Close player ×</button></div><div id="selected-player"></div></div><div class="music-links collection-footer"><a href="https://open.spotify.com/user/121056542" target="_blank" rel="noopener">More on Spotify ↗</a></div>';
-    source(selected);
-    try {
-      const response=await fetch('music.json');if(!response.ok)throw new Error('Music unavailable');
-      collection=await response.json();render();loaded=true;
-    } catch {
-      host.querySelectorAll('#record-grid, #track-list').forEach(list => { list.innerHTML='<p>The collection couldn’t load. The DJ archive is still available.</p>'; });
+  const view = document.querySelector('#music-experience');
+  const viewport = view.querySelector('.collection-viewport');
+  const browser = view.querySelector('#music-browser');
+  const cover = view.querySelector('#crate-cover');
+  const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let collection, pending, selected = 'overview', album = 0, page = 0, tape = 0, tapes = [], tapeLoading = false, touch, swiped = false;
+  function artwork(img, item) {
+    img.hidden = !item?.artwork;
+    if (item?.artwork) {img.src = item.artwork;img.alt = `${item.title} by ${item.artist}`;}
+  }
+  async function load() {
+    if (!pending) pending = fetch('music.json?v=objects-1').then(response => {
+      if (!response.ok) throw new Error('Music collection unavailable');return response.json();
+    }).then(data => {collection = data;return data;}).catch(error => {pending = null;throw error;});
+    return pending;
+  }
+  function render() {
+    if (!collection) return;
+    const record = collection.albums[album];artwork(cover, record);
+    view.querySelectorAll('[data-cd]').forEach(button => {
+      const i = page * 2 + Number(button.dataset.cd), track = collection.tracks[i];
+      button.hidden = !track;
+      if (track) {artwork(button.querySelector('img'), track);button.setAttribute('aria-label', selected === 'tracks' ? `Play ${track.title} by ${track.artist}` : 'Open the CD binder');}
+    });
+    viewport.dataset.source = selected;
+    view.querySelector('.crate-art').tabIndex = ['overview','albums'].includes(selected) ? 0 : -1;
+    view.querySelectorAll('[data-cd]').forEach(b => {b.tabIndex = ['overview','tracks'].includes(selected) ? 0 : -1;});
+    view.querySelector('.tape-label').tabIndex = ['overview','dj'].includes(selected) ? 0 : -1;
+    view.querySelectorAll('.object-navigation [data-source]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.source === selected)));
+    if (selected === 'overview') {
+      browser.innerHTML = '<p class="music-invitation">Pick something up. There’s time.</p>';
+    } else if (selected === 'albums') {
+      browser.innerHTML = `<div class="record-caption"><span class="eyebrow">Record ${album + 1} / ${collection.albums.length}</span><h2>${escape(record.title)}</h2><p>${escape(record.artist)}</p></div><div class="browse-actions"><button data-flip="-1" aria-label="Previous record">←</button><button data-play-album class="listen-button">▶ Put this record on</button><button data-flip="1" aria-label="Next record">→</button></div><a class="provider-link" href="${escape(record.url)}" target="_blank" rel="noopener">Open album in Spotify ↗</a>`;
+    } else if (selected === 'tracks') {
+      const tracks = collection.tracks.slice(page * 2, page * 2 + 2);
+      browser.innerHTML = `<div class="binder-tracks">${tracks.map((t,i) => `<div><button data-play-track="${page * 2 + i}"><span class="eyebrow">${String(page * 2 + i + 1).padStart(2,'0')} · Play song</span><strong>${escape(t.title)}</strong><span>${escape(t.artist)}</span></button><a class="provider-link" href="${escape(t.url)}" target="_blank" rel="noopener">Full song on Spotify ↗</a></div>`).join('')}</div><div class="browse-actions"><button data-flip="-1" aria-label="Previous CD binder page">←</button><span>Top songs · ${page + 1} / ${Math.ceil(collection.tracks.length / 2)}</span><button data-flip="1" aria-label="Next CD binder page">→</button></div>`;
+    } else {
+      const mix = tapes[tape];
+      view.querySelector('.tape-label').textContent = mix ? mix.title : 'Sounds by Ari';
+      browser.innerHTML = `<div class="record-caption"><span class="eyebrow">The DJ archive${mix ? ` · Tape ${tape + 1} / ${tapes.length}` : ''}</span><h2>${escape(mix?.title || 'Sounds by Ari.')}</h2><p>Older mixes from a DJ chapter that’s in a little hibernation.</p></div><div class="browse-actions">${mix ? '<button data-flip="-1" aria-label="Previous DJ tape">←</button>' : ''}<button data-play-tapes class="listen-button">▶ Put this tape on</button>${mix ? '<button data-flip="1" aria-label="Next DJ tape">→</button>' : ''}</div><a class="provider-link" href="${escape(mix?.permalink_url || 'https://soundcloud.com/soundsbyari')}" target="_blank" rel="noopener">${mix ? 'Open mix' : 'Browse all the mixes'} on SoundCloud ↗</a>`;
     }
   }
-  function render(){
-    document.querySelector('#record-grid').innerHTML=collection.albums.map((r,i)=>`<button class="record-card" data-music="albums:${i}">${r.artwork?`<img src="${escape(r.artwork)}" alt="${escape(r.title)} album artwork" loading="lazy">`:`<div class="record-label tone-${i%5}"><span>${escape(r.artist)}</span><strong>${escape(r.title)}</strong></div>`}<span class="record-title">${escape(r.title)}</span><span class="record-artist">${escape(r.artist)}</span></button>`).join('');
-    document.querySelector('#track-list').innerHTML=collection.tracks.map((r,i)=>`<button class="track-row" data-music="tracks:${i}"><span class="track-number">${String(i+1).padStart(2,'0')}</span><span><strong>${escape(r.title)}</strong><span>${escape(r.artist)}</span></span><span class="track-play" aria-hidden="true">↗</span></button>`).join('');
+  function loadTapes() {
+    if (tapes.length || tapeLoading || !window.ariSoundtrack) return;
+    tapeLoading = true;
+    window.ariSoundtrack.prepareTapes().then(items => {tapes = items;tapeLoading = false;if(selected === 'dj')render();}).catch(() => {tapeLoading = false;});
   }
-  function source(name){
-    if(!host)return;selected=name;
-    document.querySelector('#music-panel').setAttribute('aria-labelledby',name==='albums'?'music-title':name==='tracks'?'tracks-title':'dj-title');
-    document.querySelector('#album-collection').hidden=name!=='albums';document.querySelector('#track-collection').hidden=name!=='tracks';document.querySelector('#dj-collection').hidden=name!=='dj';
-    host.querySelectorAll('[data-source]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.source===name)));
-    document.querySelector('#music-panel .panel-top .eyebrow').textContent=heading[name][0];
-    document.querySelector('#music-panel').scrollTop=0;
+  function choose(source) {selected = source;render();if(selected === 'dj')loadTapes();}
+  async function open(source = 'overview') {
+    selected = ['overview','albums','tracks','dj'].includes(source) ? source : 'overview';
+    browser.innerHTML = '<p class="music-invitation">Opening the collection…</p>';
+    try {await load();choose(selected);}
+    catch {browser.innerHTML = '<p>The collection couldn’t open. <button data-retry-music>Try again</button> or <a href="https://open.spotify.com/user/121056542" target="_blank" rel="noopener">visit Spotify ↗</a>.</p>';}
   }
-  async function selectMusic(kind,index){
-    const item=collection[kind][index];if(!item)return;
-    const djSlot=document.querySelector('#music-slot');
-    if(djSlot.querySelector('iframe'))djSlot.innerHTML='<button class="music-toggle" id="load-music">Open the DJ mixes</button>';
-    const section=document.querySelector('#selected-music');section.hidden=false;
-    document.querySelector('#selected-label').textContent=`${item.artist} · ${item.title}`;
-    const player=document.querySelector('#selected-player');player.replaceChildren();
-    if(item.embed){
-      const frame=document.createElement('iframe');frame.title=`${item.title} by ${item.artist}`;frame.src=item.embed;frame.className='collection-player';frame.allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';player.append(frame);
+  function flip(direction) {
+    if (!collection) return;
+    if (selected === 'albums') album = (album + direction + collection.albums.length) % collection.albums.length;
+    else if (selected === 'tracks') {const n = Math.ceil(collection.tracks.length / 2);page = (page + direction + n) % n;}
+    else if (selected === 'dj' && tapes.length) tape = (tape + direction + tapes.length) % tapes.length;
+    else return;
+    const focusedFlip = document.activeElement?.dataset?.flip;
+    render();
+    if (focusedFlip) browser.querySelector(`[data-flip="${focusedFlip}"]`)?.focus({preventScroll:true});
+    const target = selected === 'albums' ? cover : view.querySelector('.cd-left');
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) target.animate?.([{opacity:.35,transform:`translateY(${direction * 12}px)`},{opacity:1,transform:'translateY(0)'}], {duration:300,easing:'ease-out'});
+  }
+  function playTrack(i) { if (collection?.tracks[i]) window.ariSoundtrack?.selectTrack(i); }
+  function playAlbum() { if (collection) window.ariSoundtrack?.selectAlbum(collection.albums[album]); }
+  view.addEventListener('click', event => {
+    if (swiped) {swiped = false;event.preventDefault();return;}
+    const tab = event.target.closest('[data-source]');if (tab) {choose(tab.dataset.source);}
+    const object = event.target.closest('[data-object]');if (object) {
+      if (selected === object.dataset.object) {if (selected === 'albums') playAlbum();else window.ariSoundtrack?.playTapes(tape);}
+      else {choose(object.dataset.object);}
     }
-    const a=document.createElement('a');a.href=item.url;a.target='_blank';a.rel='noopener';a.className='open-album';a.textContent=item.embed?'Open in music app ↗':'Find on Spotify ↗';player.append(a);
-    section.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
-  }
-  document.addEventListener('click',async e=>{
-    if(e.target.closest('#load-music')){document.querySelector('#selected-player')?.replaceChildren();const selection=document.querySelector('#selected-music');if(selection)selection.hidden=true;}
-    const open=e.target.closest('[data-panel="sounds"]');if(open){await initMusic();source(open.dataset.source || 'tracks');}
-    const tab=e.target.closest('[data-source]');if(tab && tab.closest('.music-sources'))source(tab.dataset.source);
-    const item=e.target.closest('[data-music]');if(item && collection){const [kind,i]=item.dataset.music.split(':');selectMusic(kind,Number(i));}
-    if(e.target.closest('#stop-music')){document.querySelector('#selected-player').replaceChildren();document.querySelector('#selected-music').hidden=true;}
+    const cd = event.target.closest('[data-cd]');if (cd) {if (selected === 'tracks') playTrack(page * 2 + Number(cd.dataset.cd));else {selected = 'tracks';render();}}
+    const move = event.target.closest('[data-flip]');if (move) flip(Number(move.dataset.flip));
+    if (event.target.closest('[data-play-album]')) playAlbum();
+    const track = event.target.closest('[data-play-track]');if (track) playTrack(Number(track.dataset.playTrack));
+    if (event.target.closest('[data-play-tapes]')) window.ariSoundtrack?.playTapes(tape);
+    if (event.target.closest('[data-retry-music]')) open(selected);
   });
+  viewport.addEventListener('pointerdown', event => { swiped = false;if (event.isPrimary) touch = {x:event.clientX,y:event.clientY}; });
+  viewport.addEventListener('pointerup', event => {
+    if (!touch) return;const dx = event.clientX - touch.x, dy = event.clientY - touch.y;touch = null;
+    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.5) {swiped = true;flip(dx < 0 ? 1 : -1);}
+  });
+  viewport.addEventListener('pointercancel', () => {touch = null;});
+  view.addEventListener('keydown', event => {if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {event.preventDefault();flip(event.key === 'ArrowRight' ? 1 : -1);}});
+  window.ariMusic = {open};
 })();

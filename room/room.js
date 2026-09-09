@@ -8,13 +8,13 @@ const error = document.querySelector('#error');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const places = {
   room: {file:'room-panorama.png', label:'The room', yaw:0, pitch:-3, fov:78,
-    spots:[{u:.36,v:.49,label:'At the desk',panel:'about'},{u:.625,v:.47,label:'From the bookshelf',panel:'words'},{u:.48,v:.51,label:'The record player',panel:'sounds',source:'albums'},{u:.76,v:.77,label:'A few favorites',panel:'sounds',source:'tracks'}]},
+    spots:[{u:.36,v:.49,label:'Sit at the desk',panel:'words'},{u:.625,v:.47,label:'The reading shelf',panel:'books'},{u:.48,v:.51,label:'The record player',panel:'sounds',source:'albums'}]},
   desk: {file:'desk-panorama.png',label:'At the desk',yaw:0,pitch:-5,fov:76,
     spots:[{u:.40,v:.56,label:'A few open questions',panel:'words'},{u:.52,v:.32,label:'The person behind the page',panel:'about'},{u:.63,v:.56,label:'The record player',panel:'sounds',source:'albums'}]},
   chair: {file:'chair-panorama.png',label:'Take a seat',yaw:0,pitch:-3,fov:78,
     spots:[{u:.64,v:.46,label:'Choose an essay',panel:'words'},{u:.52,v:.57,label:'The record player',panel:'sounds',source:'albums'},{u:.33,v:.49,label:'Get to know Ari',panel:'about'}]},
   stereo: {file:'stereo-panorama.png',label:'The stereo',yaw:0,pitch:-8,fov:72,
-    spots:[{u:.48,v:.58,label:'The record player',panel:'sounds',source:'albums'},{u:.546,v:.60,label:'The iPod',panel:'sounds',source:'tracks'},{u:.705,v:.39,label:'From the bookshelf',panel:'words'}]}
+    spots:[{u:.48,v:.58,label:'The record player',panel:'sounds',source:'albums'},{u:.546,v:.60,label:'The CD binder',panel:'sounds',source:'tracks'},{u:.705,v:.39,label:'The reading shelf',panel:'books'}]}
 };
 let renderer, camera, scene, sphere, material;
 let yaw=0,pitch=-3,fov=78,targetYaw=0,targetPitch=-3,targetFov=78;
@@ -29,7 +29,7 @@ function interact(){ document.body.classList.add('exploring'); }
 function rebuildSpots(){
   const root=document.querySelector('#hotspots');root.replaceChildren();
   spots=places[active].spots.map((spot)=>{
-    const button=document.createElement('button');button.className='hotspot';button.textContent=spot.label;if(spot.source==='albums'){button.dataset.soundtrackToggle='';button.textContent=document.body.dataset.soundtrackState==='playing'?'Pause the record':'Play the record';}else{button.dataset.panel=spot.panel;if(spot.source)button.dataset.source=spot.source;}button.type='button';root.append(button);
+    const button=document.createElement('button');button.className='hotspot';button.textContent=spot.label;button.dataset.panel=spot.panel;if(spot.source)button.dataset.source=spot.source;button.type='button';root.append(button);
     return {...spot,button,point:panoramaPoint(spot.u,spot.v)};
   });
 }
@@ -136,14 +136,14 @@ function release(e){
 }
 container.addEventListener('pointerup',release);container.addEventListener('pointercancel',release);container.addEventListener('lostpointercapture',release);
 container.addEventListener('wheel',(e)=>{if(!ready)return;e.preventDefault();targetFov=clamp(targetFov+e.deltaY*.035,40,90);interact();},{passive:false});
-document.querySelectorAll('[data-place]').forEach((button)=>button.addEventListener('click',()=>moveTo(button.dataset.place)));
+document.querySelectorAll('[data-place]').forEach((button)=>button.addEventListener('click',()=>{if(!['desk','stereo'].includes(button.dataset.place))moveTo(button.dataset.place);}));
 document.querySelectorAll('[data-look]').forEach((button)=>button.addEventListener('click',()=>{
   if(button.dataset.look==='home'){targetYaw=0;targetPitch=-3;targetFov=78;}
   else targetYaw+=button.dataset.look==='left'?-22:22;
   interact();
 }));
 addEventListener('keydown',(e)=>{
-  if(document.querySelector('dialog[open]') || e.target.closest('button,a,input,textarea'))return;
+  if(document.body.dataset.experience || document.querySelector('dialog[open]') || e.target.closest('button,a,input,textarea'))return;
   const handlers={ArrowLeft:()=>targetYaw-=5,ArrowRight:()=>targetYaw+=5,ArrowUp:()=>targetPitch=clamp(targetPitch+5,-65,65),ArrowDown:()=>targetPitch=clamp(targetPitch-5,-65,65),'+':()=>targetFov=clamp(targetFov-4,40,90),'-':()=>targetFov=clamp(targetFov+4,40,90)};
   if(handlers[e.key]){e.preventDefault();handlers[e.key]();interact();}
 });

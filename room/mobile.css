@@ -39,14 +39,6 @@
   }
   .header-actions a { display: flex; align-items: center; font-size: 14px; }
 
-  #room-soundtrack {
-    top: calc(var(--room-top) + 58px);
-    right: var(--room-right);
-    width: min(340px, calc(100% - var(--room-left) - var(--room-right)));
-    max-height: calc(100dvh - var(--room-top) - var(--room-bottom) - 218px);
-    overflow: auto;
-    overscroll-behavior: contain;
-  }
   .soundtrack-bar { gap: 4px; padding: 9px 8px; }
   .soundtrack-label { font-size: 12px; letter-spacing: 0; }
   .soundtrack-artist { font-size: 12px; }
@@ -122,13 +114,6 @@
   .places { bottom: calc(var(--room-bottom) + 68px); }
   .help { bottom: calc(var(--room-bottom) + 122px); }
   .look-controls { right: var(--room-right); left: auto; bottom: var(--room-bottom); }
-  #room-soundtrack {
-    top: calc(var(--room-top) + 52px);
-    right: var(--room-right);
-    max-height: calc(100dvh - var(--room-top) - var(--room-bottom) - 172px);
-    overflow: auto;
-    overscroll-behavior: contain;
-  }
   dialog, #music-panel { max-height: calc(100dvh - var(--room-top) - var(--room-bottom)); }
 }
 

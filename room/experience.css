@@ -1,0 +1,121 @@
+[hidden] { display: none !important; }
+:root { --console-height: 134px; }
+.bottom-console {
+  position: absolute; z-index: 12; left: 50%; bottom: var(--room-bottom, 24px);
+  transform: translateX(-50%); width: min(570px, calc(100% - 32px));
+  border: 1px solid #e1c99550; border-radius: 18px; background: #241d17ed;
+  box-shadow: 0 12px 60px #08050370; backdrop-filter: blur(22px);
+}
+.bottom-console .room-dock {
+  position: static; width: 100%; transform: none; display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr)) 44px; border: 0;
+  border-radius: 0 0 18px 18px; box-shadow: none; background: none;
+  padding: 4px 8px; backdrop-filter: none;
+}
+.bottom-console .room-dock button { min-height: 44px; padding: 6px 10px; }
+.bottom-console .room-dock button > span { font-size: 16px; }
+.places { bottom: 38px; max-width: calc(50% - 310px); flex-wrap: wrap; }
+.look-controls { bottom: 38px; }
+.help { bottom: calc(var(--room-bottom) + 148px); }
+.welcome { bottom: 196px; }
+#experience { position: absolute; z-index: 8; inset: 0; background: #21170f; overflow: hidden; animation: enter-object .45s ease both; }
+body[data-experience] .room-header, body[data-experience] .places, body[data-experience] .look-controls,
+body[data-experience] #hotspots, body[data-experience] .welcome, body[data-experience] .help { visibility: hidden; }
+.experience-header {
+  position: absolute; z-index: 6; top: var(--room-top,16px); left: var(--room-left,24px); right: var(--room-right,24px);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.experience-header button { min-height: 44px; padding: 10px 16px; border: 1px solid #f3ddad50; border-radius: 30px; background: #261a11df; font-size: 14px; }
+#experience-name { font: italic 24px var(--serif); text-shadow: 0 2px 10px #000; }
+.experience-view { position: absolute; inset: 0 0 calc(var(--console-height) + var(--room-bottom) + 10px); overflow: hidden; }
+#desk-experience { bottom: 0; }
+.desk-stage {
+  position: absolute; left: 50%; top: 45%; width: max(100%, min(1680px, calc((100dvh - 70px) * 1.5)));
+  aspect-ratio: 3 / 2; transform: translate(-50%,-50%);
+}
+.desk-photo { display: block; width: 100%; height: 100%; }
+#computer-screen {
+  position: absolute; left: 20.0521%; top: 10.8398%; width: 60.2865%; height: 47.7539%;
+  display: flex; flex-direction: column; background: #f1eadb; color: #302d27; overflow: hidden;
+  box-shadow: inset 0 0 18px #78694628; border-radius: 1px;
+}
+.computer-bar { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 6px 14px; background: #dcd8c9; border-bottom: 1px solid #aaa390; }
+.computer-bar > span { font-size: 13px; font-weight: 600; white-space: nowrap; }
+.computer-bar nav { display: flex; gap: 6px; }
+.computer-bar button { font-size: 14px; min-height: 36px; padding: 6px 13px; border-radius: 5px; }
+.computer-bar button[aria-pressed="true"] { background: #f9f6ee; box-shadow: 0 1px 3px #3c33282b; }
+#computer-content { overflow: auto; flex: 1; padding: 24px clamp(20px,4vw,60px) 40px; overscroll-behavior: contain; scrollbar-color: #a69b84 #e9e3d8; min-height: 0; }
+#computer-content h2 { font: 400 clamp(32px,3vw,46px)/1.1 var(--serif); margin: 10px 0 20px; }
+#computer-content p { font-size: 16px; line-height: 1.75; }
+#computer-content a { text-decoration: underline; text-underline-offset: 4px; color: #635537; }
+#computer-content :focus-visible, .computer-bar :focus-visible { outline-color: #665130; }
+#computer-content h2:focus { outline: none; }
+#computer-content .eyebrow { color: #766446; font-size: 12px; }
+.computer-files { display: grid; gap: 0; }
+.essay-file { display: block; text-align: left; width: 100%; padding: 20px 0; border-top: 1px solid #bdae9470; }
+.essay-file strong { display: block; font: 28px/1.2 var(--serif); margin: 6px 0 8px; }
+.essay-file > span { display: block; font-size: 14px; line-height: 1.6; }
+.essay-file .file-meta, .file-meta { font: 12px/1.5 var(--sans); color: #716247; }
+.essay-file .file-open { margin-top: 10px; color: #685438; text-decoration: underline; text-underline-offset: 4px; }
+.essay-file:hover strong { color: #855b2c; }
+#computer-content .back-reading { display: block; padding: 0 0 24px; font-size: 14px; color: #6f5735; }
+#computer-content .essay-body p, #computer-content .essay-body li { font-size: 17px; }
+#computer-content .background-list span { font-size: 14px; }
+.computer-resume { display: block; width: 100%; height: 520px; border: 1px solid #bdae94; }
+#books-experience { background: linear-gradient(90deg,#160f09b0,#160f0960),url(chair-panorama.png) 70% 55% / auto 170%; }
+.reading-shelf { margin: 100px auto 30px; width: min(600px,calc(100% - 40px)); max-height: calc(100% - 130px); overflow: auto; padding: 34px; background: #211b15e8; border: 1px solid #c6a77a50; border-radius: 4px; }
+.reading-shelf h2 { font: 44px/1.1 var(--serif); margin: 15px 0 24px; }
+.reading-shelf .eyebrow { font-size: 12px; }
+.shelf-empty { font-size: 17px; line-height: 1.6; color: #dbccb4; }
+.shelf-writing { text-align: left; padding: 14px 0; text-decoration: underline; text-underline-offset: 5px; font-size: 14px; }
+.reading-book { border-top: 1px solid #a0886655; padding: 18px 0; }
+.reading-book summary { cursor: pointer; display: flex; align-items: center; gap: 18px; }
+.reading-book summary img { width: 85px; height: 125px; object-fit: contain; }
+.reading-book summary strong { font: 28px var(--serif); display: block; margin-bottom: 7px; }
+.reading-book summary span span { font-size: 14px; color: #cfbda1; }
+.reading-book p { line-height: 1.7; }
+@keyframes enter-object { from { opacity: 0; transform: scale(.98); } to { opacity: 1; transform: scale(1); } }
+@media (max-width: 1250px) {
+  .places { bottom: calc(var(--console-height) + var(--room-bottom) + 16px); left: 50%; transform: translateX(-50%); max-width: none; flex-wrap: nowrap; }
+  .help { bottom: calc(var(--console-height) + var(--room-bottom) + 70px); }
+  .welcome { bottom: 290px; }
+}
+@media (max-width: 650px) {
+  :root { --console-height: 128px; }
+  .bottom-console { left: var(--room-left); right: var(--room-right); bottom: var(--room-bottom); width: auto; transform: none; border-radius: 14px; }
+  .bottom-console .room-dock { padding: 2px 4px; }
+  .bottom-console .room-dock button { font-size: 14px; padding: 6px 3px; }
+  .bottom-console .room-dock button > span { display: none; }
+  .places { left: var(--room-left); right: var(--room-right); width: auto; transform: none; bottom: calc(var(--console-height) + var(--room-bottom) + 10px); }
+  .places button { font-size: 12px; padding: 5px 3px; }
+  .help { bottom: calc(var(--console-height) + var(--room-bottom) + 66px); }
+  .look-controls { bottom: calc(var(--console-height) + var(--room-bottom) + 100px); }
+  .welcome { bottom: calc(var(--console-height) + var(--room-bottom) + 162px); }
+  #experience-name { font-size: 20px; }
+  .experience-header { gap: 8px; }
+  .experience-header button { font-size: 13px; padding-inline: 12px; }
+  #desk-experience { bottom: calc(var(--console-height) + var(--room-bottom) + 12px); }
+  .desk-stage { inset: 0; width: 100%; height: 100%; transform: none; aspect-ratio: auto; }
+  .desk-photo { position: absolute; width: 175%; height: 100%; object-fit: cover; left: -37.5%; filter: brightness(.7); }
+  /* Lean into the monitor on a small screen so the writing stays readable. */
+  #computer-screen { left: 12px; right: 12px; top: calc(var(--room-top) + 62px); bottom: 8px; width: auto; height: auto; border: 8px solid #1b1a16; border-radius: 8px; box-shadow: 0 12px 45px #0009; }
+  .computer-bar { padding: 4px 5px; gap: 4px; justify-content: center; }
+  .computer-bar > span { display: none; }
+  .computer-bar nav { width: 100%; justify-content: space-around; }
+  .computer-bar button { min-height: 44px; padding: 5px 9px; }
+  #computer-content { padding: 18px 18px 30px; }
+  #computer-content h2 { font-size: 34px; }
+  .essay-file strong { font-size: 27px; }
+  .reading-shelf { margin-top: 82px; padding: 24px; max-height: calc(100% - 94px); }
+}
+@media (max-height: 580px) and (min-width: 651px) {
+  :root { --console-height: 76px; }
+  .bottom-console { width: min(740px,calc(100% - 34px)); display: flex; align-items: center; }
+  .bottom-console #room-soundtrack { flex: 1; min-width: 0; }
+  .bottom-console .room-dock { width: 270px; border-left: 1px solid #d8bd9433; }
+  .bottom-console .room-dock button > span { display: none; }
+  .places { bottom: calc(var(--console-height) + var(--room-bottom) + 6px); }
+  .help,.look-controls { display: none; }
+  .desk-stage { width: 110%; top: 55%; }
+  #computer-screen { top: 10.8398%; height: 47.7539%; }
+}

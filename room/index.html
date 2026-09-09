@@ -8,7 +8,8 @@
   <meta name="description" content="Make yourself at home. A room for reading, listening, and getting to know Ari.">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="room.css?v=signature-ink-2"><link rel="stylesheet" href="music.css"><link rel="stylesheet" href="soundtrack.css"><link rel="stylesheet" href="mobile.css?v=signature-ink-2">
+  <link rel="stylesheet" href="room.css?v=objects-1"><link rel="stylesheet" href="music.css?v=objects-1"><link rel="stylesheet" href="soundtrack.css?v=objects-1"><link rel="stylesheet" href="mobile.css?v=objects-1">
+  <link rel="stylesheet" href="experience.css?v=objects-1">
 </head>
 <body>
   <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;pointer-events:none">
@@ -27,17 +28,51 @@
       <span class="header-note">Make yourself at home.</span>
       <div class="header-actions"><button id="quiet" type="button" aria-pressed="false" title="Hide the room labels">Hide labels</button><button id="fullscreen" type="button" aria-label="Enter fullscreen" title="Fullscreen">⛶</button><a href="../" aria-label="Leave the room">Leave <span aria-hidden="true">↗</span></a></div>
     </header>
-    <aside id="room-soundtrack" aria-label="Music on the record player"><div class="soundtrack-bar"><button id="soundtrack-toggle" type="button" aria-label="Play room music">▶</button><div><span class="soundtrack-label">On the record player</span><span class="soundtrack-title">Opening your top songs…</span><span class="soundtrack-artist"></span></div><button id="soundtrack-next" aria-label="Next song">›</button><button id="soundtrack-details" aria-label="Show Spotify player" aria-expanded="false" aria-controls="soundtrack-player">⌄</button></div><p id="soundtrack-note" class="soundtrack-note" role="status" hidden></p><div id="soundtrack-player" hidden><div id="spotify-room-embed"></div><a id="soundtrack-link" target="_blank" rel="noopener">Open in Spotify ↗</a></div></aside>
+
     <div class="welcome" id="welcome"><span class="eyebrow">Ari’s room</span><h1>Stay a while.</h1><p>A few things to read.<br>Something to listen to.<br>Nowhere you need to be.</p></div>
     <div class="help" id="help"><span id="scene-status" role="status">Opening the room…</span></div>
     <nav class="places" aria-label="Move around the room"><button data-place="room" aria-pressed="true"><span class="place-dot"></span>The room</button><button data-place="desk" aria-pressed="false">At the desk</button><button data-place="chair" aria-pressed="false">Take a seat</button><button data-place="stereo" aria-pressed="false">The stereo</button></nav>
-    <nav class="room-dock" aria-label="Things to explore"><button data-panel="words"><span aria-hidden="true">≋</span>Read</button><button data-panel="sounds"><span aria-hidden="true">♫</span>Listen</button><button data-panel="about"><span aria-hidden="true">✳</span>About Ari</button><button id="help-toggle" aria-label="Room controls">?</button></nav>
+    <div class="bottom-console">
+      <aside id="room-soundtrack" aria-label="Music on the record player">
+        <div class="soundtrack-bar">
+          <button id="soundtrack-toggle" type="button" aria-label="Play room music"><span id="soundtrack-symbol" aria-hidden="true">▶</span><span id="soundtrack-action">Play</span></button>
+          <div class="soundtrack-copy"><span class="soundtrack-label">Ready on the record player</span><span class="soundtrack-title">Opening your top songs…</span><span class="soundtrack-artist"></span></div>
+          <span class="soundtrack-meter" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <button id="soundtrack-next" aria-label="Next song">›</button><button id="soundtrack-details" aria-label="Show Spotify player" aria-expanded="false" aria-controls="soundtrack-player">⌃</button>
+        </div>
+        <div class="soundtrack-progress" role="progressbar" aria-label="Song progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+        <div id="soundtrack-player" hidden><p id="soundtrack-note" class="soundtrack-note" role="status" hidden></p><div id="spotify-room-holder"><div id="spotify-room-embed"></div></div><div id="soundcloud-room-embed" hidden></div><a id="soundtrack-link" href="https://open.spotify.com/user/121056542" target="_blank" rel="noopener">Open in Spotify ↗</a></div>
+      </aside>
+      <nav class="room-dock" aria-label="Things to explore"><button data-panel="words"><span aria-hidden="true">≋</span>Read</button><button data-panel="sounds"><span aria-hidden="true">♫</span>Listen</button><button data-panel="about"><span aria-hidden="true">✳</span>About Ari</button><button id="help-toggle" aria-label="Room controls">?</button></nav>
+    </div>
     <div class="look-controls" aria-label="Look around"><button data-look="left" aria-label="Look left">←</button><button data-look="home" aria-label="Reset view">⌂</button><button data-look="right" aria-label="Look right">→</button></div>
     <div class="error-note" id="error" hidden><p>The room is taking a moment.</p><p>You can still read, listen, and explore below.</p><button id="retry">Try the room again</button></div>
     <noscript><div class="no-script">This room needs JavaScript to look around. <a href="../">Visit the homepage for writing and music.</a></div></noscript>
+  <section id="experience" hidden aria-label="Explore the room up close">
+    <header class="experience-header"><button id="back-to-room">← Back to the room</button><span id="experience-name"></span></header>
+    <section id="desk-experience" class="experience-view" hidden aria-label="Seated at Ari’s desk">
+      <div class="desk-stage"><img class="desk-photo" src="desk-seated.png" alt="A seat at Ari’s walnut desk, with plants, a glowing lamp, and a computer" width="1536" height="1024">
+        <div id="computer-screen"><div class="computer-bar"><span>Ari’s desk</span><nav aria-label="On Ari’s computer"><button data-folder="writing" aria-pressed="true">Writing</button><button data-folder="about" aria-pressed="false">About</button><button data-folder="resume" aria-pressed="false">Résumé</button></nav></div><div id="computer-content" tabindex="0"></div></div>
+      </div>
+    </section>
+    <section id="music-experience" class="experience-view" hidden aria-label="Ari’s music collection">
+      <nav class="object-navigation" aria-label="Browse the music collection"><button data-source="overview" aria-pressed="true">The stereo</button><button data-source="albums" aria-pressed="false">Record crate</button><button data-source="tracks" aria-pressed="false">CD binder</button><button data-source="dj" aria-pressed="false">Tape drawer</button></nav>
+      <div class="collection-viewport" data-source="overview">
+        <div class="collection-table">
+          <img class="collection-photo" src="music-collection.png" alt="A record crate, open CD binder, and a drawer of cassette tapes beside the turntable" width="1536" height="1024">
+          <div class="table-record" aria-hidden="true"><img src="vinyl-record.png" alt="" width="1254" height="1254"></div>
+          <button class="crate-art" data-object="albums" aria-label="Flip through the record crate"><img id="crate-cover" alt="" hidden></button>
+          <button class="cd-pocket cd-left" data-cd="0" aria-label="Open the CD binder"><img alt="" hidden></button><button class="cd-pocket cd-right" data-cd="1" aria-label="Open the CD binder"><img alt="" hidden></button>
+          <button class="object-label label-crate" data-source="albums">Record crate ↗</button><button class="object-label label-binder" data-source="tracks">CD binder ↗</button><button class="object-label label-tapes" data-source="dj">DJ tapes ↗</button>
+          <button class="tape-label" data-object="dj" aria-label="Play Sounds by Ari’s older DJ mixes">Sounds<br>by Ari</button>
+        </div>
+      </div>
+      <div id="music-browser" aria-live="polite"></div>
+    </section>
+    <section id="books-experience" class="experience-view" hidden aria-label="Ari’s reading shelf"><div class="reading-shelf"><span class="eyebrow">From the bookshelf</span><h2>What I’m reading.</h2><div id="book-browser"></div></div></section>
+  </section>
   </main>
-  <dialog id="panel" aria-labelledby="panel-title"><div class="panel-top"><span class="eyebrow" id="panel-kicker"></span><button id="close-panel" aria-label="Close and return to the room">×</button></div><div id="panel-body"></div></dialog>
-  <dialog id="instructions" aria-labelledby="help-title"><button class="help-close" aria-label="Close room controls">×</button><span class="eyebrow">Settle in</span><h2 id="help-title">Find your way around.</h2><p>Drag to look around. Scroll or pinch to look closer. The arrows on your keyboard work, too.</p><p>Choose a place at the bottom to move around the room. Touch a label—or use Read, Listen, and About Ari—to explore.</p><p>Hide the labels for a little more quiet. Press Escape to close a page.</p><button class="help-done">Make yourself comfortable</button></dialog>
-  <script src="ui.js" defer></script><script src="music.js" defer></script><script src="soundtrack.js" defer></script><script type="module" src="room.js"></script>
+  <dialog id="instructions" aria-labelledby="help-title"><button class="help-close" aria-label="Close room controls">×</button><span class="eyebrow">Settle in</span><h2 id="help-title">Find your way around.</h2><p>Drag to look around. Scroll or pinch to look closer. The arrows on your keyboard work, too.</p><p>Choose a place at the bottom to move around the room. Touch a label—or use Read, Listen, and About Ari—to explore.</p><p>Hide the labels for a little more quiet. Press Escape to return to the room. Music controls stay at the bottom.</p><button class="help-done">Make yourself comfortable</button></dialog>
+  <script src="ui.js?v=objects-1" defer></script><script src="music.js?v=objects-1" defer></script><script src="soundtrack.js?v=objects-1" defer></script><script type="module" src="room.js?v=objects-1"></script>
 </body>
 </html>

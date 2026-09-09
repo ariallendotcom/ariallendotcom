@@ -1,84 +1,92 @@
 (() => {
-  const panel = document.querySelector('#panel');
-  const body = document.querySelector('#panel-body');
-  const kicker = document.querySelector('#panel-kicker');
+  const experience = document.querySelector('#experience');
+  const screen = document.querySelector('#computer-content');
   const help = document.querySelector('#instructions');
-  let essays;
-  let musicFrame;
-  const musicPanel = document.createElement('dialog');
-  musicPanel.id = 'music-panel';
-  musicPanel.setAttribute('aria-labelledby', 'music-title');
-  document.body.append(musicPanel);
-  let request = 0;
-  const escape = (value) => String(value).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let mode = '', origin, request = 0, essays;
+  const background = [...document.querySelectorAll('#scene, #hotspots, .room-header, .places, .look-controls')];
   async function collection() {
     if (!essays) {
       const response = await fetch('essays.json');
-      if (!response.ok) throw new Error('Reading collection unavailable');
+      if (!response.ok) throw new Error('Writing unavailable');
       essays = await response.json();
     }
     return essays;
   }
-
-  function show() {
+  function enter(name) {
+    if (!mode) origin = document.activeElement;
+    mode = name;
+    document.body.dataset.experience = name;
     document.body.classList.add('exploring');
-    if (!panel.open) panel.showModal();
-    panel.scrollTop = 0;
+    experience.hidden = false;
+    experience.querySelectorAll('.experience-view').forEach(view => { view.hidden = view.id !== name + '-experience'; });
+    background.forEach(el => { el.inert = true; });
+    document.querySelector('#experience-name').textContent = {desk:'At the desk',music:'At the stereo',books:'The reading shelf'}[name];
+    document.querySelector('#back-to-room').focus({preventScroll:true});
   }
-  async function openPanel(name) {
+  function leave() {
+    ++request;mode = '';experience.hidden = true;delete document.body.dataset.experience;
+    background.forEach(el => { el.inert = el.id === 'hotspots' && document.body.classList.contains('quiet'); });
+    if (origin?.isConnected && !origin.closest('[hidden]')) origin.focus({preventScroll:true});
+  }
+  const about = '<h2 tabindex="-1">A few threads, one life.</h2><p>I keep coming back to the ways we make sense of the world—and of each other.</p><p>That thread runs through my work at the <a href="https://constructivedialogue.org/" target="_blank" rel="noopener">Constructive Dialogue Institute</a>, nearly a decade building learning experiences at <a href="https://amplify.com/" target="_blank" rel="noopener">Amplify</a>, and <a href="https://thereconstitution.com/" target="_blank" rel="noopener">The Reconstitution Project</a>.</p><ul class="background-list"><li><strong>Political philosophy</strong><span>Tufts University</span></li><li><strong>Public policy</strong><span>Georgetown Law</span></li><li><strong>Integral Psychology</strong><span>California Institute for Integral Studies</span></li></ul><p>Today, I’m VP of Product at the Constructive Dialogue Institute.</p><p><a href="mailto:ari@ariallen.com">Say hi ↗</a></p>';
+  async function folder(name) {
     const id = ++request;
-    if (name !== 'sounds' && musicPanel.open) musicPanel.close();
-    if (name === 'words') {
-      kicker.textContent = 'From the bookshelf';
-      body.innerHTML = '<h2 id="panel-title">A few open questions.</h2><p class="panel-intro">Pull up a chair. There’s time to read.</p><div id="collection"><p>Opening the bookshelf…</p></div>';
-      show();
+    document.querySelectorAll('[data-folder]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.folder === name)));
+    screen.scrollTop = 0;
+    if (name === 'about') screen.innerHTML = about;
+    else if (name === 'resume') screen.innerHTML = '<h2 tabindex="-1">My résumé.</h2><p>Work, study, and the threads between them.</p><p><a href="../assets/ari-allen-resume.pdf" target="_blank" rel="noopener">Open the full résumé ↗</a></p><object class="computer-resume" data="../assets/ari-allen-resume.pdf#toolbar=0" type="application/pdf" aria-label="Ari Allen’s résumé"><p><a href="../assets/ari-allen-resume.pdf" target="_blank" rel="noopener">Read the résumé as a PDF ↗</a></p></object>';
+    else {
+      screen.innerHTML = '<h2 tabindex="-1">A few open questions.</h2><p>Opening the writing folder…</p>';
       try {
         const items = await collection();
-        if (request !== id) return;
-        document.querySelector('#collection').innerHTML = items.map((item) => `<button class="shelf-item" data-essay="${escape(item.id)}"><span class="eyebrow">${escape(item.theme)}</span><h3>${escape(item.title)}</h3><p>${escape(item.subtitle)}</p></button>`).join('') + '<p><a href="https://ariallen.substack.com/" target="_blank" rel="noopener">More on Substack ↗</a></p>';
+        if (id !== request || mode !== 'desk') return;
+        screen.innerHTML = '<div class="folder-heading"><span class="eyebrow">Writing</span><h2 tabindex="-1">A few open questions.</h2></div><div class="computer-files">' + items.map(item => `<button class="essay-file" data-essay="${escape(item.id)}"><span class="file-meta">${escape(item.theme)}</span><strong>${escape(item.title)}</strong><span>${escape(item.subtitle)}</span><span class="file-open">Read essay ↗</span></button>`).join('') + '</div><p><a href="https://ariallen.substack.com/" target="_blank" rel="noopener">More on Substack ↗</a></p>';
       } catch {
-        if (request === id) document.querySelector('#collection').innerHTML = '<p>The bookshelf couldn’t open. <a href="https://ariallen.substack.com/" target="_blank" rel="noopener">You can find the essays on Substack.</a></p>';
+        if (id === request) screen.innerHTML = '<h2 tabindex="-1">The writing folder couldn’t open.</h2><p><a href="https://ariallen.substack.com/" target="_blank" rel="noopener">Read the essays on Substack ↗</a></p>';
       }
-    } else if (name === 'sounds') {
-      if (panel.open) panel.close();
-      if (!musicPanel.childElementCount) {
-        musicPanel.innerHTML = '<div class="panel-top"><span class="eyebrow">At the stereo</span><button id="close-music" aria-label="Close music and return to the room">×</button></div><div class="music-body"><h2 id="music-title">A different way<br>to feel things.</h2><p>For years, I DJed as Sounds by Ari. That part of my life is in a little hibernation at the moment. These mixes are from earlier years—still here for anyone who wants to listen.</p><div id="music-slot"><button class="music-toggle" id="load-music">Open the DJ mixes</button></div><div class="music-links"><a href="https://soundcloud.com/soundsbyari" target="_blank" rel="noopener">SoundCloud ↗</a><a href="https://open.spotify.com/user/121056542" target="_blank" rel="noopener">Find me on Spotify ↗</a><a href="mailto:ari@ariallen.com?subject=Music">Talk music ↗</a></div><p style="font-size:12px">Music keeps playing when you return to the room. Come back here to pause.</p></div>';
-        musicPanel.querySelector('#close-music').addEventListener('click', () => musicPanel.close());
-      }
-      document.body.classList.add('exploring');
-      if (!musicPanel.open) musicPanel.showModal();
-    } else if (name === 'about') {
-      kicker.textContent = 'The person behind the room';
-      body.innerHTML = '<h2 id="panel-title">A few threads,<br>one life.</h2><p>I keep coming back to the ways we make sense of the world—and of each other.</p><p>That thread runs through my work at the <a href="https://constructivedialogue.org/" target="_blank" rel="noopener">Constructive Dialogue Institute</a>, nearly a decade building learning experiences at <a href="https://amplify.com/" target="_blank" rel="noopener">Amplify</a>, and <a href="https://thereconstitution.com/" target="_blank" rel="noopener">The Reconstitution Project</a>.</p><ul class="background-list"><li><strong>Political philosophy</strong><span>Tufts University</span></li><li><strong>Public policy</strong><span>Georgetown Law</span></li><li><strong>Integral Psychology</strong><span>California Institute for Integral Studies</span></li></ul><p>Today, I’m VP of Product at the Constructive Dialogue Institute.</p><a class="resume-link" href="../assets/ari-allen-resume.pdf" target="_blank" rel="noopener">Open my résumé ↗</a><div class="music-links"><a href="mailto:ari@ariallen.com">Say hi ↗</a></div>';
-      show();
     }
+    if (id === request && mode === 'desk') screen.querySelector('h2')?.focus({preventScroll:true});
   }
-  document.addEventListener('click', async (event) => {
-    const launch = event.target.closest('[data-panel]');
-    if (launch) openPanel(launch.dataset.panel);
-    const essay = event.target.closest('[data-essay]');
-    if (essay) {
-      const item = (await collection()).find((entry) => entry.id === essay.dataset.essay);
-      if (!item) return;
-      kicker.textContent = item.theme;
-      body.innerHTML = `<button class="back-reading" data-panel="words">← Back to the bookshelf</button><h2 id="panel-title">${escape(item.title)}</h2><p class="essay-subtitle">${escape(item.subtitle)}</p><p class="essay-meta">Ari Allen · ${escape(item.date)}</p><article class="essay-body">${item.html}</article><a class="essay-source" href="${escape(item.url)}" target="_blank" rel="noopener">Originally published on Substack ↗</a>`;
-      panel.scrollTop = 0;
-      body.querySelector('.back-reading').focus({preventScroll:true});
-    }
-    if (event.target.closest('#load-music')) {
-      musicFrame = document.createElement('iframe');
-      musicFrame.className = 'music-frame';
-      musicFrame.title = 'Sounds by Ari — DJ mixes on SoundCloud';
-      musicFrame.src = 'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/soundsbyari&color=%23856c43&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false';
-      musicFrame.allow = 'autoplay';
-      document.querySelector('#music-slot').replaceChildren(musicFrame);
-    }
+  async function readEssay(id) {
+    const req = ++request;
+    try {
+      const item = (await collection()).find(e => e.id === id);
+      if (!item || req !== request || mode !== 'desk') return;
+      screen.innerHTML = `<button class="back-reading" data-folder="writing">← Writing folder</button><span class="file-meta">${escape(item.theme)}</span><h2 tabindex="-1">${escape(item.title)}</h2><p class="essay-subtitle">${escape(item.subtitle)}</p><p class="essay-meta">Ari Allen · ${escape(item.date)}</p><article class="essay-body">${item.html}</article><a class="essay-source" href="${escape(item.url)}" target="_blank" rel="noopener">Originally published on Substack ↗</a>`;
+      screen.scrollTop = 0;screen.querySelector('h2').focus({preventScroll:true});
+    } catch { screen.innerHTML = '<p>This essay couldn’t open. <a href="https://ariallen.substack.com/" target="_blank" rel="noopener">Read it on Substack ↗</a></p>'; }
+  }
+  async function bookshelf() {
+    const req = ++request, host = document.querySelector('#book-browser');
+    host.innerHTML = '<p>Opening the reading shelf…</p>';
+    try {
+      const response = await fetch('books.json');if (!response.ok) throw new Error();
+      const books = await response.json();if (req !== request || mode !== 'books') return;
+      host.innerHTML = books.length ? '<div class="book-stack">' + books.map((b,i) => `<details class="reading-book"><summary>${b.cover ? `<img src="${escape(b.cover)}" alt="" loading="lazy">` : ''}<span><strong>${escape(b.title)}</strong><span>${escape(b.author)}</span></span></summary><p>${escape(b.note || '')}</p>${b.url ? `<a href="${escape(b.url)}" target="_blank" rel="noopener">About this book ↗</a>` : ''}</details>`).join('') + '</div>' : '<p class="shelf-empty">Book list coming soon.</p><button data-panel="words" class="shelf-writing">Read something by Ari at the desk ↗</button>';
+    } catch { host.innerHTML = '<p>The reading shelf couldn’t open. Try visiting again in a moment.</p>'; }
+  }
+  function open(name, source) {
+    if (name === 'sounds') { enter('music');window.ariMusic?.open(source || 'overview'); }
+    else if (name === 'books') { enter('books');bookshelf(); }
+    else { enter('desk');folder(name === 'about' ? 'about' : 'writing'); }
+  }
+  window.ariExperience = {open, leave};
+  document.addEventListener('click', event => {
+    const launch = event.target.closest('[data-panel]');if (launch) open(launch.dataset.panel, launch.dataset.source);
+    const place = event.target.closest('[data-place]');
+    if (place?.dataset.place === 'desk') open('words');
+    if (place?.dataset.place === 'stereo') open('sounds');
+    const dir = event.target.closest('[data-folder]');if (dir) folder(dir.dataset.folder);
+    const essay = event.target.closest('[data-essay]');if (essay) readEssay(essay.dataset.essay);
   });
-  document.querySelector('#close-panel').addEventListener('click', () => panel.close());
-  panel.addEventListener('click', (event) => { if (event.target === panel) { const r=panel.getBoundingClientRect(); if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom) panel.close(); } });
+  document.querySelector('#back-to-room').addEventListener('click', leave);
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && mode && !help.open) { event.preventDefault();leave(); }
+  });
   document.querySelector('#help-toggle').addEventListener('click', () => help.showModal());
-  help.querySelectorAll('button').forEach((button) => button.addEventListener('click', () => help.close()));
-  document.querySelector('#quiet').addEventListener('click', (event) => {
+  help.querySelectorAll('button').forEach(button => button.addEventListener('click', () => help.close()));
+  document.querySelector('#quiet').addEventListener('click', event => {
     const quiet = document.body.classList.toggle('quiet');
     document.querySelector('#hotspots').inert = quiet;
     event.currentTarget.setAttribute('aria-pressed', String(quiet));
@@ -87,7 +95,7 @@
   const full = document.querySelector('#fullscreen');
   if (!document.fullscreenEnabled) full.hidden = true;
   full.addEventListener('click', async () => {
-    try { if (document.fullscreenElement) await document.exitFullscreen(); else await document.documentElement.requestFullscreen(); }
+    try { if (document.fullscreenElement) await document.exitFullscreen();else await document.documentElement.requestFullscreen(); }
     catch { document.querySelector('#scene-status').textContent = 'Fullscreen isn’t available in this browser.'; }
   });
   document.addEventListener('fullscreenchange', () => full.setAttribute('aria-label', document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen'));
