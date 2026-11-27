@@ -173,6 +173,7 @@ function headState({phase,message}){
   document.querySelector('#head-tracking-status').textContent=message;
   document.querySelector('#head-tracking-live-status').textContent=message;
   document.querySelector('#head-tracking-recenter').disabled=phase==='starting';
+  if(phase==='error' && !headDialog.open && !document.hidden && !document.body.dataset.experience)headDialog.showModal();
   headLive.hidden=!enabled || headDialog.open;
 }
 headLaunch.addEventListener('click',async()=>{
@@ -193,7 +194,7 @@ headSwitch.addEventListener('click',()=>{
   if(!headTracker || !ready)return;
   if(['off','error'].includes(headTracker.phase)){
     headTracker.setSensitivity(Number(document.querySelector('#head-tracking-sensitivity').value));
-    headTracker.start();headDialog.close();
+    headDialog.close();headTracker.start();
   }else headTracker.stop();
 });
 document.querySelector('#head-tracking-close').addEventListener('click',()=>headDialog.close());
