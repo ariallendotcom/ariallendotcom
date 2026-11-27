@@ -1,6 +1,7 @@
 import * as THREE from './vendor/three.module.js';
 import {panoramaPoint, lookDirection, constrainPanoramaView} from './scene-math.js';
 import {createPanoramaSphere} from './panorama.js';
+import {createTrackingStart, mountRoomEntry} from './room-entry.js?v=entry-1';
 
 const container = document.querySelector('#scene');
 const status = document.querySelector('#scene-status');
@@ -98,6 +99,95 @@ function animate(){
     if(visible){spot.button.style.left=`${(projected.x*.5+.5)*container.clientWidth}px`;spot.button.style.top=`${(-projected.y*.5+.5)*container.clientHeight}px`;}
   }
 }
+// Bind the invitation before awaiting the panorama. Its skip path is ready
+// immediately; the opt-in path waits for the scene without acquiring a camera.
+const headDialog=document.querySelector('#head-tracking-dialog');
+const headLaunch=document.querySelector('#head-tracking-launch');
+const headSwitch=document.querySelector('#head-tracking-switch');
+const headLive=document.querySelector('#head-tracking-live');
+let headLoading,entry,resolveControlsReady;
+const controlsReady=new Promise(resolve=>{resolveControlsReady=resolve;});
+function headState({phase,message}){
+  const enabled=!['off','error'].includes(phase);
+  headLaunch.textContent=`Head tracking · ${enabled?'on':'off'}`;
+  headLaunch.setAttribute('aria-pressed',String(enabled));
+  headSwitch.setAttribute('aria-checked',String(enabled));
+  headSwitch.textContent=enabled?'Turn head tracking off':'Turn head tracking on';
+  document.querySelector('#head-tracking-status').textContent=message;
+  document.querySelector('#head-tracking-live-status').textContent=message;
+  document.querySelector('#head-tracking-recenter').disabled=phase==='starting';
+  if(phase==='error' && !headDialog.open && !document.hidden && !document.body.dataset.experience){
+    entry?.close(false);headDialog.showModal();
+  }
+  headLive.hidden=!enabled || headDialog.open || !!document.querySelector('#room-entry-dialog[open]');
+}
+async function ensureHeadTracker(){
+  if(headTracker)return headTracker;
+  // No tracking runtime, WASM, model, or camera before the explicit choice.
+  if(!headLoading)headLoading=import('./head-tracking.js?v=head-test-1').catch(e=>{headLoading=null;throw e;});
+  const {createHeadTracker}=await headLoading;
+  if(!headTracker)headTracker=createHeadTracker({onPose:pose=>{
+    headPose=pose;
+    if(!pose)headView.yaw=headView.pitch=headView.fov=0;
+    dirty=true;
+  },onState:headState});
+  return headTracker;
+}
+const headRequest=createTrackingStart({
+  ready:controlsReady,
+  load:ensureHeadTracker,
+  allowed:()=>!document.hidden && !document.body.dataset.experience,
+  onPending:pending=>{
+    entry?.setPending(pending);
+    if(pending)headState({phase:'starting',message:'Getting things ready…'});
+  },
+  start:tracker=>{
+    if(!ready)throw new Error('room-unavailable');
+    tracker.setSensitivity(Number(document.querySelector('#head-tracking-sensitivity').value));
+    entry?.close();if(headDialog.open)headDialog.close();
+    return tracker.start();
+  },
+  stop:message=>{
+    if(headTracker)headTracker.stop(message);
+    else headState({phase:'off',message:message || 'Head tracking is off.'});
+  },
+  onError:failure=>headState({phase:'error',message:failure.message==='room-unavailable'
+    ? 'The room couldn’t open for tracking. You can still read, listen, and explore normally.'
+    : 'Head tracking couldn’t open. You can try again or explore the room normally.'})
+});
+function cancelHeadTracking(message){headRequest.cancel(message);}
+entry=mountRoomEntry({
+  dialog:document.querySelector('#room-entry-dialog'),
+  onWith:()=>headRequest.request(),
+  onWithout:()=>cancelHeadTracking(),
+  focusTarget:container
+});
+headLaunch.addEventListener('click',()=>{
+  headDialog.showModal();headLive.hidden=true;
+  if(!ready)document.querySelector('#head-tracking-status').textContent='The room is opening. You can choose tracking now or come back later.';
+});
+headSwitch.addEventListener('click',()=>{
+  if(headRequest.pending || (headTracker && !['off','error'].includes(headTracker.phase)))cancelHeadTracking();
+  else headRequest.request();
+});
+document.querySelector('#head-tracking-close').addEventListener('click',()=>{
+  if(headRequest.pending)cancelHeadTracking();
+  headDialog.close();
+});
+headDialog.addEventListener('close',()=>{headLive.hidden=!headTracker || ['off','error'].includes(headTracker.phase);});
+document.querySelector('#head-tracking-stop').addEventListener('click',()=>{cancelHeadTracking();headLaunch.focus({preventScroll:true});});
+document.querySelector('#head-tracking-recenter').addEventListener('click',()=>headTracker?.recenter());
+document.querySelector('#head-tracking-sensitivity').addEventListener('input',event=>{
+  const value=Number(event.target.value);headTracker?.setSensitivity(value);
+  document.querySelector('#head-tracking-sensitivity-value').textContent=value<.8?'Subtle':value>1.2?'Lively':'Gentle';
+});
+document.addEventListener('room:experience',()=>{
+  cancelHeadTracking();entry.close(false);if(headDialog.open)headDialog.close();
+});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelHeadTracking('Tracking stopped while you were away. Turn it on to try again.');});
+addEventListener('pagehide',()=>cancelHeadTracking());
+addEventListener('keydown',event=>{if(event.key==='Escape')cancelHeadTracking();});
+
 try{
   scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(fov,1,.1,30);
   renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'low-power'});
@@ -110,9 +200,10 @@ try{
   if(typeof ResizeObserver!=='undefined')new ResizeObserver(resize).observe(container);
   else addEventListener('resize',resize);
   renderer.setAnimationLoop(animate);
-  renderer.domElement.addEventListener('webglcontextlost',(e)=>{e.preventDefault();headTracker?.stop();ready=false;document.body.classList.remove('ready');status.textContent='The room paused. Read and listen below, or reload to return.';error.hidden=false;});
+  renderer.domElement.addEventListener('webglcontextlost',(e)=>{e.preventDefault();cancelHeadTracking();ready=false;document.body.classList.remove('ready');status.textContent='The room paused. Read and listen below, or reload to return.';error.hidden=false;});
   await moveTo('room');
 }catch(e){console.error('Immersive view unavailable',e);error.hidden=false;status.textContent='Read and listen using the controls below.';}
+finally{resolveControlsReady(ready);}
 
 container.addEventListener('pointerdown',(e)=>{
   if(!ready || pointers.size>=2)return;
@@ -157,55 +248,3 @@ addEventListener('keydown',(e)=>{
   if(handlers[e.key]){e.preventDefault();handlers[e.key]();interact();}
 });
 document.addEventListener('visibilitychange',()=>{if(renderer)renderer.setAnimationLoop(document.hidden?null:animate);});
-
-// The tracking code, WASM, and model are never loaded on a normal visit.
-const headDialog=document.querySelector('#head-tracking-dialog');
-const headLaunch=document.querySelector('#head-tracking-launch');
-const headSwitch=document.querySelector('#head-tracking-switch');
-const headLive=document.querySelector('#head-tracking-live');
-let headLoading;
-function headState({phase,message}){
-  const enabled=!['off','error'].includes(phase);
-  headLaunch.textContent=`Head tracking · ${enabled?'on':'off'}`;
-  headLaunch.setAttribute('aria-pressed',String(enabled));
-  headSwitch.setAttribute('aria-checked',String(enabled));
-  headSwitch.textContent=enabled?'Turn head tracking off':'Turn head tracking on';
-  document.querySelector('#head-tracking-status').textContent=message;
-  document.querySelector('#head-tracking-live-status').textContent=message;
-  document.querySelector('#head-tracking-recenter').disabled=phase==='starting';
-  if(phase==='error' && !headDialog.open && !document.hidden && !document.body.dataset.experience)headDialog.showModal();
-  headLive.hidden=!enabled || headDialog.open;
-}
-headLaunch.addEventListener('click',async()=>{
-  headDialog.showModal();headLive.hidden=true;
-  if(!ready){document.querySelector('#head-tracking-status').textContent='The room needs to finish opening before you can try tracking.';return;}
-  try{
-    if(!headLoading)headLoading=import('./head-tracking.js?v=head-test-1').catch(e=>{headLoading=null;throw e;});
-    const {createHeadTracker}=await headLoading;
-    if(!headTracker)headTracker=createHeadTracker({onPose:pose=>{
-      headPose=pose;
-      if(!pose)headView.yaw=headView.pitch=headView.fov=0;
-      dirty=true;
-    },onState:headState});
-    headSwitch.disabled=false;
-  }catch{document.querySelector('#head-tracking-status').textContent='The experiment couldn’t load. You can keep exploring the room normally.';}
-});
-headSwitch.addEventListener('click',()=>{
-  if(!headTracker || !ready)return;
-  if(['off','error'].includes(headTracker.phase)){
-    headTracker.setSensitivity(Number(document.querySelector('#head-tracking-sensitivity').value));
-    headDialog.close();headTracker.start();
-  }else headTracker.stop();
-});
-document.querySelector('#head-tracking-close').addEventListener('click',()=>headDialog.close());
-headDialog.addEventListener('close',()=>{headLive.hidden=!headTracker || ['off','error'].includes(headTracker.phase);});
-document.querySelector('#head-tracking-stop').addEventListener('click',()=>{headTracker?.stop();headLaunch.focus({preventScroll:true});});
-document.querySelector('#head-tracking-recenter').addEventListener('click',()=>headTracker?.recenter());
-document.querySelector('#head-tracking-sensitivity').addEventListener('input',event=>{
-  const value=Number(event.target.value);headTracker?.setSensitivity(value);
-  document.querySelector('#head-tracking-sensitivity-value').textContent=value<.8?'Subtle':value>1.2?'Lively':'Gentle';
-});
-document.addEventListener('room:experience',()=>{headTracker?.stop();if(headDialog.open)headDialog.close();});
-document.addEventListener('visibilitychange',()=>{if(document.hidden)headTracker?.stop('Tracking stopped while you were away. Turn it on to try again.');});
-addEventListener('pagehide',()=>headTracker?.stop());
-addEventListener('keydown',event=>{if(event.key==='Escape')headTracker?.stop();});

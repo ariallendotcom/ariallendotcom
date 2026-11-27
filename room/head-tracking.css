@@ -22,3 +22,20 @@ body[data-experience] .head-tracking-launch,body[data-experience] .head-tracking
 .head-tracking-live button{border:1px solid #f5efdf4d;border-radius:6px;padding:8px;background:transparent;color:inherit;font:inherit;cursor:pointer}
 .head-tracking-launch:focus-visible,#head-tracking-dialog :focus-visible,.head-tracking-live button:focus-visible{outline:3px solid #c4a671;outline-offset:4px}
 @media(max-width:760px){.head-tracking-launch{top:18px;right:16px;padding:9px 12px;font-size:11px}.head-tracking-live{top:65px;right:16px;max-width:calc(100vw - 32px);font-size:11px}.head-tracking-live span{max-width:170px}#head-tracking-dialog{padding:24px}.room-header .header-note{display:none}}
+
+#room-entry-dialog{width:min(390px,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:28px 28px 25px;overflow:auto;border:1px solid #d6d5c4;border-radius:22px;background:#f3f0e5;color:#2d3f31;text-align:center;box-shadow:0 24px 90px #101a1640}
+#room-entry-dialog::backdrop{background:#19251f59;backdrop-filter:blur(4px)}
+.room-entry-icon{display:block;margin:0 auto 17px;color:#677e59}
+#room-entry-dialog h2{font:40px/1.05 'Libre Caslon Display',Georgia,serif;letter-spacing:-.025em;margin:0 0 16px;outline:none}
+#room-entry-dialog p{font:14px/1.65 'DM Sans',sans-serif;color:#4a5848;margin:0}
+#room-entry-dialog #room-entry-privacy{font-size:12px;line-height:1.6;color:#65705f;margin:17px 0 22px}
+.room-entry-actions{display:grid;gap:9px}
+.room-entry-actions button{min-height:46px;padding:11px 12px;border:1px solid #b7c2ad;border-radius:9px;font:14px/1.4 'DM Sans',sans-serif;color:#38513a;background:#f3f0e5;transition:background .2s,box-shadow .2s}
+.room-entry-actions [data-enter-with]{background:#405c41;color:#fffdf4;border-color:#405c41}
+.room-entry-actions [data-enter-with]:hover{background:#506d4c}
+.room-entry-actions [data-enter-without]:hover{background:#e8ecdf}
+.room-entry-actions button:disabled{opacity:.6;cursor:wait}
+.room-entry-actions button:focus-visible{outline:3px solid #728c5f;outline-offset:4px}
+#room-entry-dialog .room-entry-status{font-size:12px;color:#65705f;margin-top:13px}
+#room-entry-dialog .room-entry-status[hidden]{display:none}
+@media(max-width:360px){#room-entry-dialog{padding:24px 21px}#room-entry-dialog h2{font-size:36px}}
