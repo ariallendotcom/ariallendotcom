@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#241d18">
+  <link rel="canonical" href="https://ariallen.com/">
+  <title>Stay a while — Ari Allen</title>
+  <meta name="description" content="Make yourself at home. A room for reading, listening, and getting to know Ari.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/room/room.css?v=homepage-1"><link rel="stylesheet" href="/room/music.css?v=objects-1"><link rel="stylesheet" href="/room/soundtrack.css?v=compact-player-1"><link rel="stylesheet" href="/room/mobile.css?v=homepage-1">
+  <link rel="stylesheet" href="/room/experience.css?v=about-table-1">
+  <link rel="stylesheet" href="/room/writing.css?v=collection-1">
+  <link rel="stylesheet" href="/room/head-tracking.css?v=depth-1">
+  <script type="importmap">{"imports":{"three":"/room/vendor/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"}}</script>
+</head>
+<body>
+  <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;pointer-events:none">
+    <defs>
+      <filter id="room-signature-ink" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="0 0 0 0 0.9608  0 0 0 0 0.9373  0 0 0 0 0.8745  -0.2126 -0.7152 -0.0722 1 0"/>
+      </filter>
+    </defs>
+  </svg>
+  <main id="room" aria-label="Ari's living room">
+    <div id="scene" tabindex="0" role="img" aria-label="A warm, plant-filled study with a walnut desk, bookshelves, white office chair, and cozy reading chair"></div>
+    <div class="veil" aria-hidden="true"></div>
+    <div id="hotspots" aria-label="Explore objects in the room"></div>
+    <header class="room-header">
+      <a class="signature" href="/" aria-label="Ari Allen, home"><img src="/images/ari-signature.jpeg" alt="Ari" width="500" height="292" style="filter:url(#room-signature-ink)"></a>
+      <span class="header-note">Make yourself at home.</span>
+    </header>
+    <button id="head-tracking-launch" class="head-tracking-launch" type="button" aria-controls="head-tracking-dialog" aria-pressed="false">Head tracking · off</button>
+    <div id="head-tracking-live" class="head-tracking-live" hidden><span id="head-tracking-live-status"></span><button id="head-tracking-recenter" type="button">Recenter</button><button id="head-tracking-stop" type="button">Stop</button></div>
+
+    <div class="welcome" id="welcome"><span class="eyebrow">Ari’s room</span><h1>Stay a while.</h1><p>A few things to read.<br>Something to listen to.<br>Nowhere you need to be.</p></div>
+    <div class="help" id="help"><span id="scene-status" role="status">Opening the room…</span></div>
+    <nav class="places" aria-label="Move around the room"><button data-place="room" aria-pressed="true"><span class="place-dot"></span>The room</button><button data-place="desk" aria-pressed="false">At the desk</button><button data-place="chair" aria-pressed="false">Take a seat</button><button data-place="stereo" aria-pressed="false">The stereo</button></nav>
+    <div class="bottom-console">
+      <aside id="room-soundtrack" aria-label="Music on the record player">
+        <div class="soundtrack-bar">
+          <button id="soundtrack-toggle" type="button" aria-label="Play room music"><span id="soundtrack-symbol" aria-hidden="true">▶</span><span id="soundtrack-action">Play</span></button>
+          <div class="soundtrack-copy"><span class="soundtrack-label">Ready on the record player</span><span class="soundtrack-title">Opening your top songs…</span><span class="soundtrack-artist"></span></div>
+          <span class="soundtrack-meter" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <button id="soundtrack-next" aria-label="Next song">›</button><button id="soundtrack-details" aria-label="Show Spotify player" aria-expanded="false" aria-controls="soundtrack-player"><span class="soundtrack-caret" aria-hidden="true">⌃</span><span id="soundtrack-details-label">Show player</span></button>
+        </div>
+        <div class="soundtrack-progress" role="progressbar" aria-label="Song progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+        <div id="soundtrack-player" hidden>
+          <div class="soundtrack-player-heading"><span id="soundtrack-provider">Spotify</span><button id="soundtrack-hide" type="button" aria-controls="soundtrack-player">Hide player <span aria-hidden="true">⌄</span></button></div>
+          <p id="soundtrack-note" class="soundtrack-note" role="status" hidden></p><div id="spotify-room-holder"><div id="spotify-room-embed"></div></div><div id="soundcloud-room-embed" hidden></div><a id="soundtrack-link" href="https://open.spotify.com/user/121056542" target="_blank" rel="noopener">Open in Spotify ↗</a>
+        </div>
+      </aside>
+      <nav class="room-dock" aria-label="Things to explore"><button data-panel="words"><span aria-hidden="true">≋</span>Read</button><button data-panel="sounds"><span aria-hidden="true">♫</span>Listen</button><button data-panel="about"><span aria-hidden="true">✳</span>About Ari</button><button id="help-toggle" aria-label="Room controls">?</button></nav>
+    </div>
+    <div class="look-controls" aria-label="Look around"><button data-look="left" aria-label="Look left">←</button><button data-look="home" aria-label="Reset view">⌂</button><button data-look="right" aria-label="Look right">→</button></div>
+    <div class="error-note" id="error" hidden><p>The room is taking a moment.</p><p>You can still read, listen, and explore below.</p><button id="retry">Try the room again</button></div>
+    <noscript><div class="no-script">This room needs JavaScript to look around. You can still <a href="https://ariallen.substack.com/">read my writing</a>, <a href="https://soundcloud.com/soundsbyari">listen to my mixes</a>, or <a href="/assets/ari-allen-resume.pdf">view my résumé</a>.</div></noscript>
+  <section id="experience" hidden aria-label="Explore the room up close">
+    <header class="experience-header"><button id="back-to-room">← Back to the room</button><span id="experience-name"></span></header>
+    <section id="desk-experience" class="experience-view" hidden aria-label="Seated at Ari’s desk">
+      <div class="desk-stage"><img class="desk-photo" src="/room/desk-seated.png" alt="A seat at Ari’s walnut desk, with plants, a glowing lamp, and a computer" width="1536" height="1024">
+        <div id="computer-screen"><div class="computer-bar"><span>Ari’s desk</span><nav aria-label="On Ari’s computer"><button data-folder="about" aria-pressed="false">About</button><button data-folder="resume" aria-pressed="false">Résumé</button><button data-folder="writing" aria-pressed="true">Writing</button></nav></div><div id="computer-content" tabindex="0"></div></div>
+      </div>
+    </section>
+    <section id="music-experience" class="experience-view" hidden aria-label="Ari’s music collection">
+      <nav class="object-navigation" aria-label="Browse the music collection"><button data-source="overview" aria-pressed="true">The stereo</button><button data-source="albums" aria-pressed="false">Record crate</button><button data-source="tracks" aria-pressed="false">CD binder</button><button data-source="dj" aria-pressed="false">Tape drawer</button></nav>
+      <div class="collection-viewport" data-source="overview">
+        <div class="collection-table">
+          <img class="collection-photo" src="/room/music-collection.png" alt="A record crate, open CD binder, and a drawer of cassette tapes beside the turntable" width="1536" height="1024">
+          <div class="table-record" aria-hidden="true"><img src="/room/vinyl-record.png" alt="" width="1254" height="1254"></div>
+          <button class="crate-art" data-object="albums" aria-label="Flip through the record crate"><img id="crate-cover" alt="" hidden></button>
+          <button class="cd-pocket cd-left" data-cd="0" aria-label="Open the CD binder"><img alt="" hidden></button><button class="cd-pocket cd-right" data-cd="1" aria-label="Open the CD binder"><img alt="" hidden></button>
+          <button class="object-label label-crate" data-source="albums">Record crate ↗</button><button class="object-label label-binder" data-source="tracks">CD binder ↗</button><button class="object-label label-tapes" data-source="dj">DJ tapes ↗</button>
+          <button class="tape-label" data-object="dj" aria-label="Play Sounds by Ari’s older DJ mixes">Sounds<br>by Ari</button>
+        </div>
+      </div>
+      <div id="music-browser" aria-live="polite"></div>
+    </section>
+    <section id="about-experience" class="experience-view" hidden aria-labelledby="about-book-title">
+      <div class="about-book-stage" data-page="0">
+        <img class="about-table-photo" src="/room/about-coffee-table.png" alt="An open book and a ceramic mug on the walnut coffee table" width="1536" height="1024" loading="lazy">
+        <article class="about-book-page about-first-page" id="about-book-intro">
+          <span class="eyebrow">A little about me</span><h2 id="about-book-title" tabindex="-1">A few threads,<br>one life.</h2>
+          <p>I’m Ari. I build tools for understanding, write about how we might live together, and play music that moves me.</p>
+          <p>I keep coming back to the ways we make sense of the world—and of each other.</p>
+          <p class="about-book-signoff"><a href="mailto:ari@ariallen.com">Say hi ↗</a></p>
+        </article>
+        <article class="about-book-page about-second-page" id="about-book-background">
+          <h3 tabindex="-1">The same curiosity.</h3>
+          <p>That thread runs through my work at the <a href="https://constructivedialogue.org/" target="_blank" rel="noopener">Constructive Dialogue Institute</a>, nearly a decade building learning experiences at <a href="https://amplify.com/" target="_blank" rel="noopener">Amplify</a>, and <a href="https://thereconstitution.com/" target="_blank" rel="noopener">The Reconstitution Project</a>, a thought experiment in constitutional imagination.</p>
+          <p>It runs through the writing and the music, too. Different forms. The same curiosity.</p>
+          <details><summary>A little more background</summary><p>My studies span political philosophy at Tufts, public policy at Georgetown Law, and Integral Psychology at the California Institute for Integral Studies. Today, I’m VP of Product at the Constructive Dialogue Institute.</p></details>
+          <button class="about-resume" data-panel="resume">The résumé version ↗</button>
+        </article>
+      </div>
+      <nav class="about-page-navigation" aria-label="Pages of the about book" hidden><button data-about-page="0" aria-pressed="true">A little about me</button><button data-about-page="1" aria-pressed="false">More background →</button></nav>
+    </section>
+    <section id="books-experience" class="experience-view" hidden aria-label="Ari’s reading shelf"><div class="reading-shelf"><span class="eyebrow">From the bookshelf</span><h2>What I’m reading.</h2><div id="book-browser"></div></div></section>
+  </section>
+  </main>
+  <dialog id="instructions" aria-labelledby="help-title"><button class="help-close" aria-label="Close room controls">×</button><span class="eyebrow">Settle in</span><h2 id="help-title">Find your way around.</h2><p>Drag to look around. Scroll or pinch to look closer. The arrows on your keyboard work, too.</p><p>Choose a place at the bottom to move around the room. Touch a label—or use Read, Listen, and About Ari—to explore.</p><p>Press Escape to return to the room. Music controls stay at the bottom.</p><button class="help-done">Make yourself comfortable</button></dialog>
+  <dialog id="room-entry-dialog" aria-labelledby="room-entry-title" aria-describedby="room-entry-description room-entry-privacy">
+    <svg class="room-entry-icon" viewBox="0 0 64 56" width="64" height="56" fill="none" aria-hidden="true" focusable="false"><path d="M12 44V19a16 16 0 0 1 32 0v25H12Z" stroke="currentColor" stroke-width="1.5"/><path d="M28 4v40M12 23h32M8 48h40" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="m49 5 2.5 6.5L58 14l-6.5 2.5L49 23l-2.5-6.5L40 14l6.5-2.5L49 5Z" fill="#f3f0e5" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+    <h2 id="room-entry-title" tabindex="-1" autofocus>A little room magic.</h2>
+    <p id="room-entry-description">Lean a little. The room follows.<br>Just a playful way to look around.</p>
+    <p id="room-entry-privacy">Camera video stays on your device.<br>Nothing is recorded or uploaded.</p>
+    <div class="room-entry-actions"><button type="button" data-enter-with>Enter with head tracking</button><button type="button" data-enter-without>Enter without head tracking</button></div>
+    <p class="room-entry-status" data-entry-status role="status" hidden></p>
+  </dialog>
+  <dialog id="head-tracking-dialog" aria-labelledby="head-tracking-title">
+    <span class="head-kicker">An optional experiment</span><h2 id="head-tracking-title">A room that follows you.</h2>
+    <p>Use your camera to look around with gentle movements of your head. Lean left or right to turn; move closer to look closer.</p>
+    <p class="head-privacy">Video is processed on your device. It isn’t recorded or uploaded. Turning tracking off stops the camera. It only starts when you choose.</p>
+    <p id="head-tracking-status" role="status">Head tracking is off.</p>
+    <label class="head-sensitivity" for="head-tracking-sensitivity">Movement <input id="head-tracking-sensitivity" type="range" min="0.5" max="1.5" step="0.1" value="1" aria-label="Head movement sensitivity"><span id="head-tracking-sensitivity-value">Gentle</span></label>
+    <section class="room-depth-controls" aria-labelledby="room-depth-title"><div><h3 id="room-depth-title">A little more dimension.</h3><span class="depth-preview-label">Preview</span></div><p>Give the room depth as you lean. Or take a little look around—no camera needed.</p><div class="room-depth-actions"><button id="room-depth-switch" type="button" role="switch" aria-checked="false">Turn room depth on</button><button id="room-depth-preview" type="button">Preview the movement ↗</button></div><p id="room-depth-status" role="status">An optional upgrade for the main room.</p></section>
+    <div class="head-tracking-actions"><button id="head-tracking-switch" type="button" role="switch" aria-checked="false">Turn head tracking on</button><button id="head-tracking-close" type="button">Back to the room</button></div>
+  </dialog>
+  <script src="/room/writing.js?v=collection-2" defer></script>
+  <script src="/room/ui.js?v=collection-1" defer></script><script src="/room/music.js?v=homepage-1" defer></script><script src="/room/soundtrack.js?v=homepage-1" defer></script><script type="module" src="/room/diploma-preview.js?v=diploma-1"></script>
+</body>
+</html>
