@@ -39,3 +39,12 @@ body[data-experience] .head-tracking-launch,body[data-experience] .head-tracking
 #room-entry-dialog .room-entry-status{font-size:12px;color:#65705f;margin-top:13px}
 #room-entry-dialog .room-entry-status[hidden]{display:none}
 @media(max-width:360px){#room-entry-dialog{padding:24px 21px}#room-entry-dialog h2{font-size:36px}}
+.room-depth-controls{border-top:1px solid #c8cebd;margin-top:24px;padding-top:20px}
+.room-depth-controls>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#head-tracking-dialog .room-depth-controls h3{font:26px/1.1 'Libre Caslon Display',Georgia,serif;margin:0 0 10px}
+.depth-preview-label{font-size:10px;letter-spacing:.06em;text-transform:uppercase;background:#e4e8d9;border-radius:20px;padding:3px 8px;color:#586b4c}
+#head-tracking-dialog .room-depth-controls p{font-size:13px;line-height:1.55;color:#566051;margin:0 0 12px}
+.room-depth-actions{display:flex;gap:8px;flex-wrap:wrap}
+#head-tracking-dialog .room-depth-actions button{font-size:12px;padding:10px 12px;min-height:42px}
+#head-tracking-dialog #room-depth-switch[aria-checked=true]{background:#e0e8d5;border-color:#9eaf8e}
+#head-tracking-dialog #room-depth-status{font-size:11px;margin:10px 0 0;min-height:1.6em}
