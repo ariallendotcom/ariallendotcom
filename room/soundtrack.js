@@ -146,7 +146,7 @@
   window.ariSoundtrack = {selectTrack,selectAlbum,pause,toggle:toggleMusic,prepareTapes,playTapes};
   async function start() {
     try {
-      const response = await fetch('soundtrack.json');if (!response.ok) throw new Error('Soundtrack unavailable');
+      const response = await fetch('/room/soundtrack.json');if (!response.ok) throw new Error('Soundtrack unavailable');
       queue = (await response.json()).filter(t=>/^spotify:track:[A-Za-z0-9]{22}$/.test(t.uri));
       if (!queue.length) throw new Error('No playable Spotify links');
       trackLabel();state(false);

@@ -10,7 +10,7 @@
     if (item?.artwork) {img.src = item.artwork;img.alt = `${item.title} by ${item.artist}`;}
   }
   async function load() {
-    if (!pending) pending = fetch('music.json?v=objects-1').then(response => {
+    if (!pending) pending = fetch('/room/music.json?v=objects-1').then(response => {
       if (!response.ok) throw new Error('Music collection unavailable');return response.json();
     }).then(data => {collection = data;return data;}).catch(error => {pending = null;throw error;});
     return pending;

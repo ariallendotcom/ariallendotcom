@@ -35,7 +35,7 @@ function rebuildSpots(){
 }
 async function texture(file){
   if(!textures.has(file)){
-    const pending=new THREE.TextureLoader().loadAsync(file).then((t)=>{t.colorSpace=THREE.SRGBColorSpace;t.minFilter=THREE.LinearFilter;t.magFilter=THREE.LinearFilter;t.generateMipmaps=false;return t;}).catch((e)=>{textures.delete(file);throw e;});
+    const pending=new THREE.TextureLoader().loadAsync(new URL(file, import.meta.url).href).then((t)=>{t.colorSpace=THREE.SRGBColorSpace;t.minFilter=THREE.LinearFilter;t.magFilter=THREE.LinearFilter;t.generateMipmaps=false;return t;}).catch((e)=>{textures.delete(file);throw e;});
     textures.set(file,pending);
   }
   return textures.get(file);
@@ -59,7 +59,7 @@ async function moveTo(name){
     // Draw the new room before revealing its canvas over the opening image.
     animate();document.body.classList.add('ready');error.hidden=true;
     renderer.domElement.style.opacity='1';
-    status.textContent='Drag to look around · Scroll to look closer';
+    status.textContent='';
     document.querySelectorAll('[data-place]').forEach((b)=>{b.setAttribute('aria-pressed',String(b.dataset.place===name));});
     if(name!=='room')interact();
   }catch(e){

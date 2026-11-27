@@ -7,7 +7,7 @@
   const background = [...document.querySelectorAll('#scene, #hotspots, .room-header, .places, .look-controls')];
   async function collection() {
     if (!essays) {
-      const response = await fetch('essays.json');
+      const response = await fetch('/room/essays.json');
       if (!response.ok) throw new Error('Writing unavailable');
       essays = await response.json();
     }
@@ -26,7 +26,7 @@
   }
   function leave() {
     ++request;mode = '';experience.hidden = true;delete document.body.dataset.experience;
-    background.forEach(el => { el.inert = el.id === 'hotspots' && document.body.classList.contains('quiet'); });
+    background.forEach(el => { el.inert = false; });
     if (origin?.isConnected && !origin.closest('[hidden]')) origin.focus({preventScroll:true});
   }
   const about = '<h2 tabindex="-1">A few threads, one life.</h2><p>I keep coming back to the ways we make sense of the world—and of each other.</p><p>That thread runs through my work at the <a href="https://constructivedialogue.org/" target="_blank" rel="noopener">Constructive Dialogue Institute</a>, nearly a decade building learning experiences at <a href="https://amplify.com/" target="_blank" rel="noopener">Amplify</a>, and <a href="https://thereconstitution.com/" target="_blank" rel="noopener">The Reconstitution Project</a>.</p><ul class="background-list"><li><strong>Political philosophy</strong><span>Tufts University</span></li><li><strong>Public policy</strong><span>Georgetown Law</span></li><li><strong>Integral Psychology</strong><span>California Institute for Integral Studies</span></li></ul><p>Today, I’m VP of Product at the Constructive Dialogue Institute.</p><p><a href="mailto:ari@ariallen.com">Say hi ↗</a></p>';
@@ -35,7 +35,7 @@
     document.querySelectorAll('[data-folder]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.folder === name)));
     screen.scrollTop = 0;
     if (name === 'about') screen.innerHTML = about;
-    else if (name === 'resume') screen.innerHTML = '<h2 tabindex="-1">My résumé.</h2><p>Work, study, and the threads between them.</p><p><a href="../assets/ari-allen-resume.pdf" target="_blank" rel="noopener">Open the full résumé ↗</a></p><object class="computer-resume" data="../assets/ari-allen-resume.pdf#toolbar=0" type="application/pdf" aria-label="Ari Allen’s résumé"><p><a href="../assets/ari-allen-resume.pdf" target="_blank" rel="noopener">Read the résumé as a PDF ↗</a></p></object>';
+    else if (name === 'resume') screen.innerHTML = '<h2 tabindex="-1">My résumé.</h2><p>Work, study, and the threads between them.</p><p><a href="/assets/ari-allen-resume.pdf" target="_blank" rel="noopener">Open the full résumé ↗</a></p><object class="computer-resume" data="/assets/ari-allen-resume.pdf#toolbar=0" type="application/pdf" aria-label="Ari Allen’s résumé"><p><a href="/assets/ari-allen-resume.pdf" target="_blank" rel="noopener">Read the résumé as a PDF ↗</a></p></object>';
     else {
       screen.innerHTML = '<h2 tabindex="-1">A few open questions.</h2><p>Opening the writing folder…</p>';
       try {
@@ -61,7 +61,7 @@
     const req = ++request, host = document.querySelector('#book-browser');
     host.innerHTML = '<p>Opening the reading shelf…</p>';
     try {
-      const response = await fetch('books.json');if (!response.ok) throw new Error();
+      const response = await fetch('/room/books.json');if (!response.ok) throw new Error();
       const books = await response.json();if (req !== request || mode !== 'books') return;
       host.innerHTML = books.length ? '<div class="book-stack">' + books.map((b,i) => `<details class="reading-book"><summary>${b.cover ? `<img src="${escape(b.cover)}" alt="" loading="lazy">` : ''}<span><strong>${escape(b.title)}</strong><span>${escape(b.author)}</span></span></summary><p>${escape(b.note || '')}</p>${b.url ? `<a href="${escape(b.url)}" target="_blank" rel="noopener">About this book ↗</a>` : ''}</details>`).join('') + '</div>' : '<p class="shelf-empty">Book list coming soon.</p><button data-panel="words" class="shelf-writing">Read something by Ari at the desk ↗</button>';
     } catch { host.innerHTML = '<p>The reading shelf couldn’t open. Try visiting again in a moment.</p>'; }
@@ -109,18 +109,5 @@
   });
   document.querySelector('#help-toggle').addEventListener('click', () => help.showModal());
   help.querySelectorAll('button').forEach(button => button.addEventListener('click', () => help.close()));
-  document.querySelector('#quiet').addEventListener('click', event => {
-    const quiet = document.body.classList.toggle('quiet');
-    document.querySelector('#hotspots').inert = quiet;
-    event.currentTarget.setAttribute('aria-pressed', String(quiet));
-    event.currentTarget.textContent = quiet ? 'Show labels' : 'Hide labels';
-  });
-  const full = document.querySelector('#fullscreen');
-  if (!document.fullscreenEnabled) full.hidden = true;
-  full.addEventListener('click', async () => {
-    try { if (document.fullscreenElement) await document.exitFullscreen();else await document.documentElement.requestFullscreen(); }
-    catch { document.querySelector('#scene-status').textContent = 'Fullscreen isn’t available in this browser.'; }
-  });
-  document.addEventListener('fullscreenchange', () => full.setAttribute('aria-label', document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen'));
   document.querySelector('#retry').addEventListener('click', () => location.reload());
 })();
