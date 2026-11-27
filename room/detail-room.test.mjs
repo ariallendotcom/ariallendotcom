@@ -29,12 +29,12 @@ test('texture budgets include the complete mip chain',()=>{
 
 test('ordinary creation loads no images until a view needs them',async()=>{
   const f=fixture();const room=await createDetailRoom(f.options,f.environment);
-  assert.equal(f.calls.length,0);assert.equal(f.scene.children.length,1);
+  assert.equal(f.calls.length,0);assert.equal(f.scene.children.length,0,'detail is isolated from the Gaussian render pass');
   room.update(camera(),view);await flush();
   assert.ok(f.calls.length>0&&f.calls.length<32,'only a subset of the panorama is requested');
   assert.equal(room.stats.complete,true);
   assert.ok(f.uploads.every(texture=>texture.colorSpace===SRGBColorSpace&&texture.flipY===false&&texture.generateMipmaps&&texture.anisotropy===8));
-  assert.ok(f.scene.children[0].children.every(mesh=>mesh.material.depthTest&&mesh.material.depthWrite&&!mesh.material.transparent),'sharp patches occupy the opaque depth buffer before Gaussian fallback');
+  assert.ok(room.object3D.children.every(mesh=>mesh.material.depthTest&&mesh.material.depthWrite&&!mesh.material.transparent),'sharp patches occupy the opaque depth buffer before Gaussian fallback');
   assert.equal(f.closed.length,f.uploads.length,'decoded pixels are released after GPU upload');
   let released=0;for(const texture of f.uploads)texture.addEventListener('dispose',()=>released++);
   room.dispose();assert.equal(f.scene.children.length,0);assert.equal(room.stats.textureBytes,0);
@@ -81,7 +81,7 @@ test('replacing a view while old requests finish cannot overwrite its new state'
 
 test('switching depth changes geometry while preserving its sharp texture and neutral UVs',async()=>{
   const f=fixture();const room=await createDetailRoom(f.options,f.environment);
-  room.update(camera(),view);await flush();const group=f.scene.children[0],mesh=group.children[0],texture=mesh.material.map,oldGeometry=mesh.geometry;
+  room.update(camera(),view);await flush();const group=room.object3D,mesh=group.children[0],texture=mesh.material.map,oldGeometry=mesh.geometry;
   let released=false;oldGeometry.addEventListener('dispose',()=>released=true);
   room.setDepthSampler(()=>4);assert.equal(released,true);assert.equal(mesh.material.map,texture);
   const p=mesh.geometry.attributes.position;
@@ -104,7 +104,7 @@ test('wrong-size or failed tiles leave the original scene and permit other detai
 
 test('hidden detail aborts loading but retains an already uploaded bounded cache',async()=>{
   const f=fixture();const room=await createDetailRoom(f.options,f.environment);room.update(camera(),view);await flush();const count=f.calls.length;
-  room.setVisible(false);assert.equal(room.stats.complete,false);assert.equal(f.scene.children[0].visible,false);
+  room.setVisible(false);assert.equal(room.stats.complete,false);assert.equal(room.object3D.visible,false);
   room.update(camera(Math.PI),view);await flush();assert.equal(f.calls.length,count);
   room.setVisible(true);room.update(camera(),view);await flush();assert.equal(f.calls.length,count);assert.equal(room.stats.complete,true);
   room.dispose();
@@ -127,7 +127,7 @@ test('coarse patches remain until overlapping fine tiles are ready, without draw
   const room=await createDetailRoom({...f.options,manifest:{version:1,levels:[manifest(8192,2048),f.source]},maxTextureBytes:256*1024*1024},f.environment);
   room.update(camera(0,78),{width:1920,height:1080,pixelRatio:1});await flush();
   assert.equal(room.stats.levelWidth,8192);assert.equal(room.stats.complete,true);
-  const group=f.scene.children[0],coarse=group.children.filter(mesh=>mesh.visible);
+  const group=room.object3D,coarse=group.children.filter(mesh=>mesh.visible);
   assert.equal(coarse.length,4);
   const pending=[];
   f.environment.loadImage=(url,{signal})=>new Promise(resolve=>pending.push({url,signal,resolve:()=>resolve({width:2048,height:2048,close(){}})}));
@@ -175,4 +175,20 @@ test('the production 20K pyramid stays at full detail across a 4K viewport and b
     assert.ok(room.stats.textureBytes+room.stats.reservedBytes<=160*1024*1024);
   }
   room.dispose();assert.equal(room.stats.textureBytes+room.stats.reservedBytes,0);
+});
+
+test('sharp detail composes after the Gaussian color pass and restores renderer state on success and failure',async()=>{
+  const f=fixture(),renderer=f.options.renderer,events=[];
+  renderer.autoClear=true;
+  renderer.clear=()=>assert.fail('the detail pass must not erase existing Gaussian color');
+  renderer.clearDepth=()=>events.push('depth');
+  const room=await createDetailRoom(f.options,f.environment),c=camera();
+  room.update(c,view);await flush();
+  renderer.render=(scene,passedCamera)=>{events.push('detail');assert.notEqual(scene,f.scene);assert.equal(scene.children[0],room.object3D);assert.equal(passedCamera,c);assert.equal(renderer.autoClear,false);};
+  room.render(c);assert.deepEqual(events,['depth','detail']);assert.equal(renderer.autoClear,true);
+  renderer.autoClear=false;room.render(c);assert.equal(renderer.autoClear,false,'an existing multipass configuration is preserved');
+  renderer.autoClear=true;renderer.render=()=>{throw new Error('GPU failure');};
+  assert.throws(()=>room.render(c),/GPU failure/);assert.equal(renderer.autoClear,true,'normal rendering can recover after a failed detail pass');
+  const before=events.length;room.setVisible(false);room.render(c);assert.equal(events.length,before,'hidden detail does not touch either buffer');
+  room.dispose();room.render(c);assert.equal(events.length,before);
 });

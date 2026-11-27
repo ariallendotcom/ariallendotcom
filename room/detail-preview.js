@@ -59,9 +59,7 @@ function resize(){
   renderer.setSize(width,height);dirty=true;
 }
 function syncRoomDetail(){
-  // Opaque detail patches occlude splats through the shared depth buffer.
-  // Keep splats behind them to fill intentional gaps at object boundaries;
-  // complete texture coverage does not imply complete surface geometry.
+  // Splats fill gaps behind the final sharp-surface composition pass.
   depthRoom?.setVisible(depthActive() && !document.hidden);
   if(!detailRoom)return;
   if(active!=='room' || document.hidden){detailRoom.setVisible(false);return;}
@@ -71,7 +69,7 @@ function syncRoomDetail(){
 async function openRoomDetail(){
   const controller=new AbortController();detailController=controller;
   try{
-    const {createDetailRoom}=await import('./detail-room.js?v=detail-2');
+    const {createDetailRoom}=await import('./detail-room.js?v=detail-3');
     if(controller.signal.aborted)return;
     const result=await createDetailRoom({renderer,scene,signal:controller.signal,
       manifestUrl:new URL('detail/room-detail.json?v=detail-2',import.meta.url).href,
@@ -144,6 +142,7 @@ function animate(){
   try{
     detailRoom?.update(camera,{width:container.clientWidth,height:container.clientHeight,pixelRatio:renderer.getPixelRatio()});
     renderer.render(scene,camera);
+    detailRoom?.render(camera);
   }
   catch(failure){
     if(!depthActive() && !detailRoom)throw failure;

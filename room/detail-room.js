@@ -1,4 +1,4 @@
-import {BufferAttribute, BufferGeometry, ClampToEdgeWrapping, Frustum, Group, LinearFilter, LinearMipmapLinearFilter, Matrix4, Mesh, MeshBasicMaterial, Sphere, SRGBColorSpace, Texture, Vector3} from './vendor/three.module.js';
+import {BufferAttribute, BufferGeometry, ClampToEdgeWrapping, Frustum, Group, LinearFilter, LinearMipmapLinearFilter, Matrix4, Mesh, MeshBasicMaterial, Scene, Sphere, SRGBColorSpace, Texture, Vector3} from './vendor/three.module.js';
 import {buildTileGeometryData, maxTilePlaneDistance, normalizeDetailManifest, tileBounds} from './detail-math.mjs?v=detail-2';
 
 const abortError = () => new DOMException('Room detail was closed.', 'AbortError');
@@ -43,6 +43,7 @@ export async function createDetailRoom({renderer, scene, manifest, manifestUrl, 
   if (!Number.isFinite(maxTextureBytes) || maxTextureBytes < 4 || !Number.isInteger(maxConcurrent) || maxConcurrent < 1 || maxConcurrent > 4) throw new TypeError('Invalid room detail budget.');
   checkAbort(signal);
   const controller = new AbortController();
+  const detailScene=new Scene();
   let group, disposed=false, visible=true, sampler=depthAt, bytes=0, reserved=0, tick=0, levelWidth=0, coverage=false;
   let wanted=[], wantedIds=new Set(), allVisibleCount=0;
   const records=new Map(), inFlight=new Map();
@@ -151,9 +152,18 @@ export async function createDetailRoom({renderer, scene, manifest, manifestUrl, 
     normalized.levels=normalized.levels.filter(level=>level.tiles.every(tile=>tile.textureWidth<=maxSize&&tile.textureHeight<=maxSize));
     if(!normalized.levels.length)throw new Error('Room detail exceeds this device’s texture size.');
     for(const level of normalized.levels)for(const tile of level.tiles){const bounds=tileBounds(tile,10);records.set(tile.id,{tile,bounds,state:'idle',estimated:textureByteSize(tile.textureWidth,tile.textureHeight),bytes:0,used:0,retryAfter:0});}
-    group=new Group();group.name='Progressive room detail';scene.add(group);
+    group=new Group();group.name='Progressive room detail';detailScene.add(group);
   } catch(error) {dispose();throw error;}
   return {
+    render(camera) {
+      if(disposed||!visible||!group.children.some(mesh=>mesh.visible))return;
+      // Gaussian depth is approximate and can wash over fine surface color.
+      // Preserve its color as gap fill, then compose sharp patches in their own
+      // depth pass. Patches still occlude each other using their true geometry.
+      const autoClear=renderer.autoClear;
+      try {renderer.autoClear=false;renderer.clearDepth();renderer.render(detailScene,camera);}
+      finally {renderer.autoClear=autoClear;}
+    },
     update(camera,{width=1080*camera.aspect,height=1080,pixelRatio=1}={}) {
       if(disposed||!visible)return;
       if(!camera?.isPerspectiveCamera||![width,height,pixelRatio].every(value=>Number.isFinite(value)&&value>0))return;
@@ -198,6 +208,7 @@ export async function createDetailRoom({renderer, scene, manifest, manifestUrl, 
       onDirty();
     },
     dispose,
+    get object3D(){return group;},
     get stats(){return state();}
   };
 }
