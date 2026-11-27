@@ -29,7 +29,8 @@ test('resampling wraps the seam, clamps poles, and avoids invented surfaces at a
 });
 
 test('resolution budgets retain aspect and never invent extra color pixels', () => {
-  assert.deepEqual(depthDimensions(1774, 887), {width: 1536, height: 768});
+  assert.deepEqual(depthDimensions(1774, 887), {width: 1774, height: 887});
+  assert.deepEqual(depthDimensions(4096, 2048), {width: 2048, height: 1024});
   assert.deepEqual(depthDimensions(1774, 887, 'mobile'), {width: 768, height: 384});
   assert.deepEqual(depthDimensions(1774, 887, 'medium'), {width: 1024, height: 512});
   assert.deepEqual(depthDimensions(400, 200), {width: 400, height: 200});

@@ -1,5 +1,5 @@
 import {Color, Group, Quaternion, Vector3} from './vendor/three.module.js';
-import {DEPTH_FAR, createSplatSample, depthDimensions, radialDepth, sampleRelativeDepth, unpackDepth, writeSplatSample} from './depth-math.mjs';
+import {DEPTH_FAR, createSplatSample, depthDimensions, radialDepth, sampleRelativeDepth, unpackDepth, writeSplatSample} from './depth-math.mjs?v=depth-2';
 
 // Kept inside an explicit opt-in function: importing this helper loads no
 // third-party JavaScript, images, model, camera, or worker.
@@ -167,7 +167,11 @@ export async function loadDepthRoom({renderer, scene, colorUrl, depthUrl, onDirt
     mesh = new SplatMesh({packedSplats: packed, raycastable: false, enableLod: false});
     await withAbort(mesh.initialized, workSignal);
     checkAbort(workSignal);
-    spark = new SparkRenderer({renderer, onDirty: notifyDirty, enableLod: false});
+    // Documented Spark covariance controls: preserve the source photograph's
+    // detail instead of adding its default .3-pixel-variance reconstruction blur.
+    // Keep a little anti-aliasing, and discard only sub-byte alpha fringes.
+    spark = new SparkRenderer({renderer, onDirty: notifyDirty, enableLod: false,
+      preBlurAmount: 0, blurAmount: .05, minAlpha: 1 / 255});
     group = new Group(); group.name = 'Inferred room depth';
     group.add(mesh, spark); scene.add(group);
     notifyDirty(); report('ready', 1);

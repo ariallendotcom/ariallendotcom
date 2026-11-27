@@ -18,7 +18,9 @@ export function depthDimensions(width, height, detail = 'high') {
   if (!Number.isInteger(width) || !Number.isInteger(height) || width < 2 || height < 1) {
     throw new Error('Invalid room image dimensions.');
   }
-  const limit = detail === 'high' ? 1536 : detail === 'medium' ? 1024 : 768;
+  // Preserve every original panorama pixel on desktop; only larger future
+  // sources are capped. Smaller devices retain their existing memory budget.
+  const limit = detail === 'high' ? 2048 : detail === 'medium' ? 1024 : 768;
   const scaledWidth = Math.min(width, limit);
   return {width: scaledWidth, height: Math.max(1, Math.round(height * scaledWidth / width))};
 }
@@ -76,8 +78,10 @@ export function writeSplatSample(out, u, v, width, height, radius, left = radius
   zx /= lengthZ; zy /= lengthZ; zz /= lengthZ;
   const vx = zy * uz - zz * uy, vy = zz * ux - zx * uz, vz = zx * uy - zy * ux;
   const lengthV = Math.abs(bx * vx + by * vy + bz * vz);
-  out.scales[0] = Math.max(1e-5, lengthU * (edgeU ? .5 : .74));
-  out.scales[1] = Math.max(1e-5, lengthV * (edgeV ? .5 : .74));
+  // A .62-pixel sigma retains overlap without washing neighboring photo
+  // details together. The original panorama fills any remaining transparency.
+  out.scales[0] = Math.max(1e-5, lengthU * (edgeU ? .5 : .62));
+  out.scales[1] = Math.max(1e-5, lengthV * (edgeV ? .5 : .62));
   out.scales[2] = Math.max(1e-5, Math.min(stepU, stepV) * .06);
   out.edge = edgeU || edgeV;
   // Quaternion from the right-handed matrix [U V normal].
