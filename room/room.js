@@ -25,6 +25,7 @@ let headPose=null, headTracker;
 const headView={yaw:0,pitch:0,fov:0};
 let depthRoom,depthCamera,depthController,depthPending=false,depthEnabled=false,depthTexture,depthDemo=0,depthPreviewIntent=0;
 let detailRoom,detailController;
+let diplomas,diplomaController;
 const depthStatus=document.querySelector('#room-depth-status');
 const depthSwitch=document.querySelector('#room-depth-switch');
 const depthPreview=document.querySelector('#room-depth-preview');
@@ -61,6 +62,9 @@ function resize(){
 function syncRoomDetail(){
   // Splats fill gaps behind the final sharp-surface composition pass.
   depthRoom?.setVisible(depthActive() && !document.hidden);
+  const papersVisible=active==='room' && !document.hidden && !document.body.dataset.experience;
+  diplomas?.setVisible(papersVisible);
+  if(papersVisible)diplomas?.setDepthSampler(depthActive()?depthRoom.depthAt:null);
   if(!detailRoom)return;
   if(active!=='room' || document.hidden){detailRoom.setVisible(false);return;}
   detailRoom.setDepthSampler(depthActive()?depthRoom.depthAt:null);
@@ -79,6 +83,16 @@ async function openRoomDetail(){
     if(controller.signal.aborted){result.dispose();return;}
     detailRoom=result;syncRoomDetail();dirty=true;
   }catch(failure){if(!controller.signal.aborted)console.warn('Optional room detail unavailable',failure);}
+}
+async function openRoomDiplomas(){
+  const controller=new AbortController();diplomaController=controller;
+  try{
+    const {createDiplomas}=await import('./diplomas.js?v=diploma-1');
+    if(controller.signal.aborted)return;
+    const result=await createDiplomas({renderer,signal:controller.signal,onDirty:()=>{dirty=true;}});
+    if(controller.signal.aborted){result.dispose();return;}
+    diplomas=result;syncRoomDetail();dirty=true;
+  }catch(failure){if(!controller.signal.aborted)console.warn('Room diploma lettering unavailable',failure);}
 }
 async function moveTo(name){
   if(!places[name] || (!ready && name!=='room'))return;
@@ -153,6 +167,8 @@ function animate(){
     camera.position.set(0,0,0);camera.lookAt(lookDirection(yaw,pitch));camera.fov=fov;camera.updateProjectionMatrix();camera.updateMatrixWorld();
     renderer.render(scene,camera);
   }
+  try{diplomas?.render(camera);}
+  catch(failure){console.warn('Room diploma lettering paused',failure);diplomaController?.abort();diplomas?.dispose();diplomas=null;}
   camera.getWorldDirection(viewDirection);
   for(const spot of spots){
     projected.copy(spot.point).project(camera);
@@ -311,13 +327,17 @@ document.querySelector('#head-tracking-sensitivity').addEventListener('input',ev
   document.querySelector('#head-tracking-sensitivity-value').textContent=value<.8?'Subtle':value>1.2?'Lively':'Gentle';
 });
 document.addEventListener('room:experience',()=>{
-  cancelHeadTracking();cancelDepthLoad();stopDepthPreview();entry.close(false);if(headDialog.open)headDialog.close();
+  cancelHeadTracking();cancelDepthLoad();stopDepthPreview();diplomas?.setVisible(false);entry.close(false);if(headDialog.open)headDialog.close();
 });
+// The experience UI updates this attribute for both entry and return, including
+// Escape. Keep the paper overlays synchronized without changing its controls.
+const experienceObserver=new MutationObserver(syncRoomDetail);
+experienceObserver.observe(document.body,{attributes:true,attributeFilter:['data-experience']});
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden){cancelHeadTracking('Tracking stopped while you were away. Turn it on to try again.');cancelDepthLoad();stopDepthPreview();}
   syncRoomDetail();
 });
-addEventListener('pagehide',event=>{cancelHeadTracking();cancelDepthLoad();stopDepthPreview();if(!event.persisted){depthRoom?.dispose();detailController?.abort();detailRoom?.dispose();}});
+addEventListener('pagehide',event=>{cancelHeadTracking();cancelDepthLoad();stopDepthPreview();if(!event.persisted){depthRoom?.dispose();detailController?.abort();detailRoom?.dispose();diplomaController?.abort();diplomas?.dispose();experienceObserver.disconnect();}});
 addEventListener('keydown',event=>{if(event.key==='Escape'){cancelHeadTracking();stopDepthPreview();}});
 
 try{
@@ -332,9 +352,9 @@ try{
   if(typeof ResizeObserver!=='undefined')new ResizeObserver(resize).observe(container);
   else addEventListener('resize',resize);
   renderer.setAnimationLoop(animate);
-  renderer.domElement.addEventListener('webglcontextlost',(e)=>{e.preventDefault();cancelHeadTracking();cancelDepthLoad();detailController?.abort();detailRoom?.dispose();detailRoom=null;depthRoom?.dispose();depthRoom=null;depthEnabled=false;depthDemo=0;ready=false;document.body.classList.remove('ready');status.textContent='The room paused. Read and listen below, or reload to return.';error.hidden=false;});
+  renderer.domElement.addEventListener('webglcontextlost',(e)=>{e.preventDefault();cancelHeadTracking();cancelDepthLoad();detailController?.abort();detailRoom?.dispose();detailRoom=null;diplomaController?.abort();diplomas?.dispose();diplomas=null;depthRoom?.dispose();depthRoom=null;depthEnabled=false;depthDemo=0;ready=false;document.body.classList.remove('ready');status.textContent='The room paused. Read and listen below, or reload to return.';error.hidden=false;});
   await moveTo('room');
-  if(ready)void openRoomDetail();
+  if(ready){void openRoomDetail();void openRoomDiplomas();}
 }catch(e){console.error('Immersive view unavailable',e);error.hidden=false;status.textContent='Read and listen using the controls below.';}
 finally{resolveControlsReady(ready);}
 
