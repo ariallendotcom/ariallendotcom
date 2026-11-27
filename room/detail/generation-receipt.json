@@ -1,0 +1,178 @@
+{
+  "approved_credit_limit": 36,
+  "model": "bytedance_image_upscale",
+  "resolution": "4k",
+  "quoted_credits_per_section": 2,
+  "section_count": 18,
+  "source_commit": "cb1a4479aab12ca742ddf76d47a3aa89413dbe5b",
+  "source_path": "room/detail/room-source.jpg",
+  "status": "validated-for-release",
+  "credits_reserved": 36,
+  "jobs": [
+    {
+      "index": 0,
+      "job_id": "d4a9f683-5000-44a0-b8ec-4b5a35f48da9",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_070750_d4a9f683-5000-44a0-b8ec-4b5a35f48da9.png"
+    },
+    {
+      "index": 1,
+      "job_id": "e8c24c8c-cf68-4818-b773-ef9fce3b3107",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_070749_e8c24c8c-cf68-4818-b773-ef9fce3b3107.png"
+    },
+    {
+      "index": 2,
+      "job_id": "472dae9c-89f5-444a-82ed-20219095a179",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_070749_472dae9c-89f5-444a-82ed-20219095a179.png"
+    },
+    {
+      "index": 3,
+      "job_id": "8fb1c630-6d7e-49c3-b9b8-2eede0b049b9",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_071027_8fb1c630-6d7e-49c3-b9b8-2eede0b049b9.png"
+    },
+    {
+      "index": 4,
+      "job_id": "a603f4a3-dfaa-41c6-9bce-2497417e11b1",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_070749_a603f4a3-dfaa-41c6-9bce-2497417e11b1.png"
+    },
+    {
+      "index": 5,
+      "job_id": "dc71b77c-6eea-45b2-848c-dc9af35842c6",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_071027_dc71b77c-6eea-45b2-848c-dc9af35842c6.png"
+    },
+    {
+      "index": 6,
+      "job_id": "488779b1-145f-40ac-a1c0-2225b555d7c1",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_071242_488779b1-145f-40ac-a1c0-2225b555d7c1.png"
+    },
+    {
+      "index": 7,
+      "job_id": "0e9e10f2-d15f-4bdf-a519-f423ae46c10a",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_071242_0e9e10f2-d15f-4bdf-a519-f423ae46c10a.png"
+    },
+    {
+      "index": 8,
+      "job_id": "808a0d45-83bc-479a-af41-b286ff7364b4",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_072832_808a0d45-83bc-479a-af41-b286ff7364b4.png"
+    },
+    {
+      "index": 9,
+      "job_id": "3025c2b3-c5c8-4c0f-a393-26b30f749fd4",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_065645_3025c2b3-c5c8-4c0f-a393-26b30f749fd4.png"
+    },
+    {
+      "index": 10,
+      "job_id": "aec1e2a9-a99f-4edf-a8b4-c5274fbdebf4",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_072833_aec1e2a9-a99f-4edf-a8b4-c5274fbdebf4.png"
+    },
+    {
+      "index": 11,
+      "job_id": "b9773131-38c7-422c-8839-305f8d833800",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_072831_b9773131-38c7-422c-8839-305f8d833800.png"
+    },
+    {
+      "index": 12,
+      "job_id": "9d2db19e-627d-4e77-b61e-97e53df49ffa",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_072832_9d2db19e-627d-4e77-b61e-97e53df49ffa.png"
+    },
+    {
+      "index": 13,
+      "job_id": "916bf6dc-350d-477f-b434-4032832a1061",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_073043_916bf6dc-350d-477f-b434-4032832a1061.png"
+    },
+    {
+      "index": 14,
+      "job_id": "819ade74-1a36-4cfe-aa69-a5f76e0a9a7e",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_073042_819ade74-1a36-4cfe-aa69-a5f76e0a9a7e.png"
+    },
+    {
+      "index": 15,
+      "job_id": "0dedb029-71c9-45a5-baa8-ebdfe5086a1e",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_073043_0dedb029-71c9-45a5-baa8-ebdfe5086a1e.png"
+    },
+    {
+      "index": 16,
+      "job_id": "0a315f6f-8290-4cfc-8b8c-ab82136d3da7",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_073042_0a315f6f-8290-4cfc-8b8c-ab82136d3da7.png"
+    },
+    {
+      "index": 17,
+      "job_id": "f6b4f3cb-7a76-41e8-8a65-6d7bd5a5b70b",
+      "status": "completed",
+      "type": "image",
+      "model": "bytedance_image_upscale",
+      "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/hf_20261127_073247_f6b4f3cb-7a76-41e8-8a65-6d7bd5a5b70b.png"
+    }
+  ],
+  "pending_indices": [],
+  "assembly_notes": "Pilot section 9 is masked below source y=480. Section 15 has an extended upper overlap to replace a source-transfer defect within the approved 18 jobs.",
+  "asset_count": 312,
+  "asset_total_bytes": 65822339,
+  "validation": {
+    "javascript_tests_passed": 60,
+    "python_tests_passed": 6,
+    "browser_ordinary_max_zoom": true,
+    "browser_drawing_buffer": [
+      3840,
+      2160
+    ],
+    "browser_depth_max_zoom": true,
+    "browser_camera_free_depth_preview": true,
+    "browser_phone_viewport": [
+      390,
+      844
+    ],
+    "browser_about_return": true,
+    "webcam_activated": false
+  }
+}

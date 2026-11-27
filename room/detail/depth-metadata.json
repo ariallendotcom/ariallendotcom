@@ -1,0 +1,50 @@
+{
+  "method": "Depth Anything V2 Small + six aligned perspective projections",
+  "license": "Apache-2.0",
+  "source": "room/detail/room-source.jpg",
+  "width": 1774,
+  "height": 887,
+  "near": 2.5,
+  "far": 8,
+  "distance_units": "artistic, not measured metres",
+  "packed_channels": "R high byte, G low byte, B unused",
+  "views": [
+    {
+      "yaw": 0,
+      "pitch": 0,
+      "scale": 0.06900260597467422,
+      "offset": 0.08125763386487961
+    },
+    {
+      "yaw": 90,
+      "pitch": 0,
+      "scale": 0.056709349155426025,
+      "offset": 0.1308988630771637
+    },
+    {
+      "yaw": 180,
+      "pitch": 0,
+      "scale": 0.03906012326478958,
+      "offset": 0.16330662369728088
+    },
+    {
+      "yaw": -90,
+      "pitch": 0,
+      "scale": 0.031030911952257156,
+      "offset": 0.15562035143375397
+    },
+    {
+      "yaw": 0,
+      "pitch": -75,
+      "scale": 0.08554820716381073,
+      "offset": 0.17915579676628113
+    }
+  ],
+  "depth_percentiles": [
+    2.5871474742889404,
+    2.9339014291763306,
+    5.092786073684692,
+    6.948639488220215,
+    8
+  ]
+}

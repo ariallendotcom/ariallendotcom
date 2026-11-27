@@ -8,7 +8,7 @@ const status = document.querySelector('#scene-status');
 const error = document.querySelector('#error');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const places = {
-  room: {file:'room-panorama.png', label:'The room', yaw:0, pitch:-3, fov:78,
+  room: {file:'detail/room-source.jpg', label:'The room', yaw:0, pitch:-3, fov:78,
     spots:[{u:.36,v:.49,label:'Sit at the desk',panel:'words'},{u:.625,v:.47,label:'The reading shelf',panel:'books'},{u:.48,v:.51,label:'The record player',panel:'sounds',source:'albums'},{u:.755,v:.765,label:'A little about me',panel:'about'}]},
   desk: {file:'desk-panorama.png',label:'At the desk',yaw:0,pitch:-5,fov:76,
     spots:[{u:.40,v:.56,label:'A few open questions',panel:'words'},{u:.52,v:.32,label:'The person behind the page',panel:'about'},{u:.63,v:.56,label:'The record player',panel:'sounds',source:'albums'}]},
@@ -24,6 +24,7 @@ let active='room', spots=[], drag=null, request=0, ready=false, dirty=true;
 let headPose=null, headTracker;
 const headView={yaw:0,pitch:0,fov:0};
 let depthRoom,depthCamera,depthController,depthPending=false,depthEnabled=false,depthTexture,depthDemo=0,depthPreviewIntent=0;
+let detailRoom,detailController;
 const depthStatus=document.querySelector('#room-depth-status');
 const depthSwitch=document.querySelector('#room-depth-switch');
 const depthPreview=document.querySelector('#room-depth-preview');
@@ -49,7 +50,36 @@ async function texture(file){
   }
   return textures.get(file);
 }
-function resize(){if(!renderer)return;camera.aspect=container.clientWidth/container.clientHeight;camera.updateProjectionMatrix();renderer.setSize(container.clientWidth,container.clientHeight);dirty=true;}
+function resize(){
+  if(!renderer)return;
+  const width=Math.max(1,container.clientWidth),height=Math.max(1,container.clientHeight);
+  camera.aspect=width/height;camera.updateProjectionMatrix();
+  // Keep Retina detail while bounding the drawing buffer to roughly 4K.
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2,Math.sqrt(8388608/(width*height))));
+  renderer.setSize(width,height);dirty=true;
+}
+function syncRoomDetail(){
+  // Splats fill gaps behind the final sharp-surface composition pass.
+  depthRoom?.setVisible(depthActive() && !document.hidden);
+  if(!detailRoom)return;
+  if(active!=='room' || document.hidden){detailRoom.setVisible(false);return;}
+  detailRoom.setDepthSampler(depthActive()?depthRoom.depthAt:null);
+  detailRoom.setVisible(true);
+}
+async function openRoomDetail(){
+  const controller=new AbortController();detailController=controller;
+  try{
+    const {createDetailRoom}=await import('./detail-room.js?v=detail-3');
+    if(controller.signal.aborted)return;
+    const result=await createDetailRoom({renderer,scene,signal:controller.signal,
+      manifestUrl:new URL('detail/room-detail.json?v=detail-2',import.meta.url).href,
+      mobile:matchMedia('(max-width:760px)').matches,
+      onDirty:()=>{dirty=true;},
+      onCoverage:()=>{dirty=true;}});
+    if(controller.signal.aborted){result.dispose();return;}
+    detailRoom=result;syncRoomDetail();dirty=true;
+  }catch(failure){if(!controller.signal.aborted)console.warn('Optional room detail unavailable',failure);}
+}
 async function moveTo(name){
   if(!places[name] || (!ready && name!=='room'))return;
   const id=++request;
@@ -65,6 +95,7 @@ async function moveTo(name){
     if(id!==request)return;
     active=name;depthDemo=0;material.map=depthActive()?depthTexture:next;material.needsUpdate=true;
     depthRoom?.setVisible(depthActive());
+    syncRoomDetail();
     const position=places[name];yaw=targetYaw=position.yaw;pitch=targetPitch=position.pitch;fov=targetFov=position.fov;
     rebuildSpots();ready=true;dirty=true;
     // Draw the new room before revealing its canvas over the opening image.
@@ -108,11 +139,16 @@ function animate(){
     camera.position.set(0,0,0);
     camera.lookAt(lookDirection(rendered.yaw,rendered.pitch));camera.fov=rendered.fov;camera.updateProjectionMatrix();camera.updateMatrixWorld();
   }
-  try{renderer.render(scene,camera);}
+  try{
+    detailRoom?.update(camera,{width:container.clientWidth,height:container.clientHeight,pixelRatio:renderer.getPixelRatio()});
+    renderer.render(scene,camera);
+    detailRoom?.render(camera);
+  }
   catch(failure){
-    if(!depthActive())throw failure;
-    console.warn('Room depth paused; restoring the original view',failure);
-    depthRoom.dispose();depthRoom=null;showDepth(false);
+    if(!depthActive() && !detailRoom)throw failure;
+    console.warn('Room detail paused; restoring the original view',failure);
+    cancelDepthLoad();detailController?.abort();detailRoom?.dispose();detailRoom=null;
+    depthRoom?.dispose();depthRoom=null;showDepth(false);
     depthStatus.textContent='Depth paused on this device. The original room is ready to explore.';
     camera.position.set(0,0,0);camera.lookAt(lookDirection(yaw,pitch));camera.fov=fov;camera.updateProjectionMatrix();camera.updateMatrixWorld();
     renderer.render(scene,camera);
@@ -135,6 +171,7 @@ function showDepth(enabled){
   if(!enabled)stopDepthPreview();
   depthEnabled=enabled;depthDemo=0;
   depthRoom?.setVisible(depthActive());
+  syncRoomDetail();
   if(ready){
     const ordinary=textures.get(places[active].file);
     if(depthActive())material.map=depthTexture;
@@ -154,13 +191,13 @@ async function enableDepth(){
     if(controller.signal.aborted)return false;
     if(!ready)throw new Error('room-unavailable');
     const [{loadDepthRoom},{applyDepthCamera},enhanced]=await Promise.all([
-      import('./depth-room.js?v=depth-2'),import('./depth-camera.mjs?v=depth-1'),texture('room-panorama.png')
+      import('./depth-room.js?v=depth-2'),import('./depth-camera.mjs?v=depth-1'),texture(places.room.file)
     ]);
     if(controller.signal.aborted)return false;
     depthTexture=enhanced;depthCamera=applyDepthCamera;
     const result=await loadDepthRoom({renderer,scene,
-      colorUrl:new URL('room-panorama.png',import.meta.url).href,
-      depthUrl:'https://d2ol7oe51mr4n9.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/8cb5c7a0-6bf5-4830-9a4e-576a6aacac52.png',
+      colorUrl:new URL(places.room.file,import.meta.url).href,
+      depthUrl:'https://d2ol7oe51mr4n9.cloudfront.net/user_3J1s5NXUJSOKNxW7VLoOfMiwAOh/b4c3475b-15b7-431c-a817-1f5cf2b73051.png',
       signal:controller.signal,detail:matchMedia('(max-width:760px)').matches?'mobile':'high',
       onDirty:()=>{dirty=true;},onProgress:({phase,progress})=>updateDepthControls(phase==='building'?`Adding the details… ${Math.round(progress*100)}%`:'Opening a little more dimension…')});
     if(controller.signal.aborted){result.dispose();return false;}
@@ -276,14 +313,17 @@ document.querySelector('#head-tracking-sensitivity').addEventListener('input',ev
 document.addEventListener('room:experience',()=>{
   cancelHeadTracking();cancelDepthLoad();stopDepthPreview();entry.close(false);if(headDialog.open)headDialog.close();
 });
-document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelHeadTracking('Tracking stopped while you were away. Turn it on to try again.');cancelDepthLoad();stopDepthPreview();}});
-addEventListener('pagehide',event=>{cancelHeadTracking();cancelDepthLoad();stopDepthPreview();if(!event.persisted)depthRoom?.dispose();});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){cancelHeadTracking('Tracking stopped while you were away. Turn it on to try again.');cancelDepthLoad();stopDepthPreview();}
+  syncRoomDetail();
+});
+addEventListener('pagehide',event=>{cancelHeadTracking();cancelDepthLoad();stopDepthPreview();if(!event.persisted){depthRoom?.dispose();detailController?.abort();detailRoom?.dispose();}});
 addEventListener('keydown',event=>{if(event.key==='Escape'){cancelHeadTracking();stopDepthPreview();}});
 
 try{
   scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(fov,1,.1,30);
   renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'low-power'});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
   container.append(renderer.domElement);
   sphere=createPanoramaSphere();material=sphere.material;scene.add(sphere);
   resize();
@@ -292,8 +332,9 @@ try{
   if(typeof ResizeObserver!=='undefined')new ResizeObserver(resize).observe(container);
   else addEventListener('resize',resize);
   renderer.setAnimationLoop(animate);
-  renderer.domElement.addEventListener('webglcontextlost',(e)=>{e.preventDefault();cancelHeadTracking();cancelDepthLoad();depthRoom?.dispose();depthRoom=null;depthEnabled=false;depthDemo=0;ready=false;document.body.classList.remove('ready');status.textContent='The room paused. Read and listen below, or reload to return.';error.hidden=false;});
+  renderer.domElement.addEventListener('webglcontextlost',(e)=>{e.preventDefault();cancelHeadTracking();cancelDepthLoad();detailController?.abort();detailRoom?.dispose();detailRoom=null;depthRoom?.dispose();depthRoom=null;depthEnabled=false;depthDemo=0;ready=false;document.body.classList.remove('ready');status.textContent='The room paused. Read and listen below, or reload to return.';error.hidden=false;});
   await moveTo('room');
+  if(ready)void openRoomDetail();
 }catch(e){console.error('Immersive view unavailable',e);error.hidden=false;status.textContent='Read and listen using the controls below.';}
 finally{resolveControlsReady(ready);}
 

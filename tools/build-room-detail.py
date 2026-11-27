@@ -302,7 +302,7 @@ def load_uploads(path, levels, tile_size=1024):
 def put_tile(path, slot):
     # An identical PUT is idempotent. Curl retries transient transport/server
     # failures; neither generation jobs nor additional upload slots are created.
-    command = ["curl", "--fail", "--silent", "--show-error", "--location", "--retry", "2", "--retry-delay", "1",
+    command = ["curl", "--fail", "--silent", "--show-error", "--location", "--retry", "4", "--retry-all-errors", "--retry-delay", "1",
         "--connect-timeout", "15", "--max-time", "90", "--request", "PUT", "--header", "Content-Type: image/jpeg",
         "--upload-file", str(path), "--output", os.devnull, "--write-out", "%{http_code}", slot["upload_url"]]
     try:
