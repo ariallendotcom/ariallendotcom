@@ -3,19 +3,12 @@
   const screen = document.querySelector('#computer-content');
   const help = document.querySelector('#instructions');
   const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  let mode = '', origin, request = 0, essays;
+  let mode = '', origin, request = 0;
   const background = [...document.querySelectorAll('#scene, #hotspots, .room-header, .places, .look-controls')];
-  async function collection() {
-    if (!essays) {
-      const response = await fetch('/room/essays.json');
-      if (!response.ok) throw new Error('Writing unavailable');
-      essays = await response.json();
-    }
-    return essays;
-  }
   function enter(name) {
     if (!mode) origin = document.activeElement;
     mode = name;
+    document.dispatchEvent(new CustomEvent('room:experience'));
     document.body.dataset.experience = name;
     document.body.classList.add('exploring');
     experience.hidden = false;
@@ -32,30 +25,19 @@
   const about = '<h2 tabindex="-1">A few threads, one life.</h2><p>I keep coming back to the ways we make sense of the world—and of each other.</p><p>That thread runs through my work at the <a href="https://constructivedialogue.org/" target="_blank" rel="noopener">Constructive Dialogue Institute</a>, nearly a decade building learning experiences at <a href="https://amplify.com/" target="_blank" rel="noopener">Amplify</a>, and <a href="https://thereconstitution.com/" target="_blank" rel="noopener">The Reconstitution Project</a>.</p><ul class="background-list"><li><strong>Political philosophy</strong><span>Tufts University</span></li><li><strong>Public policy</strong><span>Georgetown Law</span></li><li><strong>Integral Psychology</strong><span>California Institute for Integral Studies</span></li></ul><p>Today, I’m VP of Product at the Constructive Dialogue Institute.</p><p><a href="mailto:ari@ariallen.com">Say hi ↗</a></p>';
   async function folder(name) {
     const id = ++request;
-    document.querySelectorAll('[data-folder]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.folder === name)));
-    screen.scrollTop = 0;
+    document.querySelectorAll('button[data-folder]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.folder === name)));
+    screen.scrollTop = 0;screen.dataset.folder = name;
     if (name === 'about') screen.innerHTML = about;
-    else if (name === 'resume') screen.innerHTML = '<h2 tabindex="-1">My résumé.</h2><p>Work, study, and the threads between them.</p><p><a href="/assets/ari-allen-resume.pdf" target="_blank" rel="noopener">Open the full résumé ↗</a></p><object class="computer-resume" data="/assets/ari-allen-resume.pdf#toolbar=0" type="application/pdf" aria-label="Ari Allen’s résumé"><p><a href="/assets/ari-allen-resume.pdf" target="_blank" rel="noopener">Read the résumé as a PDF ↗</a></p></object>';
+    else if (name === 'resume') screen.innerHTML = '<h2 tabindex="-1">My résumé.</h2><p>Work, study, and the threads between them.</p><p><a href="/assets/ari-allen-resume.pdf?v=2025-date" target="_blank" rel="noopener">Open the full résumé ↗</a></p><object class="computer-resume" data="/assets/ari-allen-resume.pdf?v=2025-date#toolbar=0" type="application/pdf" aria-label="Ari Allen’s résumé"><p><a href="/assets/ari-allen-resume.pdf?v=2025-date" target="_blank" rel="noopener">Read the résumé as a PDF ↗</a></p></object>';
     else {
       screen.innerHTML = '<h2 tabindex="-1">A few open questions.</h2><p>Opening the writing folder…</p>';
       try {
-        const items = await collection();
-        if (id !== request || mode !== 'desk') return;
-        screen.innerHTML = '<div class="folder-heading"><span class="eyebrow">Writing</span><h2 tabindex="-1">A few open questions.</h2></div><div class="computer-files">' + items.map(item => `<button class="essay-file" data-essay="${escape(item.id)}"><span class="file-meta">${escape(item.theme)}</span><strong>${escape(item.title)}</strong><span>${escape(item.subtitle)}</span><span class="file-open">Read essay ↗</span></button>`).join('') + '</div><p><a href="https://ariallen.substack.com/" target="_blank" rel="noopener">More on Substack ↗</a></p>';
+        await window.ariWriting.open(screen, () => id === request && mode === 'desk');
       } catch {
         if (id === request) screen.innerHTML = '<h2 tabindex="-1">The writing folder couldn’t open.</h2><p><a href="https://ariallen.substack.com/" target="_blank" rel="noopener">Read the essays on Substack ↗</a></p>';
       }
     }
     if (id === request && mode === 'desk') screen.querySelector('h2')?.focus({preventScroll:true});
-  }
-  async function readEssay(id) {
-    const req = ++request;
-    try {
-      const item = (await collection()).find(e => e.id === id);
-      if (!item || req !== request || mode !== 'desk') return;
-      screen.innerHTML = `<button class="back-reading" data-folder="writing">← Writing folder</button><span class="file-meta">${escape(item.theme)}</span><h2 tabindex="-1">${escape(item.title)}</h2><p class="essay-subtitle">${escape(item.subtitle)}</p><p class="essay-meta">Ari Allen · ${escape(item.date)}</p><article class="essay-body">${item.html}</article><a class="essay-source" href="${escape(item.url)}" target="_blank" rel="noopener">Originally published on Substack ↗</a>`;
-      screen.scrollTop = 0;screen.querySelector('h2').focus({preventScroll:true});
-    } catch { screen.innerHTML = '<p>This essay couldn’t open. <a href="https://ariallen.substack.com/" target="_blank" rel="noopener">Read it on Substack ↗</a></p>'; }
   }
   async function bookshelf() {
     const req = ++request, host = document.querySelector('#book-browser');
@@ -100,8 +82,7 @@
     const place = event.target.closest('[data-place]');
     if (place?.dataset.place === 'desk') open('words');
     if (place?.dataset.place === 'stereo') open('sounds');
-    const dir = event.target.closest('[data-folder]');if (dir) folder(dir.dataset.folder);
-    const essay = event.target.closest('[data-essay]');if (essay) readEssay(essay.dataset.essay);
+    const dir = event.target.closest('button[data-folder]');if (dir) folder(dir.dataset.folder);
   });
   document.querySelector('#back-to-room').addEventListener('click', leave);
   document.addEventListener('keydown', event => {

@@ -19,6 +19,9 @@ const places = {
 let renderer, camera, scene, sphere, material;
 let yaw=0,pitch=-3,fov=78,targetYaw=0,targetPitch=-3,targetFov=78;
 let active='room', spots=[], drag=null, request=0, ready=false, dirty=true;
+// Opt-in offsets never overwrite the ordinary drag/keyboard camera state.
+let headPose=null, headTracker;
+const headView={yaw:0,pitch:0,fov:0};
 const pointers=new Map();
 let pinchDistance=null;
 const textures=new Map();
@@ -72,14 +75,20 @@ function animate(){
   if(!ready)return;
   const target=constrainPanoramaView(targetYaw,targetPitch,targetFov,camera.aspect);
   targetYaw=target.yaw;targetPitch=target.pitch;targetFov=target.fov;
-  if(!dirty && Math.abs(targetYaw-yaw)+Math.abs(targetPitch-pitch)+Math.abs(targetFov-fov)<.0001)return;
+  const headMotion=headPose ? Math.abs(headPose.yaw-headView.yaw)+Math.abs(headPose.pitch-headView.pitch)+Math.abs(headPose.fov-headView.fov) : 0;
+  if(!dirty && headMotion<.001 && Math.abs(targetYaw-yaw)+Math.abs(targetPitch-pitch)+Math.abs(targetFov-fov)<.0001)return;
   dirty=false;
   const easing=reduced?1:.12;
   yaw+=(targetYaw-yaw)*easing;pitch+=(targetPitch-pitch)*easing;fov+=(targetFov-fov)*easing;
   // Also bound intermediate frames during zoom, tilt, and viewport changes.
   const view=constrainPanoramaView(yaw,pitch,fov,camera.aspect);
   yaw=view.yaw;pitch=view.pitch;fov=view.fov;
-  camera.lookAt(lookDirection(yaw,pitch));camera.fov=fov;camera.updateProjectionMatrix();camera.updateMatrixWorld();
+  let rendered=view;
+  if(headPose){
+    for(const key of ['yaw','pitch','fov'])headView[key]+=(headPose[key]-headView[key])*.16;
+    rendered=constrainPanoramaView(yaw+headView.yaw,pitch+headView.pitch,fov+headView.fov,camera.aspect);
+  }
+  camera.lookAt(lookDirection(rendered.yaw,rendered.pitch));camera.fov=rendered.fov;camera.updateProjectionMatrix();camera.updateMatrixWorld();
   renderer.render(scene,camera);
   camera.getWorldDirection(viewDirection);
   for(const spot of spots){
@@ -101,7 +110,7 @@ try{
   if(typeof ResizeObserver!=='undefined')new ResizeObserver(resize).observe(container);
   else addEventListener('resize',resize);
   renderer.setAnimationLoop(animate);
-  renderer.domElement.addEventListener('webglcontextlost',(e)=>{e.preventDefault();ready=false;document.body.classList.remove('ready');status.textContent='The room paused. Read and listen below, or reload to return.';error.hidden=false;});
+  renderer.domElement.addEventListener('webglcontextlost',(e)=>{e.preventDefault();headTracker?.stop();ready=false;document.body.classList.remove('ready');status.textContent='The room paused. Read and listen below, or reload to return.';error.hidden=false;});
   await moveTo('room');
 }catch(e){console.error('Immersive view unavailable',e);error.hidden=false;status.textContent='Read and listen using the controls below.';}
 
@@ -148,3 +157,54 @@ addEventListener('keydown',(e)=>{
   if(handlers[e.key]){e.preventDefault();handlers[e.key]();interact();}
 });
 document.addEventListener('visibilitychange',()=>{if(renderer)renderer.setAnimationLoop(document.hidden?null:animate);});
+
+// The tracking code, WASM, and model are never loaded on a normal visit.
+const headDialog=document.querySelector('#head-tracking-dialog');
+const headLaunch=document.querySelector('#head-tracking-launch');
+const headSwitch=document.querySelector('#head-tracking-switch');
+const headLive=document.querySelector('#head-tracking-live');
+let headLoading;
+function headState({phase,message}){
+  const enabled=!['off','error'].includes(phase);
+  headLaunch.textContent=`Head tracking · ${enabled?'on':'off'}`;
+  headLaunch.setAttribute('aria-pressed',String(enabled));
+  headSwitch.setAttribute('aria-checked',String(enabled));
+  headSwitch.textContent=enabled?'Turn head tracking off':'Turn head tracking on';
+  document.querySelector('#head-tracking-status').textContent=message;
+  document.querySelector('#head-tracking-live-status').textContent=message;
+  document.querySelector('#head-tracking-recenter').disabled=phase==='starting';
+  headLive.hidden=!enabled || headDialog.open;
+}
+headLaunch.addEventListener('click',async()=>{
+  headDialog.showModal();headLive.hidden=true;
+  if(!ready){document.querySelector('#head-tracking-status').textContent='The room needs to finish opening before you can try tracking.';return;}
+  try{
+    if(!headLoading)headLoading=import('./head-tracking.js?v=head-test-1').catch(e=>{headLoading=null;throw e;});
+    const {createHeadTracker}=await headLoading;
+    if(!headTracker)headTracker=createHeadTracker({onPose:pose=>{
+      headPose=pose;
+      if(!pose)headView.yaw=headView.pitch=headView.fov=0;
+      dirty=true;
+    },onState:headState});
+    headSwitch.disabled=false;
+  }catch{document.querySelector('#head-tracking-status').textContent='The experiment couldn’t load. You can keep exploring the room normally.';}
+});
+headSwitch.addEventListener('click',()=>{
+  if(!headTracker || !ready)return;
+  if(['off','error'].includes(headTracker.phase)){
+    headTracker.setSensitivity(Number(document.querySelector('#head-tracking-sensitivity').value));
+    headTracker.start();headDialog.close();
+  }else headTracker.stop();
+});
+document.querySelector('#head-tracking-close').addEventListener('click',()=>headDialog.close());
+headDialog.addEventListener('close',()=>{headLive.hidden=!headTracker || ['off','error'].includes(headTracker.phase);});
+document.querySelector('#head-tracking-stop').addEventListener('click',()=>{headTracker?.stop();headLaunch.focus({preventScroll:true});});
+document.querySelector('#head-tracking-recenter').addEventListener('click',()=>headTracker?.recenter());
+document.querySelector('#head-tracking-sensitivity').addEventListener('input',event=>{
+  const value=Number(event.target.value);headTracker?.setSensitivity(value);
+  document.querySelector('#head-tracking-sensitivity-value').textContent=value<.8?'Subtle':value>1.2?'Lively':'Gentle';
+});
+document.addEventListener('room:experience',()=>{headTracker?.stop();if(headDialog.open)headDialog.close();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)headTracker?.stop('Tracking stopped while you were away. Turn it on to try again.');});
+addEventListener('pagehide',()=>headTracker?.stop());
+addEventListener('keydown',event=>{if(event.key==='Escape')headTracker?.stop();});

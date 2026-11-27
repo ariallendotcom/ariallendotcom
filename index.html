@@ -10,6 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/room/room.css?v=homepage-1"><link rel="stylesheet" href="/room/music.css?v=objects-1"><link rel="stylesheet" href="/room/soundtrack.css?v=compact-player-1"><link rel="stylesheet" href="/room/mobile.css?v=homepage-1">
   <link rel="stylesheet" href="/room/experience.css?v=about-table-1">
+  <link rel="stylesheet" href="/room/writing.css?v=collection-1">
+  <link rel="stylesheet" href="/room/head-tracking.css?v=head-test-1">
 </head>
 <body>
   <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;pointer-events:none">
@@ -27,6 +29,8 @@
       <a class="signature" href="/" aria-label="Ari Allen, home"><img src="/images/ari-signature.jpeg" alt="Ari" width="500" height="292" style="filter:url(#room-signature-ink)"></a>
       <span class="header-note">Make yourself at home.</span>
     </header>
+    <button id="head-tracking-launch" class="head-tracking-launch" type="button" aria-controls="head-tracking-dialog" aria-pressed="false">Head tracking · off</button>
+    <div id="head-tracking-live" class="head-tracking-live" hidden><span id="head-tracking-live-status"></span><button id="head-tracking-recenter" type="button">Recenter</button><button id="head-tracking-stop" type="button">Stop</button></div>
 
     <div class="welcome" id="welcome"><span class="eyebrow">Ari’s room</span><h1>Stay a while.</h1><p>A few things to read.<br>Something to listen to.<br>Nowhere you need to be.</p></div>
     <div class="help" id="help"><span id="scene-status" role="status">Opening the room…</span></div>
@@ -94,6 +98,15 @@
   </section>
   </main>
   <dialog id="instructions" aria-labelledby="help-title"><button class="help-close" aria-label="Close room controls">×</button><span class="eyebrow">Settle in</span><h2 id="help-title">Find your way around.</h2><p>Drag to look around. Scroll or pinch to look closer. The arrows on your keyboard work, too.</p><p>Choose a place at the bottom to move around the room. Touch a label—or use Read, Listen, and About Ari—to explore.</p><p>Press Escape to return to the room. Music controls stay at the bottom.</p><button class="help-done">Make yourself comfortable</button></dialog>
-  <script src="/room/ui.js?v=homepage-1" defer></script><script src="/room/music.js?v=homepage-1" defer></script><script src="/room/soundtrack.js?v=homepage-1" defer></script><script type="module" src="/room/room.js?v=homepage-1"></script>
+  <dialog id="head-tracking-dialog" aria-labelledby="head-tracking-title">
+    <span class="head-kicker">An optional experiment</span><h2 id="head-tracking-title">A room that follows you.</h2>
+    <p>Use your camera to look around with gentle movements of your head. Lean left or right to turn; move closer to look closer.</p>
+    <p class="head-privacy">Video is processed on your device. It isn’t recorded or uploaded. Turning tracking off stops the camera. This stays off each time you visit.</p>
+    <p id="head-tracking-status" role="status">Head tracking is off.</p>
+    <label class="head-sensitivity" for="head-tracking-sensitivity">Movement <input id="head-tracking-sensitivity" type="range" min="0.5" max="1.5" step="0.1" value="1" aria-label="Head movement sensitivity"><span id="head-tracking-sensitivity-value">Gentle</span></label>
+    <div class="head-tracking-actions"><button id="head-tracking-switch" type="button" role="switch" aria-checked="false" disabled>Turn head tracking on</button><button id="head-tracking-close" type="button">Back to the room</button></div>
+  </dialog>
+  <script src="/room/writing.js?v=collection-1" defer></script>
+  <script src="/room/ui.js?v=collection-1" defer></script><script src="/room/music.js?v=homepage-1" defer></script><script src="/room/soundtrack.js?v=homepage-1" defer></script><script type="module" src="/room/room.js?v=head-test-1"></script>
 </body>
 </html>
